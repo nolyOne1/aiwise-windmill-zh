@@ -380,7 +380,10 @@
 					<span class="text-xs font-semibold text-secondary">{($locale, t('common.email'))}</span>
 					<TextInput
 						bind:value={newEmail}
-						inputProps={{ type: 'email', placeholder: 'admin@company.com' }}
+						inputProps={{
+							type: 'email',
+							placeholder: t('instanceSetup.superadminEmailPlaceholder')
+						}}
 						error={newEmail.length > 0 && !emailValid ? t('instanceSetup.mustBeValidEmail') : undefined}
 						size="md"
 					/>
@@ -527,7 +530,7 @@
 					{/snippet}
 				</Breadcrumb>
 				{#if fullStep === 0}
-					<Toggle bind:checked={yamlMode} options={{ right: 'YAML' }} size="sm" />
+					<Toggle bind:checked={yamlMode} options={{ right: t('instanceSetup.yamlMode') }} size="sm" />
 				{/if}
 			</div>
 

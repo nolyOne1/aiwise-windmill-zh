@@ -25,6 +25,7 @@ export const enUS = {
 		next: 'Next',
 		refresh: 'Refresh',
 		continue: 'Continue',
+		back: 'Back',
 		update: 'Update',
 		stop: 'Stop',
 		enabled: 'Enabled',
@@ -408,6 +409,7 @@ export const enUS = {
 		superadminLogin: 'Superadmin login',
 		superadminLoginDescription:
 			'Replace the default superadmin account with a secure email and password.',
+		superadminEmailPlaceholder: 'admin@company.com',
 		mustBeValidEmail: 'Must be a valid email',
 		currentEmail: 'Current email: {email}',
 		enterPassword: 'Enter password',
@@ -428,6 +430,7 @@ export const enUS = {
 		setupError: 'Setup error',
 		authenticationHelp:
 			'Windmill uses its own authentication by default. SSO configuration is optional and can be set up later.',
+		yamlMode: 'YAML',
 		advancedSetup: 'Advanced setup',
 		saveAndNext: 'Save & Next',
 		setAccountAndFinish: 'Set account & finish',
