@@ -4,6 +4,7 @@
 	import WorkspaceCard from './WorkspaceCard.svelte'
 	import SearchItems from '$lib/components/SearchItems.svelte'
 	import type { UserWorkspace } from '$lib/stores'
+	import { locale, t } from '$lib/i18n'
 
 	interface ExtendedWorkspace extends UserWorkspace {
 		_children?: ExtendedWorkspace[]
@@ -411,7 +412,7 @@
 			<div class="text-center py-8">
 				<Building2 size={48} class="text-secondary mx-auto mb-3" />
 				<p class="text-sm text-secondary">
-					{searchFilter ? 'No workspaces match your search' : 'No workspaces available'}
+					{searchFilter ? ($locale, t('workspace.noMatch')) : ($locale, t('workspace.noneAvailable'))}
 				</p>
 			</div>
 		{/if}

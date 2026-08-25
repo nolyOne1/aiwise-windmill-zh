@@ -10,6 +10,7 @@
 	import Toggle from '../Toggle.svelte'
 	import type { Writable } from 'svelte/store'
 	import UserAIPromptsSettings from './UserAIPromptsSettings.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	$effect(() => {
 		loadSettings()
@@ -37,7 +38,7 @@
 </script>
 
 <div class="border border-border-light rounded-md p-4 h-full">
-	<h2 class="text-emphasis text-sm font-semibold mb-2">AI user settings</h2>
+	<h2 class="text-emphasis text-sm font-semibold mb-2">{($locale, t('ai.userSettingsTitle'))}</h2>
 
 	<div class="flex flex-col gap-4">
 		<Toggle
@@ -46,9 +47,9 @@
 			}}
 			checked={!$aiUserDisabled}
 			options={{
-				right: 'Windmill AI',
+				right: t('ai.windmillAi'),
 				rightTooltip:
-					'Enable Windmill AI for your account on this device. Turning this off hides the AI chat, code completion, metadata completion and flow step input completion.'
+					t('ai.windmillAiHelp')
 			}}
 		/>
 
@@ -60,8 +61,8 @@
 				}}
 				checked={$codeCompletionSessionEnabled}
 				options={{
-					right: 'Code completion',
-					rightTooltip: 'AI completion in the code editors'
+					right: t('ai.codeCompletion'),
+					rightTooltip: t('ai.codeCompletionHelp')
 				}}
 			/>
 
@@ -72,8 +73,8 @@
 				}}
 				checked={$metadataCompletionEnabled}
 				options={{
-					right: 'Metadata completion',
-					rightTooltip: 'AI completion for summaries and descriptions'
+					right: t('ai.metadataCompletion'),
+					rightTooltip: t('ai.metadataCompletionHelp')
 				}}
 			/>
 			<Toggle
@@ -83,8 +84,8 @@
 				}}
 				checked={$stepInputCompletionEnabled}
 				options={{
-					right: 'Flow step input completion',
-					rightTooltip: 'AI completion for flow step inputs'
+					right: t('ai.flowStepInputCompletion'),
+					rightTooltip: t('ai.flowStepInputCompletionHelp')
 				}}
 			/>
 		</div>

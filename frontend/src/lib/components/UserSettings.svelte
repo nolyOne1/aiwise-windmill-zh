@@ -9,11 +9,13 @@
 	import { createEventDispatcher } from 'svelte'
 	import UserInfoSettings from './settings/UserInfoSettings.svelte'
 	import AIUserSettings from './settings/AIUserSettings.svelte'
+	import LanguageSelector from './i18n/LanguageSelector.svelte'
 	import {
 		getDarkModeVariant,
 		setDarkModeVariant,
 		type DarkModeVariant
 	} from '$lib/darkModeVariant'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		scopes?: string[] | undefined
@@ -66,7 +68,7 @@
 	on:close={removeHash}
 	{disableChatOffset}
 >
-	<DrawerContent title="User settings" on:close={closeDrawer}>
+	<DrawerContent title={($locale, t('account.userSettingsTitle'))} on:close={closeDrawer}>
 		<div class="flex flex-col gap-6 pb-8">
 			{#if scopes == undefined}
 				<div
@@ -74,10 +76,10 @@
 				>
 					<div class="flex flex-col gap-2">
 						<div class="font-semibold text-emphasis text-xs flex items-center">
-							Theme <DarkModeToggle forcedDarkMode={false} />
+							{($locale, t('account.theme'))} <DarkModeToggle forcedDarkMode={false} />
 						</div>
 						<div class="flex items-center gap-2">
-							<span class="text-xs text-secondary">Dark variant</span>
+							<span class="text-xs text-secondary">{($locale, t('account.darkVariant'))}</span>
 							<ToggleButtonGroup
 								selected={darkVariant}
 								class="w-fit"
@@ -87,11 +89,22 @@
 								}}
 							>
 								{#snippet children({ item })}
-									<ToggleButton value="default" label="Default" size="sm" {item} />
-									<ToggleButton value="github" label="GitHub" size="sm" {item} />
+									<ToggleButton
+										value="default"
+										label={($locale, t('common.default'))}
+										size="sm"
+										{item}
+									/>
+									<ToggleButton
+										value="github"
+										label={($locale, t('account.githubVariant'))}
+										size="sm"
+										{item}
+									/>
 								{/snippet}
 							</ToggleButtonGroup>
 						</div>
+						<LanguageSelector />
 					</div>
 					<div class="text-xs text-emphasis flex-col flex">
 						Windmill <Version />

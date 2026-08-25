@@ -47,6 +47,7 @@
 		usageStore,
 		isPremiumStore
 	} from '$lib/stores'
+	import { locale, t } from '$lib/i18n'
 
 	let {
 		isCollapsed = false,
@@ -108,151 +109,158 @@
 		}
 	}
 
-	const helpItems: Item[] = [
-		{ displayName: 'Tutorials', icon: GraduationCap, href: `${base}/tutorials` },
-		{
-			displayName: 'Docs',
-			icon: BookOpen,
-			href: 'https://www.windmill.dev/docs/intro/',
-			hrefTarget: '_blank'
-		},
-		{
-			displayName: 'Feedbacks',
-			icon: DiscordIcon,
-			href: 'https://discord.gg/V7PM2YHsPB',
-			hrefTarget: '_blank'
-		},
-		{
-			displayName: 'Issues',
-			icon: Github,
-			href: 'https://github.com/windmill-labs/windmill/issues/new',
-			hrefTarget: '_blank'
-		},
-		{
-			displayName: 'Changelog',
-			icon: Newspaper,
-			href: 'https://www.windmill.dev/changelog/',
-			hrefTarget: '_blank'
-		},
-		...recentChangelogs.map((changelog, i) => ({
-			displayName: changelog.label,
-			href: changelog.href,
-			hrefTarget: '_blank' as const,
-			separatorTop: i === 0
-		}))
-	]
+	const helpItems = $derived.by<Item[]>(() => {
+		$locale
+		return [
+			{ displayName: t('app.tutorials'), icon: GraduationCap, href: `${base}/tutorials` },
+			{
+				displayName: t('app.docs'),
+				icon: BookOpen,
+				href: 'https://www.windmill.dev/docs/intro/',
+				hrefTarget: '_blank'
+			},
+			{
+				displayName: t('app.feedback'),
+				icon: DiscordIcon,
+				href: 'https://discord.gg/V7PM2YHsPB',
+				hrefTarget: '_blank'
+			},
+			{
+				displayName: t('app.issues'),
+				icon: Github,
+				href: 'https://github.com/windmill-labs/windmill/issues/new',
+				hrefTarget: '_blank'
+			},
+			{
+				displayName: t('app.changelog'),
+				icon: Newspaper,
+				href: 'https://www.windmill.dev/changelog/',
+				hrefTarget: '_blank'
+			},
+			...recentChangelogs.map((changelog, i) => ({
+				displayName: changelog.label,
+				href: changelog.href,
+				hrefTarget: '_blank' as const,
+				separatorTop: i === 0
+			}))
+		]
+	})
 
 	// Account / instance actions gathered under one "Settings" dropdown, shared by
 	// the session rail and the global sidebar so both expose the same entry point.
 	// Logout lives inside the user submenu with the other account-scoped entries.
 	// Workspace- and instance-scoped entries anchor the bottom of the menu,
 	// instance settings last.
-	const workspaceInstanceItems = $derived<Item[]>([
-		...(!canManageWorkspace && !workspaceSettingsTarget
-			? [
+	const workspaceInstanceItems = $derived.by<Item[]>(() => {
+		$locale
+		return [
+			...(!canManageWorkspace && !workspaceSettingsTarget
+				? [
+						{
+							displayName: t('account.leaveWorkspace'),
+							icon: LogOut,
+							type: 'delete' as const,
+							action: () => (leaveWorkspaceModal = true)
+						}
+					]
+				: []),
+			...(currentWsIsFork && !workspaceSettingsTarget
+				? [
+						{
+							displayName: t('account.deleteForkedWorkspace'),
+							icon: Trash2,
+							type: 'delete' as const,
+							action: () => deleteForkModal?.openModal()
+						}
+					]
+				: []),
+			...(canManageWorkspace
+				? [
+						workspaceSettingsTarget
+							? {
+									displayName: `${settingsTargetWs?.name ?? workspaceSettingsTarget} ${t('workspace.settingsSuffix')}`,
+									icon: Building,
+									href: `${base}/workspace_settings?workspace=${workspaceSettingsTarget}`
+								}
+							: {
+									displayName: `${currentWs?.name ?? $workspaceStore ?? t('workspace.workspaceFallback')} ${t('workspace.settingsSuffix')}`,
+									icon: Building,
+									href: `${base}/workspace_settings`
+								}
+					]
+				: []),
+			...($superadmin
+				? [
+						{
+							displayName: t('account.instanceSettings'),
+							icon: Settings,
+							action: () => goto(SUPERADMIN_SETTINGS_HASH)
+						}
+					]
+				: [])
+		]
+	})
+
+	const items = $derived.by<Item[]>(() => {
+		$locale
+		return [
+			{
+				displayName: t('app.help'),
+				icon: HelpCircle,
+				submenuItems: helpItems,
+				extra: helpPing
+			},
+			{
+				displayName: t('account.switchTheme'),
+				icon: darkMode ? Sun : Moon,
+				action: () => toggleDarkMode()
+			},
+			{
+				displayName: $userStore?.non_member
+					? `${$userStore?.email} (superadmin, not a member)`
+					: ($userStore?.email ?? t('account.userFallback')),
+				icon: $userStore?.is_admin || $userStore?.non_member ? Crown : User,
+				submenuItems: [
 					{
-						displayName: 'Leave workspace',
-						icon: LogOut,
-						type: 'delete' as const,
-						action: () => (leaveWorkspaceModal = true)
-					}
-				]
-			: []),
-		// Fork deletion is a global-sidebar action on the active workspace, so keep it
-		// out of the session rail's per-target settings entry (`workspaceSettingsTarget`).
-		...(currentWsIsFork && !workspaceSettingsTarget
-			? [
-					{
-						displayName: 'Delete forked workspace',
-						icon: Trash2,
-						type: 'delete' as const,
-						action: () => deleteForkModal?.openModal()
-					}
-				]
-			: []),
-		...(canManageWorkspace
-			? [
-					workspaceSettingsTarget
-						? {
-								displayName: `${settingsTargetWs?.name ?? workspaceSettingsTarget} settings`,
-								icon: Building,
-								// The `workspace` query param switches the app to the target
-								// workspace on arrival (full loads and client-side navs alike).
-								href: `${base}/workspace_settings?workspace=${workspaceSettingsTarget}`
-							}
-						: {
-								displayName: `${currentWs?.name ?? $workspaceStore ?? 'Workspace'} settings`,
-								icon: Building,
-								href: `${base}/workspace_settings`
-							}
-				]
-			: []),
-		...($superadmin
-			? [
-					{
-						displayName: 'Instance settings',
+						displayName: t('account.accountSettings'),
 						icon: Settings,
-						action: () => goto(SUPERADMIN_SETTINGS_HASH)
-					}
+						action: () => goto(USER_SETTINGS_HASH)
+					},
+					...(cloudHosted && !$isPremiumStore
+						? [
+								{
+									displayName: t('account.userExecUsage', { count: $usageStore }),
+									icon: Gauge,
+									disabled: true
+								}
+							]
+						: []),
+					{ displayName: t('account.logout'), icon: LogOut, action: () => logout() }
 				]
-			: [])
-	])
+			},
+			...workspaceInstanceItems.map((item, i) => (i === 0 ? { ...item, separatorTop: true } : item))
+		]
+	})
 
-	const items = $derived<Item[]>([
-		{
-			displayName: 'Help',
-			icon: HelpCircle,
-			submenuItems: helpItems,
-			extra: helpPing
-		},
-		{
-			displayName: 'Switch theme',
-			icon: darkMode ? Sun : Moon,
-			action: () => toggleDarkMode()
-		},
-		{
-			// The email is the label itself; the crown icon carries the admin role.
-			displayName: $userStore?.non_member
-				? `${$userStore?.email} (superadmin, not a member)`
-				: ($userStore?.email ?? 'User'),
-			icon: $userStore?.is_admin || $userStore?.non_member ? Crown : User,
-			submenuItems: [
-				{
-					displayName: 'Account settings',
-					icon: Settings,
-					action: () => goto(USER_SETTINGS_HASH)
-				},
-				...(cloudHosted && !$isPremiumStore
-					? [
-							{
-								displayName: `${$usageStore}/1000 user execs`,
-								icon: Gauge,
-								disabled: true
-							}
-						]
-					: []),
-				{ displayName: 'Logout', icon: LogOut, action: () => logout() }
-			]
-		},
-		...workspaceInstanceItems.map((item, i) => (i === 0 ? { ...item, separatorTop: true } : item))
-	])
-
-	const logsItems = $derived<Item[]>([
-		{ displayName: 'Audit logs', icon: Eye, href: `${base}/audit_logs` },
-		...($devopsRole
-			? [{ displayName: 'Service logs', icon: Logs, href: `${base}/service_logs` }]
-			: []),
-		...($enterpriseLicense
-			? [
-					{
-						displayName: 'Critical alerts',
-						icon: AlertCircle,
-						action: () => isCriticalAlertsUIOpen.set(true),
-						extra: criticalAlertsBadge
-					}
-				]
-			: [])
-	])
+	const logsItems = $derived.by<Item[]>(() => {
+		$locale
+		return [
+			{ displayName: t('app.auditLogs'), icon: Eye, href: `${base}/audit_logs` },
+			...($devopsRole
+				? [{ displayName: t('app.serviceLogs'), icon: Logs, href: `${base}/service_logs` }]
+				: []),
+			...($enterpriseLicense
+				? [
+						{
+							displayName: t('app.criticalAlerts'),
+							icon: AlertCircle,
+							action: () => isCriticalAlertsUIOpen.set(true),
+							extra: criticalAlertsBadge
+						}
+					]
+				: [])
+		]
+	})
 </script>
 
 {#snippet criticalAlertsBadge()}
@@ -277,7 +285,7 @@
 <div class="flex flex-col gap-1 pb-1">
 	<MenuLink
 		class="!text-xs"
-		label="Workers"
+		label={($locale, t('app.workers'))}
 		href="{base}/workers"
 		icon={ServerCog}
 		{isCollapsed}
@@ -301,7 +309,7 @@
 				>
 					<Logs size={16} />
 					{#if !isCollapsed}
-						Logs
+						{($locale, t('app.logs'))}
 						<span class="ml-auto flex items-center gap-2">
 							{#if numUnacknowledgedCriticalAlerts > 0}
 								<SideBarNotification notificationCount={numUnacknowledgedCriticalAlerts} />
@@ -322,7 +330,7 @@
 	{:else}
 		<MenuLink
 			class="!text-xs"
-			label="Audit logs"
+			label={($locale, t('app.auditLogs'))}
 			href="{base}/audit_logs"
 			icon={Eye}
 			disabled={$userStore?.operator}
@@ -350,7 +358,7 @@
 		>
 			<Settings size={16} />
 			{#if !isCollapsed}
-				Settings
+				{($locale, t('app.settings'))}
 				<ChevronDown size={14} class="ml-auto flex-shrink-0 text-tertiary" />
 			{/if}
 			{#if hasNewChangelogs}
@@ -371,8 +379,8 @@
 
 <ConfirmationModal
 	open={leaveWorkspaceModal}
-	title="Leave workspace"
-	confirmationText="Leave workspace"
+	title={($locale, t('account.leaveWorkspaceTitle'))}
+	confirmationText={($locale, t('account.leaveWorkspaceAction'))}
 	on:canceled={() => {
 		leaveWorkspaceModal = false
 	}}
@@ -382,7 +390,7 @@
 	}}
 >
 	<div class="flex flex-col w-full space-y-4">
-		<span>Are you sure you want to leave this workspace?</span>
+		<span>{($locale, t('account.leaveWorkspaceConfirm'))}</span>
 	</div>
 </ConfirmationModal>
 

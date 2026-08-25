@@ -1,0 +1,22 @@
+[
+	{
+		"path": "src/lib/components/Login\\.svelte",
+		"literal": "GitHub|GitLab|Google|Microsoft|Okta|Auth0|Nextcloud|Pocket ID|SSO",
+		"reason": "oauth provider and protocol names stay canonical"
+	},
+	{
+		"path": "src/lib/components/UserSettings\\.svelte",
+		"literal": "Windmill|GitHub",
+		"reason": "product and theme variant names stay canonical"
+	},
+	{
+		"path": "src/lib/components/sidebar/SettingsMenu\\.svelte",
+		"literal": "GitHub|Discord",
+		"reason": "brand names stay canonical"
+	},
+	{
+		"path": "src/lib/components/sidebar/WorkspaceMenu\\.svelte",
+		"literal": "admins|demo",
+		"reason": "workspace ids are user data"
+	}
+]

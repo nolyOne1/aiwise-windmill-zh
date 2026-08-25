@@ -35,6 +35,7 @@
 	import { getContrastTextColor } from '$lib/utils'
 	import { workspaceRootId } from '$lib/components/sessions/sessionScope.svelte'
 	import { devBadgeText } from '$lib/utils/devWorkspaceLabel'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		isCollapsed?: boolean
@@ -328,13 +329,13 @@
 						<div
 							class="shrink-0 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity"
 						>
-							<CopyButton value={workspace.id} title={`Copy id: ${workspace.id}`} />
+							<CopyButton value={workspace.id} title={t('workspace.copyId', { id: workspace.id })} />
 						</div>
 						{#if expandable}
 							{@const expanded = expandedFamilies.has(workspace.id)}
 							<button
 								type="button"
-								title={expanded ? 'Hide forks' : 'Show forks'}
+								title={expanded ? t('workspace.hideForks') : t('workspace.showForks')}
 								aria-expanded={expanded}
 								class="shrink-0 mr-1 px-2 self-stretch flex items-center rounded text-tertiary hover:bg-surface-hover hover:text-primary"
 								onclick={() => {
@@ -362,7 +363,7 @@
 					{#if isCloudHosted() || $superadmin}
 						<MenuItem href="{base}/user/create_workspace" class={itemClass} {item}>
 							<Plus size={16} />
-							Workspace
+							{($locale, t('workspace.create'))}
 						</MenuItem>
 					{/if}
 					{#if canForkHere}
@@ -372,7 +373,7 @@
 							{item}
 						>
 							<Plus size={16} />
-							Workspace fork
+							{($locale, t('workspace.createFork'))}
 						</MenuItem>
 					{/if}
 				</div>
@@ -387,7 +388,7 @@
 						<Settings size={16} />
 						{(activeWorkspace && ambiguousNames.has(activeWorkspace.name)
 							? activeWorkspace.id
-							: activeWorkspace?.name) ?? $workspaceStore} settings
+							: activeWorkspace?.name) ?? $workspaceStore} {($locale, t('workspace.settingsSuffix'))}
 					</MenuItem>
 				</div>
 			{/if}
@@ -399,7 +400,7 @@
 						class={itemClass}
 						{item}
 					>
-						All workspaces
+						{($locale, t('workspace.allWorkspaces'))}
 					</MenuItem>
 				</div>
 			{/if}
@@ -408,7 +409,7 @@
 			<div class="py-1" role="none">
 				{#if $workspaceStore != 'demo'}
 					<span class="text-secondary block w-full text-left px-4 py-2 text-xs"
-						>{$workspaceUsageStore}/1000 free workspace execs</span
+						>{t('workspace.freeExecUsage', { count: $workspaceUsageStore })}</span
 					>
 					<div class="w-full bg-gray-200 h-1">
 						<div class="bg-blue-400 h-1" style="width: {Math.min($workspaceUsageStore, 1000) / 10}%"
@@ -426,7 +427,7 @@
 						}}
 						{item}
 					>
-						Upgrade
+						{($locale, t('workspace.upgrade'))}
 					</MenuItem>
 				{/if}
 			</div>

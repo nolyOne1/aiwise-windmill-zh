@@ -21,6 +21,7 @@
 	import { onMount } from 'svelte'
 	import { refreshSuperadmin } from '$lib/refreshUser'
 	import { isValidLogoutRedirect, toSameOriginRelativePath } from '$lib/logoutRedirect'
+	import { locale, t } from '$lib/i18n'
 
 	const email = page.url.searchParams.get('email') ?? ''
 	const password = page.url.searchParams.get('password') ?? ''
@@ -145,10 +146,10 @@
 			{/if}
 		</div>
 		<h2 class="mt-6 text-center text-2xl font-semibold tracking-tight text-emphasis">
-			Log in or sign up
+			{($locale, t('login.pageTitle'))}
 		</h2>
 		<p class="mt-2 text-center text-xs text-secondary">
-			Log in or sign up with any of the methods below
+			{($locale, t('login.pageSubtitle'))}
 		</p>
 	</div>
 

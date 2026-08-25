@@ -90,6 +90,7 @@
 	import Modal2 from '$lib/components/common/modal/Modal2.svelte'
 	import CreateWorkspaceInner from '$lib/components/workspaceSettings/CreateWorkspaceInner.svelte'
 	import { recordForkParent, rememberForkParent } from '$lib/forkParentMemory'
+	import { locale, t } from '$lib/i18n'
 	interface Props {
 		children?: import('svelte').Snippet
 	}
@@ -813,7 +814,7 @@
 {#snippet quickLinks(collapsed: boolean)}
 	<MenuLink
 		class="!text-xs"
-		label="Home"
+		label={($locale, t('app.home'))}
 		href={`${base}/`}
 		icon={Home}
 		isCollapsed={collapsed}
@@ -822,7 +823,7 @@
 	/>
 	<MenuLink
 		class="!text-xs"
-		label="Runs"
+		label={($locale, t('app.runs'))}
 		href={`${base}/runs`}
 		icon={Play}
 		isCollapsed={collapsed}
@@ -865,7 +866,7 @@
 <UserSettings bind:this={userSettings} showMcpMode={true} />
 <DraftMigrationErrorModal />
 {#if page.status == 404}
-	<CenteredModal title="Page not found, redirecting you to login" loading={true}></CenteredModal>
+	<CenteredModal title={($locale, t('app.pageNotFoundRedirectLogin'))} loading={true}></CenteredModal>
 {:else if $userStore}
 	<GlobalSearchModal bind:this={globalSearchModal} />
 	{#if $superadmin}
@@ -919,7 +920,7 @@
 											menuOpen = !menuOpen
 										}}
 										class="ml-1 flex items-center justify-center h-6 w-6 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white border border-white"
-										aria-label="Close"
+										aria-label={t('common.close')}
 									>
 										<svg
 											class="h-4 w-4 text-white"
@@ -995,7 +996,7 @@
 													on:click={() => openSearchModal()}
 													isCollapsed={false}
 													icon={Search}
-													label="Search"
+													label={($locale, t('app.search'))}
 													class="!text-xs"
 													shortcut={`${getModifierKey()}k`}
 												/>
@@ -1008,7 +1009,7 @@
 														isCollapsed={false}
 														icon={WandSparkles}
 														iconProps={{ forceDarkMode: true }}
-														label="Ask AI"
+														label={($locale, t('app.askAi'))}
 														class="!text-xs"
 														iconClasses="!text-ai"
 														shortcut={`${getModifierKey()}L`}
@@ -1062,8 +1063,8 @@
 								<div
 									role="separator"
 									aria-orientation="vertical"
-									aria-label="Resize sidebar"
-									title="Drag to resize"
+									aria-label={t('app.resizeSidebar')}
+									title={t('app.dragToResize')}
 									class={classNames(
 										'absolute inset-y-0 -right-0.5 w-1.5 cursor-col-resize z-50 transition-colors',
 										resizingSidebar ? '' : 'hover:bg-surface-hover'
@@ -1128,7 +1129,7 @@
 											on:click={() => openSearchModal()}
 											{isCollapsed}
 											icon={Search}
-											label="Search"
+											label={($locale, t('app.search'))}
 											class="!text-xs"
 											shortcut={`${getModifierKey()}k`}
 										/>
@@ -1141,7 +1142,7 @@
 												{isCollapsed}
 												icon={WandSparkles}
 												iconProps={{ forceDarkMode: true }}
-												label="Ask AI"
+												label={($locale, t('app.askAi'))}
 												class="!text-xs"
 												iconClasses="!text-ai"
 												shortcut={`${getModifierKey()}L`}
@@ -1177,7 +1178,7 @@
 								<!-- p-2/-m-2 widens the hit area to ~32px without moving the icon. -->
 								<button
 									class="p-2 -m-2 rounded hover:bg-surface-hover"
-									title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+									title={isCollapsed ? t('app.expandSidebar') : t('app.collapseSidebar')}
 									onclick={() => {
 										isCollapsed = !isCollapsed
 										// Manual toggle is the persisted preference (auto-collapse isn't).
@@ -1224,7 +1225,7 @@
 								onclick={() => {
 									// menuSlide = !menuSlide
 								}}
-								aria-label="Close"
+								aria-label={t('common.close')}
 								class="ml-1 flex items-center justify-center h-8 w-8 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white border border-white"
 							>
 								<svg
@@ -1263,7 +1264,7 @@
 									on:click={() => openSearchModal()}
 									{isCollapsed}
 									icon={Search}
-									label="Search"
+									label={($locale, t('app.search'))}
 									class="!text-xs"
 									shortcut={`${getModifierKey()}k`}
 								/>
@@ -1275,7 +1276,7 @@
 									iconProps={{
 										forceDarkMode: true
 									}}
-									label="Ask AI"
+									label={($locale, t('app.askAi'))}
 									class="!text-xs"
 									iconClasses="!text-ai"
 									shortcut={`${getModifierKey()}L`}
@@ -1299,9 +1300,9 @@
 					class="bg-yellow-100 dark:bg-yellow-900/50 border-b border-yellow-300 dark:border-yellow-700 px-4 py-2 text-sm text-yellow-800 dark:text-yellow-200 flex items-center justify-center gap-4 shrink-0"
 				>
 					<span>
-						Viewing workspace on behalf of <strong>{$userStore.username}</strong>
+						{($locale, t('app.impersonationPrefix'))} <strong>{$userStore.username}</strong>
 						<span class="text-yellow-600 dark:text-yellow-400"
-							>(impersonated by {$userStore.impersonating_email})</span
+							>{t('app.impersonatedBy', { email: $userStore.impersonating_email })}</span
 						>
 					</span>
 					<button
@@ -1323,7 +1324,7 @@
 							window.location.href = '/workspace_settings?tab=users'
 						}}
 					>
-						Exit impersonation
+						{($locale, t('app.exitImpersonation'))}
 					</button>
 				</div>
 			{/if}
@@ -1345,7 +1346,7 @@
 		</div>
 	</div>
 {:else}
-	<CenteredModal title="Loading user..." loading={true}></CenteredModal>
+	<CenteredModal title={($locale, t('app.loadingUser'))} loading={true}></CenteredModal>
 {/if}
 
 {#if $workspaceStore && globalDbManagerDrawer.val}

@@ -1,16 +1,20 @@
 import { enUS, type AppDictionary } from './locales/en-US'
 import { zhCN } from './locales/zh-CN'
-import type { DotKey, InterpolationValues, PartialLocaleDictionary, TranslationDictionary } from './types'
+import type { DotKey, InterpolationValues, TranslationDictionary } from './types'
 
 export const SUPPORTED_LOCALES = ['zh-CN', 'en-US'] as const
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number]
 type TranslationKey = DotKey<AppDictionary>
-type LocaleCatalog = PartialLocaleDictionary<AppDictionary>
+type LocaleCatalog = AppDictionary
 type LocaleSubscriber = (value: Locale) => void
 
 const DEFAULT_LOCALE: Locale = 'zh-CN'
 const STORAGE_KEY = 'windmill.locale'
+export const LOCALE_LABELS: Record<Locale, string> = {
+	'zh-CN': '简体中文',
+	'en-US': 'English'
+}
 const dictionaries: Record<Locale, LocaleCatalog> = {
 	'zh-CN': zhCN,
 	'en-US': enUS

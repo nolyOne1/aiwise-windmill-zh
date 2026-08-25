@@ -33,6 +33,7 @@
 	import WorkspaceTreeView from '$lib/components/workspace/WorkspaceTreeView.svelte'
 	import TextInput from '$lib/components/text_input/TextInput.svelte'
 	import type { UserWorkspace } from '$lib/stores'
+	import { locale, t } from '$lib/i18n'
 
 	let invites: WorkspaceInvite[] = $state([])
 	let list_all_as_super_admin: boolean = $state(false)
@@ -186,15 +187,15 @@
 {/if}
 
 <CenteredModal
-	title="Select a workspace"
-	subtitle="Logged in as {$usersWorkspaceStore?.email}"
+	title={($locale, t('workspace.selectTitle'))}
+	subtitle={t('workspace.loggedInAs', { email: $usersWorkspaceStore?.email ?? '' })}
 	centerVertically={false}
 >
 	{@const nonForkInvites = invites.filter((invite) => invite.parent_workspace_id == undefined)}
 	<div class="flex flex-col">
 		<div class="flex flex-row items-center gap-2 justify-between mb-4">
 			<h2 class="inline-flex gap-2 text-sm font-semibold text-emphasis flex-shrink-0">
-				Workspaces{#if loading}<WindmillIcon spin="fast" />{/if}
+				{($locale, t('workspace.allWorkspaces'))}{#if loading}<WindmillIcon spin="fast" />{/if}
 			</h2>
 
 			{#if allWorkspaces.length > 1}
@@ -202,7 +203,7 @@
 					<div class="relative text-primary flex-1 max-w-48">
 						<TextInput
 							inputProps={{
-								placeholder: 'Search workspaces...'
+								placeholder: t('workspace.searchPlaceholder')
 							}}
 							size="sm"
 							bind:value={workspaceSearchFilter}
@@ -213,12 +214,12 @@
 					{#if workspaceHasForks}
 						<Button
 							onClick={() => workspaceExpandCollapseAll?.()}
-							title={workspaceAllExpanded ? 'Collapse all' : 'Expand all'}
+							title={workspaceAllExpanded ? t('workspace.collapseAll') : t('workspace.expandAll')}
 							startIcon={{ icon: workspaceAllExpanded ? ChevronsDownUp : ChevronsUpDown }}
 							size="xs2"
 							variant="default"
 						>
-							{workspaceAllExpanded ? 'Collapse' : 'Expand'}
+							{workspaceAllExpanded ? ($locale, t('common.collapse')) : ($locale, t('common.expand'))}
 						</Button>
 					{/if}
 				</div>
@@ -229,7 +230,7 @@
 			<div class="flex justify-end mb-2">
 				<Toggle
 					bind:checked={list_all_as_super_admin}
-					options={{ right: 'List all workspaces as superadmin' }}
+					options={{ right: t('workspace.listAllAsSuperadmin') }}
 					size="xs"
 				/>
 			</div>
@@ -238,9 +239,11 @@
 		{#if workspaces && $usersWorkspaceStore}
 			{#if workspaces.length == 0}
 				<p class="text-xs text-secondary mt-2">
-					You are not a member of any workspace yet. Accept an invitation {#if createWorkspace}or
-						create your own{/if}
-					workspace.
+					{#if createWorkspace}
+						{($locale, t('workspace.youAreNotMemberWithCreate'))}
+					{:else}
+						{($locale, t('workspace.youAreNotMemberWithoutCreate'))}
+					{/if}
 				</p>
 			{:else}
 				<WorkspaceTreeView
@@ -279,23 +282,23 @@
 						href="{base}/user/create_workspace{rd ? `?rd=${encodeURIComponent(rd)}` : ''}"
 						variant={onlyAdminsWorkspace || noWorkspaces ? 'accent' : 'default'}
 						wrapperClasses="w-full"
-						>+&nbsp;Create a new workspace
+						>+&nbsp;{($locale, t('workspace.createNew'))}
 					</Button>
 				</AnimatedButton>
 			</div>
 		{/if}
 
 		<div class="flex flex-row items-center justify-between mt-8">
-			<h2 class="text-sm font-semibold text-emphasis">Invites to join a Workspace</h2>
+			<h2 class="text-sm font-semibold text-emphasis">{($locale, t('workspace.invitesTitle'))}</h2>
 			{#if workspaces}
-				<Toggle size="xs" bind:checked={showAllForks} options={{ right: 'Show workspace forks' }} />
+				<Toggle size="xs" bind:checked={showAllForks} options={{ right: t('workspace.showWorkspaceForks') }} />
 			{/if}
 		</div>
 
 		<div class="mt-4"></div>
 
 		{#if nonForkInvites.length == 0}
-			<p class="text-xs text-secondary"> You don't have new invites at the moment. </p>
+			<p class="text-xs text-secondary">{($locale, t('workspace.noInvites'))}</p>
 		{/if}
 
 		{#each nonForkInvites as invite}
@@ -306,9 +309,9 @@
 				<div class="grow">
 					<span class="font-mono font-semibold text-emphasis">{invite.workspace_id}</span>
 					{#if invite.is_admin}
-						<span class="text-xs text-primary">as an admin</span>
+						<span class="text-xs text-primary">{($locale, t('workspace.asAdmin'))}</span>
 					{:else if invite.operator}
-						<span class="text-xs text-primary">as an operator</span>
+						<span class="text-xs text-primary">{($locale, t('workspace.asOperator'))}</span>
 					{/if}
 				</div>
 				<div class="flex justify-end items-center flex-col sm:flex-row gap-1">
@@ -319,7 +322,7 @@
 							? `&rd=${encodeURIComponent(rd)}`
 							: ''}"
 					>
-						Accept
+						{($locale, t('common.accept'))}
 					</Button>
 
 					<Button
@@ -329,12 +332,12 @@
 							await UserService.declineInvite({
 								requestBody: { workspace_id: invite.workspace_id }
 							})
-							sendUserToast(`Declined invite to ${invite.workspace_id}`)
+							sendUserToast(t('workspace.declinedInvite', { workspace: invite.workspace_id }))
 							loadInvites()
 						}}
 						destructive
 					>
-						Decline
+						{($locale, t('common.decline'))}
 					</Button>
 				</div>
 			</div>
@@ -347,11 +350,11 @@
 			<div class="mt-4"></div>
 			{#if filteredInvites.length == 0}
 				<p class="text-xs text-secondary"
-					>There are no invites to join the forks of any workspace you're in.</p
+					>{($locale, t('workspace.noForkInvites'))}</p
 				>
 			{:else}
 				<span class="mb-2 text-xs font-normal text-secondary"
-					>Forks of the workspaces you're in</span
+					>{($locale, t('workspace.forksOfYourWorkspaces'))}</span
 				>
 			{/if}
 
@@ -369,13 +372,13 @@
 							<span class="font-mono font-semibold text-emphasis">{invite.workspace_id}</span>
 						</div>
 						{#if invite.is_admin}
-							<span class="text-xs text-primary">as an admin</span>
+							<span class="text-xs text-primary">{($locale, t('workspace.asAdmin'))}</span>
 						{:else if invite.operator}
-							<span class="text-xs text-primary">as an operator</span>
+							<span class="text-xs text-primary">{($locale, t('workspace.asOperator'))}</span>
 						{/if}
 						{#if invite.parent_workspace_id}
 							<div class="text-secondary text-2xs mt-1">
-								Fork of {invite.parent_workspace_id}
+								{t('workspace.forkOf', { workspace: invite.parent_workspace_id })}
 							</div>
 						{/if}
 					</div>
@@ -387,7 +390,7 @@
 								? `&rd=${encodeURIComponent(rd)}`
 								: ''}"
 						>
-							Accept
+							{($locale, t('common.accept'))}
 						</Button>
 
 						<Button
@@ -398,11 +401,11 @@
 								await UserService.declineInvite({
 									requestBody: { workspace_id: invite.workspace_id }
 								})
-								sendUserToast(`Declined invite to ${invite.workspace_id}`)
+								sendUserToast(t('workspace.declinedInvite', { workspace: invite.workspace_id }))
 								loadInvites()
 							}}
 						>
-							Decline
+							{($locale, t('common.decline'))}
 						</Button>
 					</div>
 				</div>
@@ -418,13 +421,13 @@
 					startIcon={{ icon: Settings }}
 					dropdownItems={[
 						{
-							label: 'User settings',
+							label: t('account.userSettingsTitle'),
 							onClick: () => userSettings?.openDrawer(),
 							icon: User
 						}
 					]}
 				>
-					Instance settings
+					{($locale, t('account.instanceSettings'))}
 				</Button>
 			{:else}
 				<Button
@@ -433,7 +436,7 @@
 					onClick={() => userSettings?.openDrawer()}
 					startIcon={{ icon: Settings }}
 				>
-					User settings
+					{($locale, t('account.userSettingsTitle'))}
 				</Button>
 			{/if}
 
@@ -444,7 +447,7 @@
 					logout()
 				}}
 			>
-				Log out
+				{($locale, t('account.logout'))}
 			</Button>
 		</div>
 	</div>

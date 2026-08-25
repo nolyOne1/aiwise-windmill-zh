@@ -22,6 +22,7 @@
 	import Button from './common/button/Button.svelte'
 	import { sameTopDomainOrigin } from '$lib/cookies'
 	import { isValidLogoutRedirect, toSameOriginRelativePath } from '$lib/logoutRedirect'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		rd?: string | undefined
@@ -105,7 +106,7 @@
 
 	async function login(): Promise<void> {
 		if (!email || !password) {
-			sendUserToast('Please fill in both email and password', true)
+			sendUserToast(t('login.fillBoth'), true)
 			return
 		}
 
@@ -117,7 +118,7 @@
 		try {
 			await UserService.login({ requestBody })
 		} catch (err) {
-			sendUserToast('Invalid credentials', true)
+			sendUserToast(t('login.invalidCredentials'), true)
 			return
 		}
 
@@ -232,13 +233,13 @@
 				autoRedirecting = true
 				if (!redirectSaml()) autoRedirecting = false
 			} else if (logins?.some((l) => l.type === autoLogin)) {
-				autoRedirecting = true
-				if (!storeRedirect(autoLogin)) {
-					autoRedirecting = false
-					sendUserToast('Popup blocked — please click the sign-in button to continue.', true)
+					autoRedirecting = true
+					if (!storeRedirect(autoLogin)) {
+						autoRedirecting = false
+						sendUserToast(t('login.popupBlocked'), true)
+					}
 				}
 			}
-		}
 	}
 
 	function shouldSkipAutoRedirect(): boolean {
@@ -419,7 +420,7 @@
 
 	function redirectSaml(): boolean {
 		if (!saml) {
-			sendUserToast('No SAML login available', true)
+			sendUserToast(t('login.noSaml'), true)
 			return false
 		}
 		let target = saml
@@ -459,7 +460,7 @@
 
 <div class="bg-surface px-4 py-8 border sm:rounded-lg sm:px-10">
 	{#if autoRedirecting}
-		<p class="text-sm text-center text-secondary py-4">Signing you in…</p>
+		<p class="text-sm text-center text-secondary py-4">{($locale, t('login.signingIn'))}</p>
 	{/if}
 	<div
 		class="grid {logins && logins.length > 2 ? 'grid-cols-2' : ''} gap-4 {autoRedirecting
@@ -493,7 +494,7 @@
 			{/each}
 		{/if}
 		{#if saml}
-			<Button variant="default" btnClasses="mt-2 w-full" on:click={redirectSaml}>SSO</Button>
+			<Button variant="default" btnClasses="mt-2 w-full" on:click={redirectSaml}>{($locale, t('login.sso'))}</Button>
 		{/if}
 	</div>
 	{#if !autoRedirecting && !disablePasswordLogin && (saml || (logins && logins.length > 0))}
@@ -505,7 +506,7 @@
 					showPassword = !showPassword
 				}}
 			>
-				Log in without third-party
+				{($locale, t('login.signInWithoutThirdParty'))}
 			</Button>
 		</div>
 	{/if}
@@ -514,25 +515,28 @@
 		<div>
 			{#if firstTime}
 				<p class="text-xs text-center w-full pb-4 text-secondary">
-					Welcome! Default credentials admin@windmill.dev / changeme have been prefilled.
+					{($locale, t('login.welcomePrefill'))}
 				</p>
 			{/if}
 			<div class="space-y-6">
 				{#if isCloudHosted()}
 					<p class="text-xs text-secondary pb-6">
-						To get credentials without the OAuth providers above, send an email at
-						contact@windmill.dev
+						{($locale, t('login.cloudCredentials'))}
 					</p>
 				{/if}
 				<div class="space-y-1">
-					<label for="email" class="block text-xs font-semibold text-emphasis"> Email </label>
+					<label for="email" class="block text-xs font-semibold text-emphasis">
+						{($locale, t('common.email'))}
+					</label>
 					<div>
 						<input type="email" bind:value={email} id="email" autocomplete="email" />
 					</div>
 				</div>
 
 				<div class="space-y-1">
-					<label for="password" class="block text-xs font-semibold text-emphasis"> Password </label>
+					<label for="password" class="block text-xs font-semibold text-emphasis">
+						{($locale, t('common.password'))}
+					</label>
 					<div>
 						<input
 							onkeyup={handleKeyUp}
@@ -548,26 +552,26 @@
 								href="{base}/user/forgot-password"
 								class="text-2xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
 							>
-								Forgot password?
+								{($locale, t('login.forgotPassword'))}
 							</a>
 						</div>
 					{/if}
 				</div>
 
 				<div class="pt-2">
-					<Button onClick={login} variant="accent" disabled={!email || !password}>Sign in</Button>
+					<Button onClick={login} variant="accent" disabled={!email || !password}>{($locale, t('login.signIn'))}</Button>
 				</div>
 			</div>
 
 			{#if isCloudHosted()}
 				<p class="text-2xs text-secondary mt-10 text-center">
-					By logging in, you agree to our
+					{($locale, t('login.agreeToTermsPrefix'))}
 					<a href="https://windmill.dev/terms_of_service" target="_blank" rel="noreferrer">
-						Terms of service
+						{($locale, t('login.termsOfService'))}
 					</a>
-					and
+					{($locale, ` ${t('login.agreeToTermsAnd')} `)}
 					<a href="https://windmill.dev/privacy_policy" target="_blank" rel="noreferrer">
-						Privacy policy
+						{($locale, t('login.privacyPolicy'))}
 					</a>
 				</p>
 			{/if}
