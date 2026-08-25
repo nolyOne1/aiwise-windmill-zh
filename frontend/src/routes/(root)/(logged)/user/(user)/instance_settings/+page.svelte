@@ -26,21 +26,22 @@
 	import SettingCard from '$lib/components/instanceSettings/SettingCard.svelte'
 	import ConfirmationModal from '$lib/components/common/confirmationModal/ConfirmationModal.svelte'
 	import InstanceAISettings from '$lib/components/instanceSettings/InstanceAISettings.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	const settingsSteps = [
-		{ id: 'Core', label: 'Core' },
-		{ id: 'Auth/OAuth/SAML', label: 'Authentication' }
+		{ id: 'Core', label: t('instanceSetup.core') },
+		{ id: 'Auth/OAuth/SAML', label: t('instanceSetup.authentication') }
 	] as const
 
 	const AI_STEP_INDEX = settingsSteps.length
 
 	const wizardStepLabels = [
 		...settingsSteps.map((s) => s.label),
-		'AI',
-		'Root login & Resource Types'
+		t('instanceSetup.ai'),
+		t('instanceSetup.rootLoginAndResourceTypes')
 	]
 
-	const fullStepLabels = ['Settings', 'Root login & Resource Types']
+	const fullStepLabels = [t('instanceSetup.settings'), t('instanceSetup.rootLoginAndResourceTypes')]
 
 	const initialMode = page.url.searchParams.get('mode') === 'full' ? 'full' : 'wizard'
 	const initialStep = Math.max(
@@ -111,7 +112,7 @@
 			rtSyncMessage = await res.text()
 			rtSyncStatus = 'success'
 		} catch (e: any) {
-			rtSyncMessage = e?.message ?? 'Failed to sync resource types'
+			rtSyncMessage = e?.message ?? t('instanceSetup.syncResourceTypesFailed')
 			rtSyncStatus = 'error'
 		}
 	}
@@ -139,14 +140,14 @@
 				requestBody: {}
 			})
 			hubSyncStatus = 'success'
-			hubSyncMessage = 'Resource types synced from hub successfully'
+			hubSyncMessage = t('instanceSetup.hubSyncSuccess')
 		} catch (e: any) {
 			hubSyncMessage =
 				e?.body?.error?.message ||
 				e?.body?.message ||
 				(typeof e?.body === 'string' ? e.body : null) ||
 				e?.message ||
-				'Failed to sync from hub'
+				t('instanceSetup.hubSyncFailed')
 			hubSyncStatus = 'error'
 		}
 	}
@@ -286,7 +287,7 @@
 				oldEmail = await UserService.getCurrentEmail()
 			}
 			if (!oldEmail) {
-				throw new Error('Could not determine current admin email')
+				throw new Error(t('instanceSetup.couldNotDetermineCurrentAdminEmail'))
 			}
 
 			await UserService.createUserGlobally({
@@ -339,7 +340,7 @@
 				console.warn('Deleting old account failed:', e?.body ?? e)
 			}
 
-			sendUserToast('Account setup complete')
+			sendUserToast(t('instanceSetup.accountSetupComplete'))
 			goto(
 				'/user/logout?rd=' +
 					encodeURIComponent(
@@ -350,7 +351,7 @@
 					)
 			)
 		} catch (e: any) {
-			const msg = e?.body?.message || e?.body || e?.message || 'An error occurred'
+			const msg = e?.body?.message || e?.body || e?.message || t('instanceSetup.errorOccurred')
 			if (
 				typeof msg === 'string' &&
 				msg.includes('User creation is not implemented in the open-source version')
@@ -367,33 +368,33 @@
 </script>
 
 {#snippet accountSetupContent()}
-	<SettingsPageHeader title="Root login & Resource Types" />
+	<SettingsPageHeader title={t('instanceSetup.rootLoginAndResourceTypes')} />
 
 	<div class="flex flex-col gap-6 pb-6">
 		<SettingCard
-			label="Superadmin login"
-			description="Replace the default superadmin account with a secure email and password."
+			label={t('instanceSetup.superadminLogin')}
+			description={t('instanceSetup.superadminLoginDescription')}
 		>
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col gap-1">
-					<span class="text-xs font-semibold text-secondary">Email</span>
+					<span class="text-xs font-semibold text-secondary">{($locale, t('common.email'))}</span>
 					<TextInput
 						bind:value={newEmail}
 						inputProps={{ type: 'email', placeholder: 'admin@company.com' }}
-						error={newEmail.length > 0 && !emailValid ? 'Must be a valid email' : undefined}
+						error={newEmail.length > 0 && !emailValid ? t('instanceSetup.mustBeValidEmail') : undefined}
 						size="md"
 					/>
 					{#if $superadmin}
-						<p class="text-tertiary text-2xs mt-1">Current email: {$superadmin}</p>
+						<p class="text-tertiary text-2xs mt-1">{t('instanceSetup.currentEmail', { email: $superadmin })}</p>
 					{/if}
 				</div>
 				<div class="flex flex-col gap-1">
-					<span class="text-xs font-semibold text-secondary">Password</span>
+					<span class="text-xs font-semibold text-secondary">{($locale, t('common.password'))}</span>
 					<TextInput
 						bind:value={newPassword}
-						inputProps={{ type: 'password', placeholder: 'Enter password' }}
+						inputProps={{ type: 'password', placeholder: t('instanceSetup.enterPassword') }}
 						error={newPassword.length > 0 && !passwordValid
-							? 'Must be at least 2 characters'
+							? t('instanceSetup.passwordMinLength')
 							: undefined}
 						size="md"
 					/>
@@ -402,18 +403,18 @@
 		</SettingCard>
 
 		<SettingCard
-			label="Resource Types"
-			description="Resource types bundled with the Docker image are synced automatically. You can also fetch the latest from the hub."
+			label={t('resources.resourceTypes')}
+			description={t('instanceSetup.resourceTypesDescription')}
 		>
 			<div class="flex flex-col gap-3 mt-1">
 				{#if rtSyncStatus === 'loading'}
-					<Alert type="info" title="Syncing cached resource types..." />
+					<Alert type="info" title={t('instanceSetup.syncingCachedResourceTypes')} />
 				{:else if rtSyncStatus === 'success'}
-					<Alert type="success" title="Cached resource types synced">
+					<Alert type="success" title={t('instanceSetup.cachedResourceTypesSynced')}>
 						{rtSyncMessage}
 					</Alert>
 				{:else if rtSyncStatus === 'error'}
-					<Alert type="error" title="Cached resource types sync failed">
+					<Alert type="error" title={t('instanceSetup.cachedResourceTypesSyncFailed')}>
 						{rtSyncMessage}
 					</Alert>
 				{/if}
@@ -425,42 +426,41 @@
 						loading={hubSyncStatus === 'loading'}
 						onClick={syncFromHub}
 					>
-						Sync latest from hub
+						{($locale, t('instanceSetup.syncLatestFromHub'))}
 					</Button>
 					<p class="text-tertiary text-2xs">
-						Fetches the latest resource types directly from the Windmill Hub (requires internet
-						access).
+						{($locale, t('instanceSetup.syncLatestFromHubHelp'))}
 					</p>
 				</div>
 				{#if hubSyncStatus === 'success'}
-					<Alert type="success" title="Hub sync complete">
+					<Alert type="success" title={t('instanceSetup.hubSyncComplete')}>
 						{hubSyncMessage}
 					</Alert>
 				{:else if hubSyncStatus === 'error'}
-					<Alert type="error" title="Hub sync failed">
+					<Alert type="error" title={t('instanceSetup.hubSyncFailedTitle')}>
 						{hubSyncMessage}
 					</Alert>
 				{/if}
 				<Toggle
 					bind:checked={enableHubSync}
-					options={{ right: 'Sync resource types every day' }}
+					options={{ right: t('instanceSetup.syncResourceTypesEveryDay') }}
 					size="xs"
 				/>
 				<p class="text-tertiary text-2xs">
-					The daily schedule synchronizes resource types from the Hub every day at midnight UTC.
+					{($locale, t('instanceSetup.dailyScheduleSyncHelp'))}
 				</p>
 			</div>
 		</SettingCard>
 
 		{#if accountError}
-			<Alert type="error" title="Setup error">
+			<Alert type="error" title={t('instanceSetup.setupError')}>
 				{accountError}
 			</Alert>
 		{/if}
 	</div>
 {/snippet}
 
-<CenteredModal large title="Instance settings" centerVertically={false} containOverflow>
+<CenteredModal large title={t('account.instanceSettings')} centerVertically={false} containOverflow>
 	<div class="flex flex-col flex-1 min-h-0 overflow-hidden">
 		{#if mode === 'wizard'}
 			<!-- Step indicator (pinned top) -->
@@ -484,8 +484,7 @@
 				{#if isSettingsStep(wizardStep)}
 					{#if settingsSteps[wizardStep].id === 'Auth/OAuth/SAML'}
 						<p class="text-secondary text-xs mb-4">
-							Windmill uses its own authentication by default. SSO configuration is optional and can
-							be set up later.
+							{($locale, t('instanceSetup.authenticationHelp'))}
 						</p>
 					{/if}
 					{#key wizardStep}
@@ -589,7 +588,7 @@
 							startIcon={{ icon: ArrowLeft }}
 							onClick={() => saveAndProceed(() => (wizardStep -= 1))}
 						>
-							Back
+							{($locale, t('common.back'))}
 						</Button>
 					{/if}
 				</div>
@@ -601,7 +600,7 @@
 							unifiedSize="md"
 							onClick={() => saveAndProceed(switchToFullMode)}
 						>
-							Advanced setup
+							{($locale, t('instanceSetup.advancedSetup'))}
 						</Button>
 					{/if}
 					{#if wizardStep < wizardStepLabels.length - 1}
@@ -610,7 +609,7 @@
 							unifiedSize="md"
 							onClick={() => proceedFromCore(() => (wizardStep += 1))}
 						>
-							{currentStepDirty ? 'Save & Next' : 'Next'}
+							{currentStepDirty ? ($locale, t('instanceSetup.saveAndNext')) : ($locale, t('common.next'))}
 						</Button>
 					{:else}
 						<Button
@@ -620,7 +619,7 @@
 							loading={accountSubmitting}
 							onClick={submitAccount}
 						>
-							Set account & finish
+							{($locale, t('instanceSetup.setAccountAndFinish'))}
 						</Button>
 					{/if}
 				</div>
@@ -631,7 +630,7 @@
 					startIcon={{ icon: ArrowLeft }}
 					onClick={switchToWizardMode}
 				>
-					Quick setup
+					{($locale, t('instanceSetup.quickSetup'))}
 				</Button>
 				<Button
 					variant="accent"
@@ -642,7 +641,7 @@
 							fullStep = 1
 						})}
 				>
-					Continue
+					{($locale, t('common.continue'))}
 				</Button>
 			{:else}
 				<Button
@@ -651,7 +650,7 @@
 					startIcon={{ icon: ArrowLeft }}
 					onClick={() => saveAndProceed(() => (fullStep = 0))}
 				>
-					Back
+					{($locale, t('common.back'))}
 				</Button>
 				<Button
 					variant="accent"
@@ -660,16 +659,16 @@
 					loading={accountSubmitting}
 					onClick={submitAccount}
 				>
-					Set account & finish
+					{($locale, t('instanceSetup.setAccountAndFinish'))}
 				</Button>
 			{/if}
 		</div>
 
 		<div class="flex items-center justify-start gap-2 mt-2 shrink-0">
 			<p class="text-secondary text-xs">
-				You can change these settings later in the instance settings.
+				{($locale, t('instanceSetup.changeSettingsLater'))}
 			</p>
-			<Button variant="subtle" unifiedSize="sm" onClick={finishSetup}>Skip setup</Button>
+			<Button variant="subtle" unifiedSize="sm" onClick={finishSetup}>{($locale, t('instanceSetup.skipSetup'))}</Button>
 		</div>
 	</div>
 </CenteredModal>
@@ -677,8 +676,8 @@
 {#if showLicenseKeyWarning}
 	<ConfirmationModal
 		open={showLicenseKeyWarning}
-		title="License key required"
-		confirmationText="Continue without license key"
+		title={t('instanceSetup.licenseKeyRequired')}
+		confirmationText={t('instanceSetup.continueWithoutLicenseKey')}
 		on:canceled={() => {
 			showLicenseKeyWarning = false
 			pendingNextCallback = undefined
@@ -692,8 +691,7 @@
 	>
 		<div class="flex flex-col w-full space-y-4">
 			<span>
-				You are running the Enterprise Edition image but have not entered a license key. A valid
-				license key is required to use EE features. Are you sure you want to continue without one?
+				{($locale, t('instanceSetup.licenseKeyWarningBody'))}
 			</span>
 		</div>
 	</ConfirmationModal>
@@ -702,14 +700,14 @@
 {#if showOssAccountDialog}
 	<ConfirmationModal
 		open={showOssAccountDialog}
-		title="Not available in open-source"
-		confirmationText="Continue with default credentials"
+		title={t('instanceSetup.notAvailableInOpenSource')}
+		confirmationText={t('instanceSetup.continueWithDefaultCredentials')}
 		on:canceled={() => {
 			showOssAccountDialog = false
 		}}
 		on:confirmed={() => {
 			showOssAccountDialog = false
-			sendUserToast('Setup complete. Please log in with the default credentials.')
+			sendUserToast(t('instanceSetup.setupCompleteLoginWithDefaultCredentials'))
 			goto(
 				'/user/logout?rd=' +
 					encodeURIComponent(
@@ -722,12 +720,11 @@
 		}}
 	>
 		<div class="flex flex-col w-full space-y-4">
-			<Alert type="error" title="Backend error">
+			<Alert type="error" title={t('instanceSetup.backendError')}>
 				{ossAccountError}
 			</Alert>
 			<span>
-				Click "Continue" to finish setup and log in with the default credentials (admin@windmill.dev
-				/ changeme).
+				{($locale, t('instanceSetup.continueWithDefaultCredentialsHelp'))}
 			</span>
 		</div>
 	</ConfirmationModal>

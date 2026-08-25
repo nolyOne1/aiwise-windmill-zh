@@ -9,6 +9,7 @@
 	import Popover from './meltComponents/Popover.svelte'
 	import Button from './common/button/Button.svelte'
 	import Toggle from './Toggle.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	let {
 		workspace,
@@ -157,7 +158,9 @@
 			const othersTransition = othersNow && !prevOthers
 			const loadedTransition = loadedNow && !prevLoaded
 			if (othersTransition || loadedTransition) {
-				hintLabel = othersNow ? `Others are working on this ${kindLabel}` : 'Loaded from draft'
+				hintLabel = othersNow
+					? t('autosave.othersWorkingOnThis', { kind: kindLabel })
+					: t('autosave.loadedFromDraft')
 				triggerFlash('blue')
 				if (hintTimer) clearTimeout(hintTimer)
 				hintTimer = setTimeout(() => {
@@ -180,11 +183,11 @@
 	// is sticky until the next attempt fires or succeeds.
 	const label = $derived(
 		syncState === 'saving' || syncState === 'pending'
-			? 'Saving...'
+			? t('autosave.saving')
 			: syncState === 'failed'
-				? 'Save failed'
+				? t('autosave.saveFailed')
 				: savedVisible
-					? 'Saved'
+					? t('autosave.saved')
 					: hintLabel
 	)
 	const labelIsError = $derived(syncState === 'failed')
@@ -261,7 +264,7 @@
 			<div
 				class="relative rounded-md p-1.5 hover:bg-surface-hover cursor-pointer"
 				title={syncState === 'failed'
-					? `Save failed${failureMessage ? `: ${failureMessage}` : ''} — click for details`
+					? `${t('autosave.saveFailed')}${failureMessage ? `: ${failureMessage}` : ''} ${t('autosave.clickForDetailsSuffix')}`
 					: undefined}
 			>
 				{#if editingOtherUserDraft}
@@ -284,8 +287,7 @@
 			<div class="flex flex-col gap-3 text-sm w-72 p-3">
 				{#if editingOtherUserDraft}
 					<p class="text-primary text-xs">
-						You're editing {otherDraftOwnerLabel ?? 'another user'}'s draft. Auto-save is paused —
-						your own draft is untouched. Editing prompts before overwriting it.
+						{t('autosave.editingOtherDraft', { owner: otherDraftOwnerLabel ?? t('autosave.anotherUser') })}
 					</p>
 					<Button
 						variant="default"
@@ -294,12 +296,12 @@
 						startIcon={{ icon: RotateCcw }}
 						on:click={() => void resetToOwnDraft()}
 					>
-						Reset to draft
+						{($locale, t('autosave.resetToDraft'))}
 					</Button>
 				{:else}
 					{#if syncState === 'failed'}
 						<div class="flex flex-col gap-1">
-							<p class="text-red-500 font-semibold text-xs">Save failed</p>
+							<p class="text-red-500 font-semibold text-xs">{($locale, t('autosave.saveFailed'))}</p>
 							{#if failureMessage}
 								<pre
 									class="text-red-500 text-xs whitespace-pre-wrap break-words font-mono max-h-40 overflow-y-auto"
@@ -310,19 +312,17 @@
 					{/if}
 					{#if autosaveEnabled}
 						<p class="text-primary text-xs">
-							All changes are saved as a draft on the server. The draft is per-user — your
-							teammates' editors keep their own.
+							{($locale, t('autosave.allChangesSavedAsDraft'))}
 						</p>
 					{:else}
 						<p class="text-primary text-xs">
-							Auto-save is off — changes only persist when you press Ctrl/Cmd+S. The draft is
-							per-user — your teammates' editors keep their own.
+							{($locale, t('autosave.autoSaveOffDescription'))}
 						</p>
 					{/if}
 					<Toggle
 						size="xs"
 						checked={autosaveEnabled}
-						options={{ right: 'Enable auto-save' }}
+						options={{ right: t('autosave.enableAutoSave') }}
 						on:change={(e) => {
 							UserDraftDbSyncer.autosaveEnabled = e.detail
 						}}
@@ -330,7 +330,7 @@
 					{#if othersDraftsCount > 0}
 						<div class="flex flex-col gap-2 border-t pt-3">
 							<p class="text-primary text-xs">
-								Other users are working on this {kindLabel}.
+								{t('autosave.othersWorkingOnThis', { kind: kindLabel })}
 							</p>
 							<Button
 								variant="default"

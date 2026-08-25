@@ -23,6 +23,7 @@
 	import TextInput from '$lib/components/text_input/TextInput.svelte'
 	import { Tooltip } from '$lib/components/meltComponents'
 	import { DEMO_RESTRICTION_HINT, isDemoWorkspaceRestricted } from '$lib/cloud'
+	import { locale, t } from '$lib/i18n'
 
 	type GroupW = Group & { canWrite: boolean }
 
@@ -80,14 +81,14 @@
 </script>
 
 <Drawer bind:this={groupDrawer}>
-	<DrawerContent title="Group {editGroupName}" on:close={groupDrawer.closeDrawer}>
+	<DrawerContent title={t('groups.groupDrawerTitle', { name: editGroupName })} on:close={groupDrawer.closeDrawer}>
 		<GroupEditor on:update={loadGroups} name={editGroupName} />
 	</DrawerContent>
 </Drawer>
 
 <Drawer bind:this={instanceGroupDrawer}>
 	<DrawerContent
-		title="Instance Group {editInstanceGroupName}"
+		title={t('groups.instanceGroupDrawerTitle', { name: editInstanceGroupName })}
 		on:close={instanceGroupDrawer?.closeDrawer}
 	>
 		<InstanceGroupEditor on:update={loadInstanceGroups} name={editInstanceGroupName} />
@@ -96,14 +97,14 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.groups}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">Unauthorized</p>
-		<p>Page not available for operators</p>
+		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
+		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		<PageHeader
-			title="Groups"
-			tooltip="Group users together to grant roles and homegenous permissions. Same users can be in many groups at the same time."
+			title={($locale, t('groups.title'))}
+			tooltip={t('groups.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/groups_and_folders"
 		>
 			<div class="flex flex-row">
@@ -116,13 +117,13 @@
 							disabled
 							title={DEMO_RESTRICTION_HINT}
 						>
-							New&nbsp;group
+							{($locale, t('groups.newGroup'))}
 						</Button>
 					{:else}
 						<Popover floatingConfig={{ strategy: 'absolute', placement: 'bottom-end' }}>
 							{#snippet trigger()}
 								<Button unifiedSize="md" variant="accent" startIcon={{ icon: Plus }} nonCaptureEvent
-									>New&nbsp;group</Button
+									>{($locale, t('groups.newGroup'))}</Button
 								>
 							{/snippet}
 							{#snippet content({ close })}
@@ -130,7 +131,7 @@
 									<TextInput
 										size="md"
 										inputProps={{
-											placeholder: 'New group name',
+											placeholder: t('groups.newGroupNamePlaceholder'),
 											onkeyup: (e) => handleKeyUp(e, close)
 										}}
 										bind:value={newGroupName}
@@ -145,7 +146,7 @@
 											close()
 										}}
 									>
-										Create
+										{($locale, t('common.create'))}
 									</Button>
 								</div>
 							{/snippet}
@@ -159,8 +160,8 @@
 			<DataTable>
 				<Head>
 					<tr>
-						<Cell head first>Name</Cell>
-						<Cell head>Members</Cell>
+						<Cell head first>{($locale, t('common.name'))}</Cell>
+						<Cell head>{($locale, t('common.members'))}</Cell>
 						<Cell head last />
 					</tr>
 				</Head>
@@ -201,7 +202,7 @@
 									<Dropdown
 										items={[
 											{
-												displayName: 'Manage group',
+												displayName: t('groups.manageGroup'),
 												icon: Pen,
 												disabled: !canWrite,
 												action: (e) => {
@@ -211,7 +212,7 @@
 												}
 											},
 											{
-												displayName: 'Delete',
+												displayName: t('common.delete'),
 
 												icon: Trash,
 												type: 'delete',
@@ -233,10 +234,10 @@
 
 		{#if instanceGroups && instanceGroups.length > 0}
 			<div class="flex flex-row gap-1 items-center mb-2">
-				<span class="text-emphasis text-sm font-semibold">Instance groups</span>
+				<span class="text-emphasis text-sm font-semibold">{($locale, t('groups.instanceGroups'))}</span>
 				<Tooltip documentationLink="https://www.windmill.dev/docs/misc/saml_and_scim#scim">
 					{#snippet text()}
-						Instance Groups are managed by SCIM and are groups shared by every workspaces
+						{($locale, t('groups.instanceGroupsHelp'))}
 					{/snippet}
 				</Tooltip>
 			</div>
@@ -244,10 +245,10 @@
 				<DataTable>
 					<Head>
 						<tr>
-							<Cell head first>Name</Cell>
-							<Cell head>Members</Cell>
-							<Cell head>Instance Role</Cell>
-							<Cell head last>Workspaces</Cell>
+							<Cell head first>{($locale, t('common.name'))}</Cell>
+							<Cell head>{($locale, t('common.members'))}</Cell>
+							<Cell head>{($locale, t('groups.instanceRole'))}</Cell>
+							<Cell head last>{($locale, t('common.workspaces'))}</Cell>
 						</tr>
 					</Head>
 					<tbody class="divide-y">
@@ -265,7 +266,7 @@
 										>{name}
 									</a>
 								</Cell>
-								<Cell>{emails?.length ?? 0} members</Cell>
+								<Cell>{t('groups.memberCount', { count: emails?.length ?? 0 })}</Cell>
 								<Cell>{instance_role ?? '-'}</Cell>
 								<Cell last>
 									{#if workspaces && workspaces.length > 0}
@@ -278,7 +279,7 @@
 											({workspace.role})
 										{/each}
 									{:else}
-										<span class="text-emphasis font-semibold text-xs">No workspaces</span>
+										<span class="text-emphasis font-semibold text-xs">{($locale, t('groups.noWorkspaces'))}</span>
 									{/if}
 								</Cell>
 							</Row>

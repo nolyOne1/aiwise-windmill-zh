@@ -50,6 +50,7 @@
 	import { ALL_DEPLOYABLE, isDeployable } from '$lib/utils_deployable'
 	import { runScheduleNow } from '$lib/components/triggers/scheduled/utils'
 	import ScheduleEditor from '$lib/components/triggers/schedules/ScheduleEditor.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	type ScheduleW = ScheduleWJobs & { canWrite: boolean }
 
@@ -331,14 +332,14 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.schedules}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">Unauthorized</p>
-		<p>Page not available for operators</p>
+		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
+		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		<PageHeader
-			title="Schedules"
-			tooltip="Trigger Scripts and Flows according to a cron schedule"
+			title={($locale, t('schedules.title'))}
+			tooltip={t('schedules.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/scheduling"
 		>
 			<Button
@@ -349,16 +350,16 @@
 				aiId="schedules-add-schedule"
 				aiDescription="Add schedule"
 			>
-				New schedule
+				{($locale, t('schedules.newSchedule'))}
 			</Button>
 		</PageHeader>
 		<div class="w-full h-full flex flex-col">
 			<div class="flex flex-row items-center justify-end gap-4 pb-4">
 				<ToggleButtonGroup bind:selected={filterEnabledDisabled} class="w-fit">
 					{#snippet children({ item })}
-						<ToggleButton value="all" label="All" {item} />
-						<ToggleButton value="enabled" label="Enabled" {item} />
-						<ToggleButton value="disabled" label="Disabled" {item} />
+						<ToggleButton value="all" label={t('common.all')} {item} />
+						<ToggleButton value="enabled" label={t('common.enabled')} {item} />
+						<ToggleButton value="disabled" label={t('common.disabled')} {item} />
 					{/snippet}
 				</ToggleButtonGroup>
 				<FilterSearchbar
@@ -373,7 +374,7 @@
 					<Skeleton layout={[[6], 0.4]} />
 				{/each}
 			{:else if !schedules?.length}
-				<div class="text-center text-xs font-semibold text-emphasis mt-2"> No schedules </div>
+				<div class="text-center text-xs font-semibold text-emphasis mt-2"> {($locale, t('schedules.noSchedules'))} </div>
 			{:else if items?.length}
 				<div class="border rounded-md divide-y">
 					{#each items.slice(0, nbDisplayed) as { path, error, summary, edited_by, edited_at, schedule, timezone, enabled, script_path, is_flow, extra_perms, canWrite, jobs, paused_until, labels, inherited_labels, draft_only, is_draft } (path)}
@@ -405,7 +406,7 @@
 										{summary || script_path}{hasDraft ? '*' : ''}
 									</div>
 									<div class="text-secondary text-xs truncate text-left">
-										schedule: {path}
+										{t('schedules.schedulePath', { path })}
 									</div>
 								</a>
 								{#if labels?.length}
@@ -434,7 +435,7 @@
 								{#if paused_until && new Date(paused_until) > new Date()}
 									<div class="pb-1">
 										<Badge color="yellow"
-											>Paused until {new Date(paused_until).toLocaleString()}</Badge
+											>{t('schedules.pausedUntil', { date: new Date(paused_until).toLocaleString() })}</Badge
 										>
 									</div>
 								{/if}
@@ -460,8 +461,7 @@
 											</span>
 											{#snippet text()}
 												<div>
-													The schedule disabled itself because there was an error scheduling the
-													next job: {error}
+													{t('schedules.autoDisabledError', { error })}
 												</div>
 											{/snippet}
 										</Popover>
@@ -475,9 +475,9 @@
 											disabled={draft_only}
 											options={{
 												title: draft_only
-													? 'Draft only: deploy the schedule to enable it'
+													? t('schedules.draftOnlyToggleTitle')
 													: hasDraft
-														? 'Enables/disables the deployed schedule; the draft is not affected'
+														? t('schedules.draftToggleTitle')
 														: undefined
 											}}
 											checked={!draft_only && enabled}
@@ -485,7 +485,7 @@
 												if (canWrite) {
 													setScheduleEnabled(path, e.detail)
 												} else {
-													sendUserToast('not enough permission', true)
+													sendUserToast(t('common.notEnoughPermission'), true)
 													// Permission denied — bump the row's reset
 													// counter so the Toggle remounts back to the
 													// prop value. Without this, the local
@@ -505,7 +505,7 @@
 										startIcon={{ icon: List }}
 										variant="subtle"
 									>
-										Runs
+										{($locale, t('common.runs'))}
 									</Button>
 									<Button
 										on:click={() => scheduleEditor?.openEdit(path, is_flow)}
@@ -513,27 +513,29 @@
 										startIcon={{ icon: canWrite ? Pen : Eye }}
 										variant="subtle"
 									>
-										{canWrite ? 'Edit' : 'View'}
+										{canWrite ? ($locale, t('common.edit')) : ($locale, t('common.view'))}
 									</Button>
 									<Dropdown
 										size="md"
 										items={[
 											{
-												displayName: `View ${is_flow ? 'Flow' : 'Script'}`,
+												displayName: t('schedules.viewRunnable', {
+													kind: is_flow ? t('common.flow') : t('common.script')
+												}),
 												icon: Eye,
 												action: () => {
 													goto(href)
 												}
 											},
 											{
-												displayName: `Duplicate schedule`,
+												displayName: t('schedules.duplicateSchedule'),
 												icon: Copy,
 												action: () => {
 													scheduleEditor?.openNew(is_flow, script_path, path)
 												}
 											},
 											{
-												displayName: 'Delete',
+												displayName: t('common.delete'),
 												type: 'delete',
 												icon: Trash,
 												disabled: !canWrite,
@@ -546,7 +548,7 @@
 												}
 											},
 											{
-												displayName: canWrite ? 'Edit' : 'View',
+												displayName: canWrite ? t('common.edit') : t('common.view'),
 												icon: canWrite ? Pen : Eye,
 												action: () => {
 													scheduleEditor?.openEdit(path, is_flow)
@@ -555,7 +557,7 @@
 											...(isDeployable('trigger', path, deployUiSettings)
 												? [
 														{
-															displayName: 'Deploy to prod/staging',
+														displayName: t('common.deployToProdStaging'),
 															icon: FileUp,
 															action: () => {
 																deploymentDrawer?.openDrawer(path, 'trigger', {
@@ -568,24 +570,24 @@
 													]
 												: []),
 											{
-												displayName: 'View runs',
+												displayName: t('schedules.viewRuns'),
 												icon: List,
 												href: `${base}/runs/?schedule_path=${path}&job_trigger_kind=schedule&show_future_jobs=true`
 											},
 											{
-												displayName: 'Audit logs',
+												displayName: t('common.auditLogs'),
 												icon: Eye,
 												href: `${base}/audit_logs?resource=${path}`
 											},
 											{
-												displayName: 'Run now',
+												displayName: t('schedules.runNow'),
 												icon: Play,
 												action: () => {
 													runScheduleNow(script_path, path, is_flow, $workspaceStore!)
 												}
 											},
 											{
-												displayName: 'Permissions',
+												displayName: t('common.permissions'),
 												icon: Shield,
 												action: () => {
 													shareModal?.openDrawer(path, 'schedule')
@@ -599,13 +601,13 @@
 								{#if loadingSchedulesWithJobStats}
 									<div class="flex gap-1 ml-0.5 text-xs text-secondary items-center">
 										<Loader2 size={14} class="animate-spin" />
-										<span>Job stats loading...</span>
+										<span>{($locale, t('schedules.jobStatsLoading'))}</span>
 									</div>
 								{:else}
 									<div class="flex gap-1.5 ml-0.5 items-baseline flex-row-reverse">
 										{#if avg_s}
 											<div class="pl-2 text-secondary text-xs"
-												>Avg: {(avg_s / 1000).toFixed(2)}s</div
+												>{t('schedules.averageDuration', { seconds: (avg_s / 1000).toFixed(2) })}</div
 											>
 										{/if}
 										{#each jobs ?? [] as job}
@@ -628,8 +630,8 @@
 								{/if}
 								<div
 									class="flex flex-wrap text-xs text-secondary gap-1 items-center justify-end truncate pr-2"
-									>{#if edited_by}<div class="truncate">edited by {edited_by}</div>{/if}<div
-										class="truncate">{edited_by ? 'the ' : ''}{displayDate(edited_at)}</div
+									>{#if edited_by}<div class="truncate">{t('schedules.editedBy', { user: edited_by })}</div>{/if}<div
+										class="truncate">{edited_by ? `${t('schedules.onDatePrefix')} ` : ''}{displayDate(edited_at)}</div
 									></div
 								></div
 							>
@@ -642,9 +644,9 @@
 		</div>
 		{#if items && items?.length > 15 && nbDisplayed < items.length}
 			<div class="flex items-center gap-4 text-xs font-semibold text-emphasis">
-				<span>{nbDisplayed} items out of {items.length}</span>
+				<span>{t('schedules.itemsShown', { shown: nbDisplayed, total: items.length })}</span>
 				<Button size="xs" variant="subtle" on:click={() => (nbDisplayed += 30)}>
-					Load 30 more
+					{($locale, t('common.load30More'))}
 				</Button>
 			</div>
 		{/if}

@@ -7,6 +7,7 @@
 	import { ChevronLeft, ChevronRight, ListFilterPlus, Loader2 } from 'lucide-svelte'
 	import VirtualList from '@tutorlatin/svelte-tiny-virtual-list'
 	import { twMerge } from 'tailwind-merge'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		logs?: AuditLog[]
@@ -132,14 +133,14 @@
 		<div
 			class="flex flex-row bg-surface-secondary sticky top-0 w-full p-2 pr-4 text-2xs font-normal text-primary"
 		>
-			<div class="w-1/12">ID</div>
-			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>Timestamp</div>
-			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>Username</div>
+			<div class="w-1/12">{($locale, t('common.id'))}</div>
+			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>{($locale, t('auditLogs.timestamp'))}</div>
+			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>{($locale, t('common.username'))}</div>
 			{#if showWorkspace}
-				<div class="w-2/12">Workspace</div>
+				<div class="w-2/12">{($locale, t('common.workspace'))}</div>
 			{/if}
-			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>Operation</div>
-			<div class="w-2/12">Resource</div>
+			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>{($locale, t('common.operation'))}</div>
+			<div class="w-2/12">{($locale, t('common.resource'))}</div>
 		</div>
 	</div>
 
@@ -152,7 +153,7 @@
 			class="text-xs text-secondary p-8 flex justify-center items-center"
 			style="height: {height}px;"
 		>
-			No logs found for the selected filters.
+			{($locale, t('auditLogs.noLogsForSelectedFilters'))}
 		</div>
 	{:else}
 		<VirtualList
@@ -270,12 +271,12 @@
 							{/if}
 						{:else}
 							<div class="flex flex-row items-center h-full w-full px-2">
-								<div class="text-xs text-secondary">Loading...</div>
+								<div class="text-xs text-secondary">{($locale, t('common.loading'))}</div>
 							</div>
 						{/if}
 					{:else}
 						<div class="flex flex-row items-center h-full w-full px-2">
-							<div class="text-xs text-secondary">Loading...</div>
+							<div class="text-xs text-secondary">{($locale, t('common.loading'))}</div>
 						</div>
 					{/if}
 				</div>
@@ -298,9 +299,9 @@
 				}}
 				disabled={pageIndex <= 1}
 			>
-				Previous
+				{($locale, t('common.previous'))}
 			</Button>
-			<span class="text-xs text-secondary px-2">Page {pageIndex}</span>
+			<span class="text-xs text-secondary px-2">{t('common.pageNumber', { page: pageIndex })}</span>
 			<Button
 				variant="subtle"
 				unifiedSize="sm"
@@ -310,11 +311,11 @@
 				}}
 				disabled={!hasMore}
 			>
-				Next
+				{($locale, t('common.next'))}
 			</Button>
 		</div>
 		<div class="flex flex-row gap-2 items-center">
-			<span class="text-xs text-secondary">Per page:</span>
+			<span class="text-xs text-secondary">{($locale, t('auditLogs.perPage'))}</span>
 			<select bind:value={perPage} class="text-xs border rounded-md px-2 py-1">
 				<option value={25}>25</option>
 				<option value={100}>100</option>

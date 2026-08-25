@@ -54,6 +54,7 @@
 	import TextInput from '$lib/components/text_input/TextInput.svelte'
 	import TagList from '$lib/components/TagList.svelte'
 	import MeltTooltip from '$lib/components/meltComponents/Tooltip.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	let workers: WorkerPing[] | undefined = $state(undefined)
 	let workerGroups: Record<string, any> | undefined = $state(undefined)
@@ -616,7 +617,7 @@
 
 <Drawer bind:this={importConfigDrawer} size="800px">
 	<DrawerContent
-		title="Import groups config from YAML"
+		title={($locale, t('workers.importGroupsConfigFromYaml'))}
 		on:close={() => importConfigDrawer?.toggleDrawer?.()}
 	>
 		<SimpleEditor
@@ -630,7 +631,7 @@
 				unifiedSize="md"
 				variant="accent"
 				onClick={importConfigFromYaml}
-				disabled={!importConfigCode}>Import</Button
+				disabled={!importConfigCode}>{($locale, t('common.import'))}</Button
 			>
 		{/snippet}
 	</DrawerContent>
@@ -638,18 +639,18 @@
 
 <Drawer bind:this={yamlConfigDrawer} size="800px">
 	<DrawerContent
-		title="Worker groups config (YAML)"
+		title={($locale, t('workers.workerGroupsConfigYaml'))}
 		on:close={() => {
 			yamlDiffMode = false
 			yamlConfigDrawer?.toggleDrawer?.()
 		}}
 	>
 		<p class="text-2xs text-tertiary mb-2">
-			Use this YAML to manage worker group configs as code.
+			{($locale, t('workers.workerGroupsYamlDescription'))}
 			<a
 				href="https://www.windmill.dev/docs/advanced/instance_settings#kubernetes-operator"
 				target="_blank"
-				rel="noopener noreferrer">Learn more <ExternalLink size={12} class="inline-block" /></a
+				rel="noopener noreferrer">{($locale, t('common.learnMore'))} <ExternalLink size={12} class="inline-block" /></a
 			>
 		</p>
 		{#if yamlDiffMode}
@@ -686,10 +687,10 @@
 					disabled={yamlSaving}
 					onClick={() => {
 						yamlDiffMode = false
-					}}>Back to editor</Button
+					}}>{($locale, t('workers.backToEditor'))}</Button
 				>
 				<Button unifiedSize="md" variant="accent" loading={yamlSaving} onClick={saveYamlConfig}
-					>Save</Button
+					>{($locale, t('common.save'))}</Button
 				>
 			{:else}
 				<Button
@@ -698,7 +699,7 @@
 					disabled={!yamlConfigCode || yamlConfigCode === yamlConfigOriginal}
 					onClick={() => {
 						yamlDiffMode = true
-					}}>Review & Save</Button
+					}}>{($locale, t('workers.reviewAndSave'))}</Button
 				>
 			{/if}
 		{/snippet}
@@ -707,7 +708,7 @@
 
 <Drawer bind:this={newHttpAgentWorkerDrawer} size="800px">
 	<DrawerContent
-		title="New HTTP agent worker"
+		title={($locale, t('workers.newHttpAgentWorker'))}
 		on:close={() => newHttpAgentWorkerDrawer?.toggleDrawer?.()}
 	>
 		<HttpAgentWorkerDrawer {customTags} />
@@ -716,16 +717,15 @@
 
 <Drawer bind:this={replForWorkerDrawer} size="1000px">
 	<DrawerContent
-		title="Repl"
+		title={($locale, t('workers.repl'))}
 		on:close={() => {
 			tag = ''
 			replForWorkerDrawer?.closeDrawer?.()
 		}}
 	>
 		<div class="flex flex-col gap-2">
-			<Alert title="Info" type="info" size="xs">
-				If no command has been run in the past 2 minutes, the next one may take up to 15 seconds to
-				start.
+			<Alert title={($locale, t('common.info'))} type="info" size="xs">
+				{($locale, t('workers.replInfo'))}
 			</Alert>
 			<WorkerRepl {tag} />
 		</div>
@@ -734,15 +734,15 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.workers}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">Unauthorized</p>
-		<p>Page not available for operators</p>
+		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
+		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		{#snippet children({ width })}
 			<PageHeader
-				title="Workers"
-				tooltip="The workers are the dutiful servants that execute the jobs."
+				title={($locale, t('workers.title'))}
+				tooltip={t('workers.tooltip')}
 				documentationLink="https://www.windmill.dev/docs/core_concepts/worker_groups"
 			>
 				{#if $superadmin || $devopsRole}
@@ -757,7 +757,7 @@
 								manageTagsDrawer?.openDrawer()
 							}}
 						>
-							Manage tags
+							{($locale, t('workers.manageTags'))}
 						</Button>
 
 						<Button
@@ -770,7 +770,7 @@
 								queueMetricsDrawer?.openDrawer()
 							}}
 						>
-							Queue metrics
+							{($locale, t('workers.queueMetrics'))}
 						</Button>
 
 						<Button
@@ -779,7 +779,7 @@
 							startIcon={{ icon: Plus }}
 							on:click={() => {
 								newHttpAgentWorkerDrawer?.toggleDrawer?.()
-							}}>New agent worker</Button
+							}}>{($locale, t('workers.newAgentWorker'))}</Button
 						>
 						<Popover
 							floatingConfig={{ strategy: 'absolute', placement: 'bottom-start' }}
@@ -806,19 +806,19 @@
 											...($enterpriseLicense
 												? [
 														{
-															label: 'Copy groups config as YAML',
+															label: t('workers.copyGroupsConfigAsYaml'),
 															onClick: () => {
 																if (!workerGroups) {
-																	return sendUserToast('No worker groups found', true)
+																	return sendUserToast(t('workers.noWorkerGroupsFound'), true)
 																}
 																navigator.clipboard.writeText(
 																	serializeWorkerGroupsAsYaml(workerGroups)
 																)
-																sendUserToast('Worker groups config copied to clipboard as YAML')
+																sendUserToast(t('workers.workerGroupsConfigCopied'))
 															}
 														},
 														{
-															label: 'Import groups config from YAML',
+															label: t('workers.importGroupsConfigFromYaml'),
 															onClick: () => {
 																importConfigDrawer?.toggleDrawer?.()
 															}
@@ -826,15 +826,15 @@
 													]
 												: []),
 											{
-												label: 'Edit all configs as YAML',
+												label: t('workers.editAllConfigsAsYaml'),
 												onClick: openYamlDrawer
 											}
 										]}
 									>
-										<span class="hidden md:block">New group config</span>
+										<span class="hidden md:block">{($locale, t('workers.newGroupConfig'))}</span>
 
 										<Tooltip light>
-											Worker Group configs are propagated to every workers in the worker group
+											{($locale, t('workers.workerGroupConfigTooltip'))}
 										</Tooltip>
 									</Button>
 								</div>
@@ -843,7 +843,7 @@
 								<div class="flex flex-col gap-2 p-4">
 									<input
 										class="mr-2 h-full"
-										placeholder="New group name"
+										placeholder={t('groups.newGroupNamePlaceholder')}
 										bind:value={newConfigName}
 									/>
 
@@ -854,7 +854,7 @@
 										disabled={!newConfigName}
 										on:click={addConfig}
 									>
-										Create
+										{($locale, t('common.create'))}
 									</Button>
 								</div>
 							{/snippet}
@@ -864,27 +864,22 @@
 			</PageHeader>
 
 			{#if worstVersionWarning === 'critical'}
-				<Alert type="error" title="Critical: Workers below minimum version" class="my-4">
-					One or more workers are running below the minimum supported version. This may cause
-					undefined behavior and cluster instability. Upgrade these workers immediately—running
-					workers this old is untested and strongly discouraged.
+				<Alert type="error" title={($locale, t('workers.criticalWorkersBelowMinVersionTitle'))} class="my-4">
+					{($locale, t('workers.criticalWorkersBelowMinVersionBody'))}
 				</Alert>
 			{:else if worstVersionWarning === 'warning'}
-				<Alert type="warning" title="Workers significantly behind" class="my-4">
-					One or more workers are significantly behind the server ({serverVersion}) by more than 50
-					minor versions. While they should still function, the risk of issues is elevated. Further
-					server upgrades may push these workers into a critical state. Upgrading is recommended.
+				<Alert type="warning" title={($locale, t('workers.workersSignificantlyBehindTitle'))} class="my-4">
+					{t('workers.workersSignificantlyBehindBody', { serverVersion })}
 				</Alert>
 			{:else if worstVersionWarning === 'newer'}
-				<Alert type="warning" title="Workers ahead of server" class="my-4">
-					One or more workers are running a newer version than the server ({serverVersion}). Workers
-					should be at or behind the server version. This may cause undefined behavior.
+				<Alert type="warning" title={($locale, t('workers.workersAheadOfServerTitle'))} class="my-4">
+					{t('workers.workersAheadOfServerBody', { serverVersion })}
 				</Alert>
 			{/if}
 
 			{#if workers != undefined}
 				{#if groupedWorkers.length == 0}
-					<p>No workers seem to be available</p>
+					<p>{($locale, t('workers.noWorkersAvailable'))}</p>
 				{/if}
 
 				{#if (groupedWorkers ?? []).length < 6}
@@ -941,11 +936,11 @@
 						<div class="mt-6"></div>
 
 						<div class="flex flex-row gap-2 items-center justify-between">
-							<div class="text-emphasis font-semibold text-xs">Active workers</div>
+							<div class="text-emphasis font-semibold text-xs">{($locale, t('workers.activeWorkers'))}</div>
 							<div class="flex flex-row items-center gap-2 relative mb-2">
 								<TextInput
 									inputProps={{
-										placeholder: `Search workers in group '${worker_group[0]}'`,
+										placeholder: t('workers.searchWorkersInGroup', { group: worker_group[0] }),
 										autocomplete: 'off'
 									}}
 									class="pl-8 min-w-80"
@@ -958,36 +953,35 @@
 						<DataTable>
 							<Head>
 								<tr>
-									<Cell head first>Worker</Cell>
+									<Cell head first>{($locale, t('common.worker'))}</Cell>
 									{#if !config || !config.worker_tags || config.worker_tags.length === 0}
 										<Cell head>
 											<div class="flex flex-row items-center gap-1 min-w-32">
-												Worker tags
+												{($locale, t('workers.workerTags'))}
 												<Tooltip
 													documentationLink="https://www.windmill.dev/docs/core_concepts/worker_groups#assign-custom-worker-groups"
 												>
-													If defined, the workers only pull jobs with the same corresponding tag
+													{($locale, t('workers.workerTagsHelp'))}
 												</Tooltip>
 											</div>
 										</Cell>
 									{/if}
-									<Cell head>Worker start</Cell>
-									<Cell head>Jobs ran</Cell>
+									<Cell head>{($locale, t('workers.workerStart'))}</Cell>
+									<Cell head>{($locale, t('workers.jobsRan'))}</Cell>
 									{#if (!config || config?.dedicated_worker == undefined) && ($superadmin || $devopsRole)}
-										<Cell head>Last job</Cell>
-										<Cell head>Occupancy rate<br />(15s/5m/30m/ever)</Cell>
+										<Cell head>{($locale, t('workers.lastJob'))}</Cell>
+										<Cell head>{($locale, t('workers.occupancyRate'))}<br />(15s/5m/30m/ever)</Cell>
 									{/if}
-									<Cell head>Memory usage<br />(Windmill)</Cell>
-									<Cell head>Limits</Cell>
-									<Cell head>Version</Cell>
-									<Cell head>Status</Cell>
+									<Cell head>{($locale, t('workers.memoryUsage'))}<br />(Windmill)</Cell>
+									<Cell head>{($locale, t('common.limits'))}</Cell>
+									<Cell head>{($locale, t('common.version'))}</Cell>
+									<Cell head>{($locale, t('common.status'))}</Cell>
 									{#if $superadmin || $devopsRole}
 										<Cell head>
-											Repl
+											{($locale, t('workers.repl'))}
 											<Tooltip>
 												<p class="text-sm">
-													Open a live shell to execute bash commands on the machine where the worker
-													runs — useful for quick access, inspection, and real-time debugging
+													{($locale, t('workers.replHelp'))}
 												</p>
 											</Tooltip>
 										</Cell>
@@ -1007,10 +1001,10 @@
 											>
 												<div class="flex flex-row w-full text-2xs text-hint">
 													<div class="">
-														Host:
+														{($locale, t('workers.host'))}:
 														<span class="">{hostname}</span>
 													</div>
-													<span class="ml-4">IP: </span>
+													<span class="ml-4">{($locale, t('workers.ip'))}: </span>
 													<span class="">{workers[0].ip}</span>
 
 													{#if workers?.length > 1}
@@ -1047,7 +1041,7 @@
 																	{#snippet text()}
 																		<div class="flex flex-col gap-2 text-xs max-w-md">
 																			<div class="font-semibold text-emphasis"
-																				>Tag configuration mismatch</div
+																				>{($locale, t('workers.tagConfigurationMismatch'))}</div
 																			>
 																			<p
 																				>This worker has tags that differ from the config. This
@@ -1058,7 +1052,7 @@
 																			{#if tagMismatchInfo.added.length > 0}
 																				<div>
 																					<div class="text-emphasis font-semibold"
-																						>Additional tags:</div
+																						>{($locale, t('workers.additionalTags'))}:</div
 																					>
 																					<TagList
 																						tags={tagMismatchInfo.added}
@@ -1070,7 +1064,7 @@
 																			{#if tagMismatchInfo.removed.length > 0}
 																				<div>
 																					<div class="text-emphasis font-semibold"
-																						>Missing tags:</div
+																						>{($locale, t('workers.missingTags'))}:</div
 																					>
 																					<TagList
 																						tags={tagMismatchInfo.removed}
@@ -1098,7 +1092,7 @@
 														<Cell class="text-secondary">
 															{#if last_job_id}
 																<a href={`/run/${last_job_id}?workspace=${last_job_workspace_id}`}>
-																	View last job
+																	{($locale, t('workers.viewLastJob'))}
 																	<ExternalLink size={12} class="inline-block" />
 																</a>
 																<br />
@@ -1200,14 +1194,14 @@
 													<Cell class="text-secondary">
 														{@const pingText =
 															last_ping != undefined
-																? `${last_ping + timeSinceLastPing}s ago`
-																: 'Unknown'}
+																? t('workers.secondsAgo', { seconds: last_ping + timeSinceLastPing })
+																: t('common.unknown')}
 														{@const statusText =
 															isWorkerAlive != undefined
 																? isWorkerAlive
-																	? 'Alive'
-																	: 'Dead'
-																: 'Unknown'}
+																	? t('workers.alive')
+																	: t('workers.dead')
+																: t('common.unknown')}
 														<div class="min-w-24 flex flex-row gap-1 items-center">
 															<Badge
 																color={isWorkerAlive != undefined
@@ -1228,14 +1222,14 @@
 																color="light"
 																on:click={() => {
 																	if (isWorkerAlive === false) {
-																		sendUserToast('Worker must be alive', true)
+																		sendUserToast(t('workers.workerMustBeAlive'), true)
 																		return
 																	}
 																	tag = retrieveCommonWorkerPrefix(worker)
 																	replForWorkerDrawer?.openDrawer()
 																}}
 																startIcon={{ icon: Terminal }}
-																title="Open repl"
+																title={t('workers.openRepl')}
 															></Button>
 														</Cell>
 													{/if}
@@ -1247,7 +1241,7 @@
 									<tr>
 										<Cell colspan={columnCount}>
 											<div class="text-xs text-primary py-2 text-center">
-												No active workers found matching the search query
+												{($locale, t('workers.noActiveWorkersSearch'))}
 											</div>
 										</Cell>
 									</tr>
@@ -1255,7 +1249,7 @@
 									<tr>
 										<Cell colspan={columnCount}>
 											<div class="text-xs text-primary py-2 text-center">
-												No active workers found for the group '{worker_group[0]}'
+												{t('workers.noActiveWorkersForGroup', { group: worker_group[0] })}
 											</div>
 										</Cell>
 									</tr>
@@ -1286,7 +1280,7 @@
 								onDeleted={handleWorkerGroupDeleted}
 								onOpenYamlEditor={openYamlDrawer}
 							/>
-							<div class="text-xs text-primary"> No workers currently in this worker group </div>
+							<div class="text-xs text-primary"> {($locale, t('workers.noWorkersInGroup'))} </div>
 						{/if}
 					{/if}
 				</div>
@@ -1309,7 +1303,7 @@
 {#snippet selectGroup()}
 	<div class="flex gap-2 items-center">
 		<div class="text-secondary text-xs"
-			>Worker group
+			>{($locale, t('workers.workerGroup'))}
 			<Tooltip
 				documentationLink="https://www.windmill.dev/docs/core_concepts/worker_groups"
 				wrapperClass="inline-block"

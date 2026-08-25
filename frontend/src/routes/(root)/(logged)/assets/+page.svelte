@@ -41,6 +41,7 @@
 	import { VolumeService } from '$lib/gen'
 	import VolumesDrawer from '$lib/components/assets/VolumesDrawer.svelte'
 	import { HardDriveIcon } from 'lucide-svelte'
+	import { locale, t } from '$lib/i18n'
 
 	interface AssetCursor {
 		created_at?: string
@@ -152,18 +153,18 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.assets}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">Unauthorized</p>
-		<p>Page not available for operators</p>
+		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
+		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
 	</div>
 {:else}
 	<CenteredPage id="scrollable-container">
 		<PageHeader
-			title="Assets"
-			tooltip="Assets show up here whenever you use them in Windmill."
+			title={($locale, t('assets.title'))}
+			tooltip={t('assets.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/assets"
 		/>
 
-		<Section label="All workspace assets" class="mb-20">
+		<Section label={t('assets.allWorkspaceAssets')} class="mb-20">
 			<div class="flex flex-wrap gap-4">
 				{#snippet card(props: {
 					title: string
@@ -188,7 +189,7 @@
 									href={props.docsHref}
 									target="_blank"
 								>
-									See documentation
+									{($locale, t('assets.seeDocumentation'))}
 								</Button>
 								{#if !($userStore?.operator || (!$userStore?.is_admin && !$superadmin))}
 									<Button
@@ -226,7 +227,7 @@
 
 							{#if !props.data.loading && !props.data.error && props.favorites != undefined}
 								<div class="mb-4 pt-2 px-6">
-									<h3 class="text-xs font-bold mb-1"> Favorite tables</h3>
+									<h3 class="text-xs font-bold mb-1"> {($locale, t('assets.favoriteTables'))}</h3>
 									<div class="flex gap-1 flex-wrap">
 										{#each props.favorites as fav}
 											<button
@@ -247,7 +248,7 @@
 										{/each}
 									</div>
 									{#if props.favorites.length === 0}
-										<div class="text-xs text-secondary"> No favorite table yet</div>
+										<div class="text-xs text-secondary"> {($locale, t('assets.noFavoriteTableYet'))}</div>
 									{/if}
 								</div>
 							{/if}
@@ -258,11 +259,11 @@
 							</div>
 						{:else if props.data.error}
 							<div class="text-sm text-red-600 mt-2 mb-5 px-6">
-								Error loading {props.title.toLowerCase()}
+								{t('assets.errorLoading', { title: props.title.toLowerCase() })}
 							</div>
 						{:else if props.data.current?.length === 0}
 							<div class="text-xs text-secondary mt-2 px-6 mb-3">
-								No {props.title.toLowerCase()} yet
+								{t('assets.noAssetKindYet', { title: props.title.toLowerCase() })}
 							</div>
 						{/if}
 					</div>
@@ -293,7 +294,7 @@
 							on:click={() => volumesDrawer?.openDrawer()}
 						>
 							{allVolumes.current?.length ?? 0}
-							{(allVolumes.current?.length ?? 0) === 1 ? 'volume' : 'volumes'}
+							{(allVolumes.current?.length ?? 0) === 1 ? t('assets.volume') : t('assets.volumes')}
 						</Button>
 					{/if}
 				{/snippet}
@@ -308,7 +309,7 @@
 				})}
 			</div>
 		</Section>
-		<Section label="Latest assets used" headerClass="whitespace-nowrap shrink-0">
+		<Section label={t('assets.latestAssetsUsed')} headerClass="whitespace-nowrap shrink-0">
 			{#snippet action()}
 				<div class="flex gap-2 grow justify-end min-w-0 ml-4">
 					<RefreshButton
@@ -320,7 +321,7 @@
 						class="grow max-w-[26rem] min-w-0"
 						schema={assetsFilterSchema}
 						bind:value={filterValues.val}
-						placeholder="Filter assets..."
+						placeholder={t('assets.filterAssets')}
 					/>
 				</div>
 			{/snippet}
@@ -328,7 +329,7 @@
 			{#if assetsQuery.isFetchingNextPage}
 				<Loader2 size={32} class="mx-auto my-4 text-primary animate-spin" />
 			{:else if assets?.length && !assetsQuery.hasNextPage}
-				<div class="text-center text-2xs text-secondary my-4"> No more assets to load </div>
+				<div class="text-center text-2xs text-secondary my-4"> {($locale, t('assets.noMoreAssetsToLoad'))} </div>
 			{/if}
 		</Section>
 	</CenteredPage>
@@ -350,7 +351,7 @@
 		<Head>
 			<tr>
 				<Cell head first class="w-16"></Cell>
-				<Cell head>Asset name</Cell>
+				<Cell head>{($locale, t('assets.assetName'))}</Cell>
 				<Cell head></Cell>
 				<Cell head></Cell>
 			</tr>
@@ -359,7 +360,7 @@
 			{#if assets != undefined && assets.length === 0}
 				<tr class="h-14">
 					<Cell></Cell>
-					<Cell colspan="3">No assets found</Cell>
+					<Cell colspan="3">{($locale, t('assets.noAssetsFound'))}</Cell>
 				</tr>
 			{/if}
 			{#each assets as asset}
@@ -390,7 +391,7 @@
 							<Tooltip class={'w-24 flex items-center justify-center'}>
 								<AlertTriangle size={20} class="text-orange-600 dark:text-orange-500" />
 								{#snippet text()}
-									Could not find resource
+									{($locale, t('assets.couldNotFindResource'))}
 								{/snippet}
 							</Tooltip>
 						{/if}
@@ -402,7 +403,7 @@
 					<Cell colspan="4" class="text-center">
 						<div class="flex items-center justify-center gap-2">
 							<Loader2 class="animate-spin" size={16} />
-							<span>Loading assets...</span>
+							<span>{($locale, t('assets.loadingAssets'))}</span>
 						</div>
 					</Cell>
 				</tr>

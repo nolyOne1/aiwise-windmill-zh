@@ -38,6 +38,7 @@
 	import { OauthService, ResourceService, WorkspaceService, type ListableResource } from '$lib/gen'
 	import { enterpriseLicense, userStore, workspaceStore, userWorkspaces } from '$lib/stores'
 	import { sendUserToast } from '$lib/toast'
+	import { locale, t } from '$lib/i18n'
 	import {
 		canWrite,
 		classNames,
@@ -631,8 +632,8 @@
 
 <ConfirmationModal
 	open={Boolean(deleteConfirmedCallback)}
-	title="Remove resource"
-	confirmationText="Remove"
+	title={($locale, t('resources.removeResourceTitle'))}
+	confirmationText={($locale, t('common.remove'))}
 	trashbin
 	on:canceled={() => {
 		deleteConfirmedCallback = undefined
@@ -645,21 +646,17 @@
 	}}
 >
 	<div class="flex flex-col w-full space-y-4">
-		<span
-			>Are you sure you want to remove <span class="font-semibold break-all">{deletePath}</span
-			>?</span
-		>
+		<span>{($locale, t('resources.removeResourceConfirmPrefix'))} <span class="font-semibold break-all">{deletePath}</span>?</span>
 		{#if deleteIsLinked}
-			<Alert type="warning" title="Linked variable">
-				This resource is linked with a variable of the same path. The linked variable will also be
-				deleted.
+			<Alert type="warning" title={($locale, t('resources.linkedVariableTitle'))}>
+				{($locale, t('resources.linkedVariableBody'))}
 			</Alert>
 		{/if}
-		<Alert type="info" title="Bypass confirmation">
+		<Alert type="info" title={($locale, t('resources.bypassConfirmationTitle'))}>
 			<div>
-				You can press
+				{($locale, t('resources.bypassConfirmationBodyPrefix'))}
 				<Badge color="dark-gray">SHIFT</Badge>
-				while removing a resource to bypass confirmation.
+				{($locale, t('resources.bypassConfirmationBodySuffix'))}
 			</div>
 		</Alert>
 	</div>
@@ -668,7 +665,7 @@
 <DeployWorkspaceDrawer bind:this={deploymentDrawer} />
 
 <Drawer bind:this={inferrer} size="800px">
-	<DrawerContent title="Infer type from JSON" on:close={() => inferrer?.toggleDrawer?.()}>
+	<DrawerContent title={($locale, t('resources.inferTypeFromJson'))} on:close={() => inferrer?.toggleDrawer?.()}>
 		<SimpleEditor
 			bind:code={inferrerJson}
 			lang="json"
@@ -676,7 +673,7 @@
 			fixedOverflowWidgets={false}
 		/>
 		{#snippet actions()}
-			<Button size="sm" on:click={inferJson}>Infer</Button>
+			<Button size="sm" on:click={inferJson}>{($locale, t('resources.infer'))}</Button>
 		{/snippet}
 	</DrawerContent>
 </Drawer>
@@ -719,13 +716,13 @@
 </Drawer>
 
 <Drawer bind:this={editResourceTypeDrawer} size="800px">
-	<DrawerContent title="Edit resource type" on:close={editResourceTypeDrawer.closeDrawer}>
+	<DrawerContent title={($locale, t('resources.editResourceTypeTitle'))} on:close={editResourceTypeDrawer.closeDrawer}>
 		{#snippet actions()}
 			<Button
 				startIcon={{ icon: Save }}
 				on:click={updateResourceType}
 				unifiedSize="md"
-				variant="accent">Update</Button
+				variant="accent">{($locale, t('common.update'))}</Button
 			>
 		{/snippet}
 		<div class="flex flex-col gap-6">
@@ -777,14 +774,14 @@
 </Drawer>
 
 <Drawer bind:this={resourceTypeDrawer} size="1200px">
-	<DrawerContent title="Create resource type" on:close={resourceTypeDrawer.closeDrawer}>
+	<DrawerContent title={($locale, t('resources.createResourceTypeTitle'))} on:close={resourceTypeDrawer.closeDrawer}>
 		{#snippet actions()}
 			<Button
 				unifiedSize="md"
 				variant="accent"
 				startIcon={{ icon: Save }}
 				on:click={addResourceType}
-				disabled={!isNewResourceTypeNameValid || resourceTypeNameExists}>Save</Button
+				disabled={!isNewResourceTypeNameValid || resourceTypeNameExists}>{($locale, t('common.save'))}</Button
 			>
 		{/snippet}
 		<div class="flex flex-col gap-6">
@@ -870,14 +867,14 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.resources}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">Unauthorized</p>
-		<p>Page not available for operators</p>
+		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
+		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		<PageHeader
-			title="Resources"
-			tooltip="Save and permission rich objects (JSON) including credentials obtained through OAuth."
+			title={($locale, t('resources.title'))}
+			tooltip={t('resources.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/resources_and_types"
 		>
 			{#if showCreateButtons}
@@ -890,7 +887,7 @@
 						aiId="resources-add-resource-type"
 						aiDescription="Add resource type"
 					>
-						Add resource type
+						{($locale, t('resources.addResourceType'))}
 					</Button>
 					<Button
 						unifiedSize="md"
@@ -900,7 +897,7 @@
 						aiId="resources-add-resource"
 						aiDescription="Add resource"
 					>
-						Add resource
+						{($locale, t('resources.addResource'))}
 					</Button>
 				</div>
 			{/if}
@@ -923,8 +920,8 @@
 					}
 				}}
 			>
-				<Tab value="workspace" label="Workspace" icon={Building} />
-				<Tab value="types" label="Resource Types">
+				<Tab value="workspace" label={($locale, t('common.workspace'))} icon={Building} />
+				<Tab value="types" label={($locale, t('resources.resourceTypes'))}>
 					{#snippet extra()}
 						<Tooltip
 							documentationLink="https://www.windmill.dev/docs/core_concepts/resources_and_types"
@@ -934,7 +931,7 @@
 						</Tooltip>
 					{/snippet}
 				</Tab>
-				<Tab value="states" label="States">
+				<Tab value="states" label={($locale, t('resources.states'))}>
 					{#snippet extra()}
 						<Tooltip>
 							States are actually resources (but excluded from the Workspace tab for clarity).
@@ -943,7 +940,7 @@
 						</Tooltip>
 					{/snippet}
 				</Tab>
-				<Tab value="cache" label="Cache">
+				<Tab value="cache" label={($locale, t('resources.cache'))}>
 					{#snippet extra()}
 						<Tooltip>
 							Cached results are actually resources (but excluded from the Workspace tab for
@@ -952,7 +949,7 @@
 						</Tooltip>
 					{/snippet}
 				</Tab>
-				<Tab value="theme" label="Theme">
+				<Tab value="theme" label={($locale, t('resources.theme'))}>
 					{#snippet extra()}
 						<Tooltip>
 							Theme are actually resources (but excluded from the Workspace tab for clarity). Theme
@@ -976,14 +973,14 @@
 						schema={resourceTypesFilterSchema}
 						class="max-w-[26rem] grow"
 						bind:value={resourceTypesFilters.val}
-						placeholder="Filter resource types..."
+						placeholder={t('resources.filterResourceTypes')}
 					/>
 				{:else}
 					<FilterSearchbar
 						schema={resourcesFilterSchema}
 						class="max-w-[26rem] grow"
 						bind:value={filters.val}
-						placeholder="Filter resources..."
+						placeholder={t('resources.filterResources')}
 						presets={folderPresets}
 					/>
 				{/if}
@@ -998,9 +995,9 @@
 					{/each}
 				{:else if filteredItems?.length == 0}
 					<div class="flex flex-col items-center justify-center h-full">
-						<div class="text-xs text-emphasis font-semibold">No resources found</div>
+						<div class="text-xs text-emphasis font-semibold">{($locale, t('resources.noResourcesFound'))}</div>
 						<div class="text-2xs text-secondary font-normal">
-							Try changing the filters or creating a new resource
+							{($locale, t('resources.noResourcesFoundHint'))}
 						</div>
 					</div>
 				{:else}
@@ -1008,9 +1005,9 @@
 						<Head>
 							<Row>
 								<Cell head first />
-								<Cell head>Path</Cell>
-								<Cell head>Resource type</Cell>
-								<Cell head>Description</Cell>
+								<Cell head>{($locale, t('common.path'))}</Cell>
+								<Cell head>{($locale, t('resources.resourceType'))}</Cell>
+								<Cell head>{($locale, t('common.description'))}</Cell>
 								<Cell head />
 								<Cell head last stickyEnd />
 							</Row>
@@ -1187,14 +1184,14 @@
 													class="w-fit"
 													items={[
 														{
-															displayName: 'Permissions',
+															displayName: t('common.permissions'),
 															icon: Shield,
 															action: () => {
 																shareModal?.openDrawer?.(path, 'resource')
 															}
 														},
 														{
-															displayName: 'Edit',
+															displayName: t('common.edit'),
 															icon: Pen,
 															disabled: !canWrite || !showCreateButtons,
 															action: () => {
@@ -1204,7 +1201,7 @@
 														...(!ws_specific && isDeployable('resource', path, deployUiSettings)
 															? [
 																	{
-																		displayName: 'Deploy to prod/staging',
+																		displayName: t('common.deployToProdStaging'),
 																		icon: FileUp,
 																		action: () => {
 																			deploymentDrawer?.openDrawer(path, 'resource')
@@ -1213,7 +1210,7 @@
 																]
 															: []),
 														{
-															displayName: 'Delete',
+															displayName: t('common.delete'),
 															disabled: !canWrite || !showCreateButtons,
 															icon: Trash,
 															type: 'delete',
@@ -1234,7 +1231,7 @@
 														...(account != undefined
 															? [
 																	{
-																		displayName: 'Refresh token',
+																		displayName: t('resources.refreshToken'),
 																		icon: RotateCw,
 																		action: async () => {
 																			await OauthService.refreshToken({
@@ -1269,9 +1266,9 @@
 				{/each}
 			{:else if filteredResourceTypes?.length == 0}
 				<div class="flex flex-col items-center justify-center h-full mt-4">
-					<div class="text-xs text-emphasis font-semibold">No resource types found</div>
+					<div class="text-xs text-emphasis font-semibold">{($locale, t('resources.noResourceTypesFound'))}</div>
 					<div class="text-2xs text-secondary font-normal">
-						Try changing the filters or creating a new resource type
+						{($locale, t('resources.noResourceTypesFoundHint'))}
 					</div>
 				</div>
 			{:else}
@@ -1279,8 +1276,8 @@
 					<DataTable>
 						<Head>
 							<Row>
-								<Cell head first>Name</Cell>
-								<Cell head>Description</Cell>
+								<Cell head first>{($locale, t('common.name'))}</Cell>
+								<Cell head>{($locale, t('common.description'))}</Cell>
 								<Cell head last stickyEnd />
 							</Row>
 						</Head>

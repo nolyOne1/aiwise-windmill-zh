@@ -40,6 +40,7 @@
 	import { safeSelectItems } from '../select/utils.svelte'
 	import { CancelablePromiseUtils } from '$lib/cancelable-promise-utils'
 	import { sendUserToast } from '$lib/toast'
+	import { locale, t } from '$lib/i18n'
 
 	let usernames: string[] | undefined = $state()
 	let resources = usePromise(() => loadResources($workspaceStore!), { loadInit: false })
@@ -116,10 +117,10 @@
 		})
 		promise = CancelablePromiseUtils.onTimeout(promise, 4000, () => {
 			sendUserToast(
-				'Loading audit logs is taking longer than expected...',
+				t('auditLogs.loadingTakingLonger'),
 				'warning',
 				perPage > 25
-					? [{ label: 'Reduce to 25 items per page', callback: () => (perPage = 25) }]
+					? [{ label: t('auditLogs.reduceTo25PerPage'), callback: () => (perPage = 25) }]
 					: []
 			)
 		})
@@ -281,7 +282,7 @@
 
 	function downloadAuditLogsAsJson() {
 		if (!logs || logs.length === 0) {
-			sendUserToast('No audit logs to download', true)
+			sendUserToast(t('auditLogs.noLogsToDownload'), true)
 			return
 		}
 
@@ -320,7 +321,7 @@
 <div class="flex flex-col gap-8 2xl:gap-2 2xl:flex-row mt-4 xl:mt-0 pr-2">
 	{#if $workspaceStore == 'admins'}
 		<div class="flex gap-1 relative">
-			<span class="text-xs absolute font-semibold text-emphasis -top-4">Scope</span>
+			<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('auditLogs.scope'))}</span>
 			<ToggleButtonGroup
 				selected={scope ?? 'admins'}
 				on:selected={({ detail }) => {
@@ -330,20 +331,20 @@
 				{#snippet children({ item })}
 					<ToggleButton
 						value={'admins'}
-						label="Admins"
-						tooltip="Displays events from the admins workspace only."
+						label={t('auditLogs.admins')}
+						tooltip={t('auditLogs.scopeAdminsTooltip')}
 						{item}
 					/>
 					<ToggleButton
 						value="all_workspaces"
-						label="All"
-						tooltip="Displays events from all workspaces."
+						label={t('common.all')}
+						tooltip={t('auditLogs.scopeAllTooltip')}
 						{item}
 					/>
 					<ToggleButton
 						value="instance"
-						label="Instance"
-						tooltip="Displays instance-scope events, such as user logins and registrations, instance user and group management, and worker configuration changes."
+						label={t('auditLogs.instance')}
+						tooltip={t('auditLogs.scopeInstanceTooltip')}
 						{item}
 					/>
 				{/snippet}
@@ -351,13 +352,13 @@
 		</div>
 	{/if}
 	<div class="flex relative bg-surface-input">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">From</span>
-		<input type="text" value={after ?? 'From'} disabled />
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.from'))}</span>
+		<input type="text" value={after ?? t('common.from')} disabled />
 		<CalendarPicker
 			clearable
 			date={after}
 			placement="bottom-end"
-			label="From"
+			label={t('common.from')}
 			on:change={({ detail }) => {
 				after = new Date(detail).toISOString()
 			}}
@@ -367,12 +368,12 @@
 		/>
 	</div>
 	<div class="flex relative bg-surface-input">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">To</span>
-		<input type="text" value={before ?? 'To'} disabled />
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.to'))}</span>
+		<input type="text" value={before ?? t('common.to')} disabled />
 		<CalendarPicker
 			clearable
 			bind:date={before}
-			label="To"
+			label={t('common.to')}
 			placement="bottom-end"
 			on:change={({ detail }) => {
 				before = new Date(detail).toISOString()
@@ -384,7 +385,7 @@
 	</div>
 
 	<div class="flex relative">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">Username</span>
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.username'))}</span>
 		<Select
 			class="w-full"
 			bind:value={username}
@@ -392,7 +393,7 @@
 			items={usernames
 				? [
 						...($userStore?.is_admin || $userStore?.is_super_admin
-							? [{ value: 'all', label: 'all' }]
+							? [{ value: 'all', label: t('common.all') }]
 							: []),
 						...usernames.map((e) => ({
 							value: e,
@@ -404,44 +405,47 @@
 		/>
 	</div>
 	<div class="flex relative">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">Resource</span>
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.resource'))}</span>
 
 		<Select
 			class="w-full"
 			onCreateItem={(r) => (resources.value?.push(r), (resource = r))}
-			createText="Press enter to use this value"
+			createText={t('auditLogs.pressEnterToUseValue')}
 			bind:value={resource}
-			items={safeSelectItems(['all', ...(resources.value ?? [])])}
+			items={[
+				{ value: 'all', label: t('common.all') },
+				...(resources.value ?? []).map((item) => ({ value: item, label: item }))
+			]}
 			inputClass="dark:!bg-gray-700"
 			RightIcon={ChevronDown}
 		/>
 	</div>
 
 	<div class="flex relative">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">Operation</span>
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.operation'))}</span>
 
 		<Select
 			class="w-full"
 			bind:value={operation}
-			items={['all', ...Object.values(operations)].map((r) => ({ value: r, label: r }))}
+			items={['all', ...Object.values(operations)].map((r) => ({ value: r, label: r === 'all' ? t('common.all') : r }))}
 			inputClass="dark:!bg-gray-700"
 			RightIcon={ChevronDown}
 		/>
 	</div>
 
 	<div class="flex relative">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">Action</span>
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.action'))}</span>
 
 		<Select
 			class="w-full"
 			bind:value={actionKind}
 			RightIcon={ChevronDown}
 			items={[
-				{ value: 'all', label: 'all' },
-				{ value: 'create', label: 'Create' },
-				{ value: 'update', label: 'Update' },
-				{ value: 'delete', label: 'Delete' },
-				{ value: 'execute', label: 'Execute' }
+				{ value: 'all', label: t('common.all') },
+				{ value: 'create', label: t('auditLogs.create') },
+				{ value: 'update', label: t('common.update') },
+				{ value: 'delete', label: t('common.delete') },
+				{ value: 'execute', label: t('auditLogs.execute') }
 			]}
 		/>
 	</div>
@@ -462,13 +466,13 @@
 			}}
 			unifiedSize="md"
 		>
-			Clear filters
+			{($locale, t('common.clearFilters'))}
 		</Button>
 		<Button
 			variant="subtle"
 			on:click={downloadAuditLogsAsJson}
 			unifiedSize="md"
-			title="Downloads currently displayed logs only (up to {perPage} entries)"
+			title={t('auditLogs.downloadCurrentPageOnly', { perPage })}
 			startIcon={{ icon: Download }}
 			iconOnly
 		/>
@@ -486,7 +490,7 @@
 				{:else}
 					<RefreshCcw size={14} />
 				{/if}
-				Refresh
+				{($locale, t('common.refresh'))}
 			</div>
 		</Button>
 	</div>
