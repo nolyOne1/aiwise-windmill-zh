@@ -122,7 +122,7 @@
 			extJwtTokens = nextPage === 1 ? res : [...extJwtTokens, ...res]
 			extJwtHasMore = res.length === extJwtPerPage
 		} catch (e) {
-			sendUserToast(`Failed to load external JWT tokens: ${e}`, true)
+			sendUserToast(t('superadmin.failedToLoadExternalJwtTokens', { error: e }), true)
 		} finally {
 			extJwtLoading = false
 		}
@@ -155,7 +155,7 @@
 			requestBody: { value: true }
 		})
 		getAutomateUsernameCreationSetting()
-		sendUserToast('Automatic username creation enabled')
+		sendUserToast(t('superadmin.automaticUsernameCreationEnabled'))
 		listUsers(activeOnly)
 	}
 
@@ -167,10 +167,10 @@
 					name
 				}
 			})
-			sendUserToast('User updated')
+			sendUserToast(t('superadmin.userUpdated'))
 			listUsers(activeOnly)
 		} catch (e) {
-			sendUserToast('Error updating user', true)
+			sendUserToast(t('superadmin.errorUpdatingUser'), true)
 		}
 	}
 
@@ -262,7 +262,7 @@
 					href="{base}/?workspace=admins"
 					endIcon={{ icon: ExternalLink }}
 				>
-					Admins workspace
+					{t('superadmin.adminsWorkspace')}
 				</Button>
 			</div>
 		{/if}
@@ -285,7 +285,7 @@
 							class="flex items-center gap-2 px-2 py-1.5 text-xs text-secondary hover:text-primary transition-colors"
 						>
 							<ExternalLink size={14} />
-							Admins workspace
+							{t('superadmin.adminsWorkspace')}
 						</a>
 					</div>
 				{/if}

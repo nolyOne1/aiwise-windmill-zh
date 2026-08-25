@@ -46,6 +46,7 @@
 	import DeployWorkspaceDrawer from '$lib/components/DeployWorkspaceDrawer.svelte'
 	import { AwsIcon } from '$lib/components/icons'
 	import TriggerModeToggle from '$lib/components/triggers/TriggerModeToggle.svelte'
+	import { t } from '$lib/i18n'
 
 	type TriggerD = SqsTrigger & { canWrite: boolean }
 
@@ -279,20 +280,20 @@
 />
 
 <CenteredPage>
-	<PageHeader title="SQS triggers" tooltip="SQS trigger">
+	<PageHeader title={t('triggers.pageTitle', { kind: 'SQS' })} tooltip="SQS trigger">
 		<Button
 			unifiedSize="md"
 			variant="accent"
 			startIcon={{ icon: Plus }}
 			on:click={() => sqsTriggerEditor?.openNew(false)}
 		>
-			New&nbsp;SQS trigger
+			{t('triggers.newTrigger', { kind: 'SQS' })}
 		</Button>
 	</PageHeader>
 
 	{#if isCloudHosted()}
-		<Alert title="Not compatible with multi-tenant cloud" type="warning">
-			SQS triggers are disabled in the multi-tenant cloud.
+		<Alert title={t('triggers.notCompatibleCloudTitle')} type="warning">
+			{t('triggers.disabledInCloud', { kind: 'SQS' })}
 		</Alert>
 		<div class="py-4"></div>
 	{/if}
@@ -300,16 +301,21 @@
 		<div class="w-full pb-4 pt-6">
 			<input
 				type="text"
-				placeholder="Search SQS triggers"
+				placeholder={t('triggers.searchTriggers', { kind: 'SQS' })}
 				bind:value={filter}
 				class="search-item"
 			/>
 			<div class="flex flex-row items-center gap-2 mt-2">
-				<div class="text-sm shrink-0"> Filter by path of </div>
+				<div class="text-sm shrink-0">{t('triggers.filterByPathOf')}</div>
 				<ToggleButtonGroup bind:selected={selectedFilterKind}>
 					{#snippet children({ item })}
 						<ToggleButton value="trigger" label="SQS trigger" icon={AwsIcon} {item} />
-						<ToggleButton value="script_flow" label="Script/Flow" icon={Code} {item} />
+						<ToggleButton
+							value="script_flow"
+							label={t('triggers.scriptFlow')}
+							icon={Code}
+							{item}
+						/>
 					{/snippet}
 				</ToggleButtonGroup>
 			</div>
@@ -317,12 +323,18 @@
 
 			<div class="flex flex-row items-center justify-end gap-4">
 				{#if $userStore?.is_super_admin && $userStore.username.includes('@')}
-					<Toggle size="xs" bind:checked={filterUserFolders} options={{ right: 'Only f/*' }} />
+					<Toggle
+						size="xs"
+						bind:checked={filterUserFolders}
+						options={{ right: t('triggers.onlyFolders') }}
+					/>
 				{:else if $userStore?.is_admin || $userStore?.is_super_admin}
 					<Toggle
 						size="xs"
 						bind:checked={filterUserFolders}
-						options={{ right: `Only u/${$userStore.username} and f/*` }}
+						options={{
+							right: t('triggers.onlyUserAndFolders', { user: $userStore.username })
+						}}
 					/>
 				{/if}
 			</div>
@@ -332,7 +344,9 @@
 				<Skeleton layout={[[6], 0.4]} />
 			{/each}
 		{:else if !triggers?.length}
-			<div class="text-center text-sm text-primary mt-2"> No sqs triggers </div>
+			<div class="text-center text-sm text-primary mt-2">
+				{t('triggers.noTriggers', { kind: 'SQS' })}
+			</div>
 		{:else if items?.length}
 			<div class="border rounded-md divide-y">
 				{#each items.slice(0, nbDisplayed) as { path, edited_by, error, edited_at, script_path, is_flow, extra_perms, canWrite, mode, server_id, retry, error_handler_path, error_handler_args, labels, draft_only, is_draft } (path)}
@@ -360,7 +374,7 @@
 								</div>
 								<div class="text-secondary text-xs truncate text-left font-light"></div>
 								<div class="text-secondary text-xs truncate text-left font-light">
-									runnable: {script_path}
+									{t('triggers.runnablePath', { path: script_path })}
 								</div>
 							</a>
 
@@ -368,7 +382,7 @@
 								<SharedBadge {canWrite} extraPerms={extra_perms} />
 								{#if labels?.length}
 									{#each labels as label}
-										<Badge color="blue" small class="px-1" title="Label: {label}">{label}</Badge>
+										<Badge color="blue" small class="px-1" title={t('folders.labelTitle', { label })}>{label}</Badge>
 									{/each}
 								{/if}
 							</div>
@@ -414,9 +428,9 @@
 								<TriggerModeToggle
 									disabled={draft_only}
 									title={draft_only
-										? 'Draft only: deploy the trigger to enable it'
+										? t('triggers.draftOnlyEnableTitle')
 										: hasDraft
-											? 'Enables/disables the deployed trigger; the draft is not affected'
+											? t('triggers.deployedDraftUnaffectedTitle')
 											: undefined}
 									onToggleMode={(newMode) => onToggleMode(path, newMode)}
 									triggerMode={effectiveMode}
@@ -448,12 +462,14 @@
 											}}
 									variant="subtle"
 								>
-									{canWrite ? 'Edit' : 'View'}
+									{canWrite ? t('common.edit') : t('common.view')}
 								</Button>
 								<Dropdown
 									items={[
 										{
-											displayName: `View ${is_flow ? 'Flow' : 'Script'}`,
+											displayName: t('schedules.viewRunnable', {
+												kind: t(is_flow ? 'common.flow' : 'common.script')
+											}),
 											icon: Eye,
 											action: () => {
 												goto(href)
@@ -462,7 +478,7 @@
 										...(canWrite && !draft_only && mode !== 'suspended'
 											? [
 													{
-														displayName: 'Suspend job execution',
+														displayName: t('triggers.suspendJobExecution'),
 														icon: Pause,
 														action: () => {
 															onToggleMode(path, 'suspended')
@@ -471,7 +487,7 @@
 												]
 											: []),
 										{
-											displayName: canWrite ? 'Edit' : 'View',
+											displayName: canWrite ? t('common.edit') : t('common.view'),
 											icon: canWrite ? Pen : Eye,
 											action: () => {
 												sqsTriggerEditor?.openEdit(path, is_flow)
@@ -480,7 +496,7 @@
 										...(isDeployable('trigger', path, deployUiSettings)
 											? [
 													{
-														displayName: 'Deploy to prod/staging',
+														displayName: t('common.deployToProdStaging'),
 														icon: FileUp,
 														action: () => {
 															deploymentDrawer?.openDrawer(path, 'trigger', {
@@ -493,19 +509,19 @@
 												]
 											: []),
 										{
-											displayName: 'Audit logs',
+											displayName: t('app.auditLogs'),
 											icon: Eye,
 											href: `${base}/audit_logs?resource=${path}`
 										},
 										{
-											displayName: 'Permissions',
+											displayName: t('common.permissions'),
 											icon: Shield,
 											action: () => {
 												shareModal?.openDrawer(path, 'sqs_trigger')
 											}
 										},
 										{
-											displayName: 'Delete',
+											displayName: t('common.delete'),
 											type: 'delete',
 											icon: Trash,
 											disabled: !canWrite,
@@ -528,8 +544,8 @@
 						<div class="w-full flex justify-between items-baseline">
 							<div
 								class="flex flex-wrap text-[0.7em] text-primary gap-1 items-center justify-end truncate pr-2"
-								>{#if edited_by}<div class="truncate">edited by {edited_by}</div>{/if}<div
-									class="truncate">{edited_by ? 'the ' : ''}{displayDate(edited_at)}</div
+								>{#if edited_by}<div class="truncate">{t('triggers.editedBy', { name: edited_by })}</div>{/if}<div
+									class="truncate">{edited_by ? t('triggers.atDate', { date: displayDate(edited_at) }) : displayDate(edited_at)}</div
 								></div
 							></div
 						>
@@ -542,8 +558,8 @@
 	</div>
 	{#if items && items?.length > 15 && nbDisplayed < items.length}
 		<span class="text-xs"
-			>{nbDisplayed} items out of {items.length}
-			<button class="ml-4" onclick={() => (nbDisplayed += 30)}>load 30 more</button></span
+			>{t('schedules.itemsShown', { shown: nbDisplayed, total: items.length })}
+			<button class="ml-4" onclick={() => (nbDisplayed += 30)}>{t('common.load30More')}</button></span
 		>
 	{/if}
 </CenteredPage>

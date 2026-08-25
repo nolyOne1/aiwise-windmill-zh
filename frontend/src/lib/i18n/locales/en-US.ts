@@ -668,11 +668,13 @@ export const enUS = {
 		automaticUsernameCreation: 'Automatic username creation',
 		automaticUsernameCreationDescription:
 			'Automatically create a username for new users based on their email, shared across workspaces.',
+		automaticUsernameCreationEnabled: 'Automatic username creation enabled',
 		enableRecommended: 'Enable (recommended)',
 		enable: 'Enable',
 		automaticUsernameCreationConfirm:
 			'Once activated, it will not be possible to disable this feature. If existing users have different usernames in different workspaces, you will have to manually confirm the username for each user.',
 		externalJwts: 'External JWTs',
+		failedToLoadExternalJwtTokens: 'Failed to load external JWT tokens: {error}',
 		instanceUsersTitle: 'Instance users ({count})',
 		instanceUsersDescription: 'Manage all users across your Windmill instance.',
 		searchUsers: 'Search users',
@@ -713,7 +715,9 @@ export const enUS = {
 		disableUser: 'Disable user',
 		disable: 'Disable',
 		disableUserConfirm:
-			'Are you sure you want to disable {email}? All their active sessions and tokens will be revoked immediately. They will be unable to log in until re-enabled. Their workspace memberships and content will be preserved.'
+			'Are you sure you want to disable {email}? All their active sessions and tokens will be revoked immediately. They will be unable to log in until re-enabled. Their workspace memberships and content will be preserved.',
+		errorUpdatingUser: 'Error updating user',
+		adminsWorkspace: 'Admins workspace'
 	},
 	appsEditor: {
 		loadedFromYamlJson: 'Loaded from YAML/JSON',
@@ -868,6 +872,51 @@ export const enUS = {
 		markResolved: 'Mark {count} resolved',
 		unresolve: 'Unresolve {count}',
 		jobsSelected: '{count} jobs selected'
+	},
+	triggers: {
+		pageTitle: '{kind} triggers',
+		newTrigger: 'New {kind} trigger',
+		searchTriggers: 'Search {kind} triggers',
+		filterByPathOf: 'Filter by path of',
+		scriptFlow: 'Script/Flow',
+		noTriggers: 'No {kind} triggers',
+		draftOnlyEnableTitle: 'Draft only: deploy the trigger to enable it',
+		deployedDraftUnaffectedTitle:
+			'Enables/disables the deployed trigger; the draft is not affected',
+		suspendJobExecution: 'Suspend job execution',
+		copyEmailAddress: 'Copy email address',
+		runnablePath: 'runnable: {path}',
+		editedBy: 'edited by {name}',
+		atDate: 'at {date}',
+		onlyFolders: 'Only f/*',
+		onlyUserAndFolders: 'Only u/{user} and f/*',
+		notCompatibleCloudTitle: 'Not compatible with multi-tenant cloud',
+		disabledInCloud: '{kind} triggers are disabled in the multi-tenant cloud.',
+		serviceNotSupported: 'Service not supported',
+		serviceNotSupportedBody: 'The service "{service}" is not supported for native triggers.',
+		supportedServices: 'Supported services: {services}',
+		notAvailableTitle: '{kind} triggers are not available',
+		notAvailableBody: `The workspace doesn't have a {kind} integration connected`,
+		manageNativeTriggers: 'Manage native triggers',
+		retryCheck: 'Retry check',
+		checkingAvailability: 'Checking {kind} availability...',
+		integrationNotAvailable:
+			'{kind} integration not available, set it in the workspace settings',
+		failedToLoadTriggers: 'Failed to load triggers: {error}',
+		syncNotSupported: 'Sync is not supported for this service',
+		cannotSyncTriggersNotConnected: 'Cannot sync triggers: workspace integration not connected',
+		syncedTriggers: 'Successfully synced {kind} triggers',
+		cannotSyncKindNotConnected:
+			'Cannot sync: {kind} workspace integration not connected. Please connect it in workspace settings.',
+		failedToSyncTriggers: 'Failed to sync triggers: {error}',
+		deletedEmailTrigger: 'Successfully deleted Email trigger: {path}',
+		deletePostgresTrigger: 'Delete Postgres trigger',
+		deleteReplicationSlot: 'Delete the associated replication slot named: {name} ?',
+		deletePublication: 'Delete the associated publication named: {name} ?',
+		deleteGcpTrigger: 'Delete GCP Pub/Sub trigger',
+		deleteGcpSubscription: 'Delete subscription "{subscription}" subscribed to topic "{topic}"?',
+		deleteAzureTrigger: 'Delete Azure Event Grid trigger',
+		deleteAzureSubscription: 'Also delete Azure subscription "{subscription}" on Azure?'
 	},
 	workspaceDependencies: {
 		failedToLoad: 'Failed to load enforced dependencies',
