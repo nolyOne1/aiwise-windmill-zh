@@ -13,6 +13,7 @@
 	import WorkspaceCard from './WorkspaceCard.svelte'
 	import { twMerge } from 'tailwind-merge'
 	import { devBadgeText } from '$lib/utils/devWorkspaceLabel'
+	import { locale, t } from '$lib/i18n'
 
 	interface ExtendedWorkspace extends UserWorkspace {
 		_children?: ExtendedWorkspace[]
@@ -181,7 +182,7 @@
 									{/if}
 								{/if}
 								{#if isWorkspaceDisabled(workspace)}
-									<span class="text-red-500 ml-1">(user disabled in this workspace)</span>
+									<span class="text-red-500 ml-1">{($locale, t('workspace.userDisabledInWorkspace'))}</span>
 								{/if}
 								{#if workspace.id === 'admins'}
 									<span class="text-accent ml-1">Used to manage your Windmill instance</span>

@@ -103,4 +103,6 @@ test('task 3 locale dictionaries include shell status labels for forking and mem
 	assert.equal(chinese.account.superadminNotMember, '{email}（超级管理员，非成员）')
 	assert.equal(english.workspace.userDisabled, '(user disabled)')
 	assert.equal(chinese.workspace.userDisabled, '（用户已禁用）')
+	assert.equal(english.workspace.userDisabledInWorkspace, '(user disabled in this workspace)')
+	assert.equal(chinese.workspace.userDisabledInWorkspace, '（该工作区中的用户已禁用）')
 })

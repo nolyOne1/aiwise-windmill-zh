@@ -99,7 +99,8 @@ export const enUS = {
 		freeExecUsage: '{count}/1000 free workspace execs',
 		upgrade: 'Upgrade',
 		forkingWorkspace: 'Forking {workspace}',
-		userDisabled: '(user disabled)'
+		userDisabled: '(user disabled)',
+		userDisabledInWorkspace: '(user disabled in this workspace)'
 	},
 	login: {
 		pageTitle: 'Log in or sign up',

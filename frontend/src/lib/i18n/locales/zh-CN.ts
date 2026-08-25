@@ -97,7 +97,8 @@ export const zhCN = {
 		freeExecUsage: '{count}/1000 次免费工作区执行',
 		upgrade: '升级',
 		forkingWorkspace: '正在派生 {workspace}',
-		userDisabled: '（用户已禁用）'
+		userDisabled: '（用户已禁用）',
+		userDisabledInWorkspace: '（该工作区中的用户已禁用）'
 	},
 	login: {
 		pageTitle: '登录或注册',
