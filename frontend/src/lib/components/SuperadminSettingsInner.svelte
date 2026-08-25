@@ -54,6 +54,7 @@
 	import SettingsSearchInput from './instanceSettings/SettingsSearchInput.svelte'
 	import InstanceAISettings from './instanceSettings/InstanceAISettings.svelte'
 	import ExternalJwtTokens from './instanceSettings/ExternalJwtTokens.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	let filter = $state('')
 
@@ -301,14 +302,13 @@
 						<div class="h-full">
 							{#if !automateUsernameCreation && !isCloudHosted()}
 								<div class="mb-4">
-									<h3 class="mb-2"> Automatic username creation </h3>
+									<h3 class="mb-2"> {($locale, t('superadmin.automaticUsernameCreation'))} </h3>
 									<div class="mb-2">
 										<span class="text-primary text-sm"
-											>Automatically create a username for new users based on their email, shared
-											across workspaces. <a
+											>{($locale, t('superadmin.automaticUsernameCreationDescription'))} <a
 												target="_blank"
 												href="https://www.windmill.dev/docs/advanced/instance_settings#automatic-username-creation"
-												>Learn more</a
+												>{($locale, t('common.learnMore'))}</a
 											></span
 										>
 									</div>
@@ -320,7 +320,7 @@
 											automateUsernameModalOpen = true
 										}}
 									>
-										Enable (recommended)
+										{($locale, t('superadmin.enableRecommended'))}
 									</Button>
 									<ConfirmationModal
 										open={automateUsernameModalOpen}
@@ -329,40 +329,38 @@
 											enableAutomateUsernameCreationSetting()
 										}}
 										on:canceled={() => (automateUsernameModalOpen = false)}
-										title="Automatic username creation"
-										confirmationText="Enable"
+										title={($locale, t('superadmin.automaticUsernameCreation'))}
+										confirmationText={($locale, t('superadmin.enable'))}
 									>
-										Once activated, it will not be possible to disable this feature. In case
-										existing users have different usernames in different workspaces, you will have
-										to manually confirm the username for each user.
+										{($locale, t('superadmin.automaticUsernameCreationConfirm'))}
 									</ConfirmationModal>
 								</div>
 							{/if}
 
 							{#if extJwtTokens.length > 0}
 								<Tabs bind:selected={usersSubTab} class="mb-4">
-									<Tab value="users" label="Users" />
-									<Tab value="ext_jwt" label="External JWTs" />
+									<Tab value="users" label={($locale, t('workspaceSettings.users'))} />
+									<Tab value="ext_jwt" label={($locale, t('superadmin.externalJwts'))} />
 								</Tabs>
 							{/if}
 
 							{#if usersSubTab === 'users' || extJwtTokens.length === 0}
 								<SettingsPageHeader
-									title="Instance users ({users.length})"
-									description="Manage all users across your Windmill instance."
+									title={t('superadmin.instanceUsersTitle', { count: users.length })}
+									description={t('superadmin.instanceUsersDescription')}
 									link="https://www.windmill.dev/docs/advanced/instance_settings#global-users"
 								/>
 								<div class="flex flex-row gap-2 items-center">
 									<TextInput
-										inputProps={{ placeholder: 'Search users' }}
+										inputProps={{ placeholder: t('superadmin.searchUsers') }}
 										bind:value={filter}
 										class="w-60"
 									/><Toggle
 										bind:checked={activeOnly}
 										options={{
-											left: 'Recently active only',
+											left: t('superadmin.recentlyActiveOnly'),
 											leftTooltip:
-												'Show only users who have logged in or performed an action in the last 30 days'
+												t('superadmin.recentlyActiveOnlyTooltip')
 										}}
 									/>
 
@@ -376,7 +374,7 @@
 												nonCaptureEvent
 												wrapperClasses="w-fit shrink-0"
 											>
-												Add new user
+												{($locale, t('superadmin.addNewUser'))}
 											</Button>
 										{/snippet}
 										{#snippet content()}
@@ -385,7 +383,7 @@
 									</Popover>
 								</div>
 								<p class="text-hint text-2xs mt-2">
-									{filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} found
+									{t('superadmin.usersFound', { count: filteredUsers.length })}
 								</p>
 								<div class="mt-1">
 									<DataTable
@@ -397,18 +395,18 @@
 									>
 										<Head>
 											<tr>
-												<Cell head first>Email</Cell>
+												<Cell head first>{($locale, t('common.email'))}</Cell>
 												{#if automateUsernameCreation}
-													<Cell head>Username</Cell>
+													<Cell head>{($locale, t('common.username'))}</Cell>
 												{/if}
-												<Cell head>Name</Cell>
-												<Cell head>Auth</Cell>
+												<Cell head>{($locale, t('common.name'))}</Cell>
+												<Cell head>{($locale, t('superadmin.auth'))}</Cell>
 												{#if activeOnly}
-													<Cell head>Kind</Cell>
+													<Cell head>{($locale, t('superadmin.kind'))}</Cell>
 												{/if}
-												<Cell head>Role</Cell>
+												<Cell head>{($locale, t('superadmin.role'))}</Cell>
 												<Cell head last>
-													<span class="sr-only">Actions</span>
+													<span class="sr-only">{($locale, t('superadmin.actions'))}</span>
 												</Cell>
 											</tr>
 										</Head>
@@ -434,7 +432,7 @@
 																{#if workspace_id}
 																	<a
 																		href="{base}/?workspace={workspace_id}"
-																		title="Workspace: {workspace_id}"
+																		title={t('superadmin.workspaceTitle', { workspace: workspace_id })}
 																	>
 																		<Badge color="blue">{truncate(workspace_id, 20)}</Badge>
 																	</a>
@@ -442,7 +440,7 @@
 																{#if disabled}
 																	<span
 																		class="text-2xs px-1.5 py-0.5 rounded bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300 whitespace-nowrap"
-																		>Disabled</span
+																		>{($locale, t('common.disabled'))}</span
 																	>
 																{/if}
 															</div>
@@ -477,11 +475,11 @@
 														{#if activeOnly}
 															<Cell>
 																{#if is_workspace_admin}
-																	Admin
+																	{($locale, t('superadmin.admin'))}
 																{:else if operator_only}
-																	Operator only
+																	{($locale, t('superadmin.operatorOnly'))}
 																{:else}
-																	Developer
+																	{($locale, t('superadmin.developer'))}
 																{/if}
 															</Cell>
 														{/if}
@@ -492,13 +490,13 @@
 																		class="rounded-md text-xs px-2 py-1 bg-surface shadow-md font-bold"
 																	>
 																		{is_workspace_admin
-																			? 'Admin'
+																			? t('superadmin.admin')
 																			: operator_only
-																				? 'Operator'
-																				: 'Developer'}
+																				? t('superadmin.operator')
+																				: t('superadmin.developer')}
 																	</span>
 																	<Tooltip>
-																		Service-account role is managed in the workspace user settings.
+																		{($locale, t('superadmin.serviceAccountRoleTooltip'))}
 																	</Tooltip>
 																</div>
 															{:else}
@@ -512,7 +510,7 @@
 																					: 'user'}
 																			on:selected={async (e) => {
 																				if (email == $userStore?.email) {
-																					sendUserToast('You cannot demote yourself', true)
+																					sendUserToast(t('superadmin.cannotDemoteYourself'), true)
 																					listUsers(activeOnly)
 																					return
 																				}
@@ -546,7 +544,7 @@
 																						}
 																					})
 																				}
-																				sendUserToast('User updated')
+																				sendUserToast(t('superadmin.userUpdated'))
 																				listUsers(activeOnly)
 																			}}
 																		>
@@ -554,12 +552,12 @@
 																				<ToggleButton
 																					value={'user'}
 																					small
-																					label="User"
+																					label={t('superadmin.user')}
 																					disabled={role_source === 'instance_group' &&
 																						(super_admin || devops)}
 																					tooltip={role_source === 'instance_group' &&
 																					(super_admin || devops)
-																						? 'Role is set by an instance group. Remove the user from the group to demote to "User".'
+																						? t('superadmin.instanceGroupRoleTooltip')
 																						: undefined}
 																					showTooltipIcon={role_source === 'instance_group' &&
 																						(super_admin || devops)}
@@ -568,14 +566,14 @@
 																				<ToggleButton
 																					value={'devops'}
 																					small
-																					label="Devops"
-																					tooltip="Devops is a role that grants visibilty similar to that of a super admin, but without giving all rights. For example devops users can see service logs and crtical alerts. You can think of it as a 'readonly' super admin"
+																					label={t('superadmin.devops')}
+																					tooltip={t('superadmin.devopsTooltip')}
 																					{item}
 																				/>
 																				<ToggleButton
 																					value={'super_admin'}
 																					small
-																					label="Superadmin"
+																					label={t('superadmin.superadmin')}
 																					{item}
 																				/>
 																			{/snippet}
@@ -585,10 +583,10 @@
 																		<a
 																			href="{base}/groups"
 																			class="text-2xs text-tertiary mt-0.5 ml-1 hover:underline"
-																			title="Role set by instance group. You can upgrade to a higher role manually, but demoting to &quot;User&quot; requires removing them from the group."
+																			title={t('superadmin.instanceGroupRoleTitle')}
 																			onclick={() => closeDrawer?.()}
 																		>
-																			Set by instance group
+																			{($locale, t('superadmin.setByInstanceGroup'))}
 																		</a>
 																	{/if}
 																</div>
@@ -601,7 +599,7 @@
 																		<a
 																			href="{base}/workspace_settings?tab=users&workspace={workspace_id}"
 																			class="text-xs text-secondary hover:text-primary hover:underline"
-																			title="Manage in workspace settings">Manage in workspace</a
+																			title={t('superadmin.manageInWorkspace')}>{($locale, t('superadmin.manageInWorkspace'))}</a
 																		>
 																	{/if}
 																{:else}
@@ -629,7 +627,7 @@
 																	<DropdownV2
 																		items={[
 																			{
-																				displayName: 'Edit',
+																				displayName: t('common.edit'),
 																				icon: Pencil,
 																				action: () => {
 																					const btn = editWrappers[email]?.querySelector(
@@ -639,7 +637,7 @@
 																				}
 																			},
 																			{
-																				displayName: disabled ? 'Enable' : 'Disable',
+																				displayName: disabled ? t('superadmin.enable') : t('superadmin.disable'),
 																				icon: disabled ? CheckCircle2 : Ban,
 																				action: () => {
 																					if (!disabled) {
@@ -650,10 +648,10 @@
 																									email,
 																									requestBody: { disabled: true }
 																								})
-																								sendUserToast('User disabled')
+																								sendUserToast(t('superadmin.userDisabled'))
 																								listUsers(activeOnly)
 																							} catch (e) {
-																								sendUserToast('Failed to disable user', true)
+																								sendUserToast(t('superadmin.disableUserFailed'), true)
 																							}
 																						}
 																					} else {
@@ -662,17 +660,17 @@
 																							requestBody: { disabled: false }
 																						})
 																							.then(() => {
-																								sendUserToast('User enabled')
+																								sendUserToast(t('superadmin.userEnabled'))
 																								listUsers(activeOnly)
 																							})
 																							.catch(() => {
-																								sendUserToast('Failed to enable user', true)
+																								sendUserToast(t('superadmin.enableUserFailed'), true)
 																							})
 																					}
 																				}
 																			},
 																			{
-																				displayName: 'Reassign',
+																				displayName: t('superadmin.reassign'),
 																				icon: ArrowRightLeft,
 																				action: () => {
 																					offboardingEmail = email
@@ -680,7 +678,7 @@
 																				}
 																			},
 																			{
-																				displayName: 'Remove',
+																				displayName: t('common.remove'),
 																				icon: UserMinus,
 																				type: 'delete',
 																				action: () => {
@@ -753,8 +751,8 @@
 {/if}
 <ConfirmationModal
 	open={Boolean(disableConfirmedCallback)}
-	title="Disable user"
-	confirmationText="Disable"
+	title={($locale, t('superadmin.disableUser'))}
+	confirmationText={($locale, t('superadmin.disable'))}
 	on:canceled={() => {
 		disableConfirmedCallback = undefined
 		listUsers(activeOnly)
@@ -768,9 +766,7 @@
 >
 	<div class="flex flex-col w-full space-y-4">
 		<span
-			>Are you sure you want to disable <b>{disableUserEmail}</b>? All their active sessions and
-			tokens will be revoked immediately. They will be unable to log in until re-enabled. Their
-			workspace memberships and content will be preserved.</span
+			>{@html t('superadmin.disableUserConfirm', { email: `<b>${disableUserEmail}</b>` })}</span
 		>
 	</div>
 </ConfirmationModal>

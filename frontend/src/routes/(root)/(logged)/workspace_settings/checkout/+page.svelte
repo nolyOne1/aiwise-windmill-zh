@@ -5,6 +5,7 @@
 	import { Alert } from '$lib/components/common'
 	import { WindmillIcon } from '$lib/components/icons'
 	import { WorkspaceService } from '$lib/gen'
+	import { locale, t } from '$lib/i18n'
 	import { workspaceStore } from '$lib/stores'
 	import { sendUserToast } from '$lib/toast'
 
@@ -22,7 +23,7 @@
 				clearInterval(interval)
 				goto('/workspace_settings?tab=premium')
 			} else if (attempt > 10) {
-				sendUserToast('Subscription upgrade failed. Contact contact@windmill.dev', true)
+				sendUserToast(t('workspaceCheckout.subscriptionUpgradeFailedToast'), true)
 				clearInterval(interval)
 				goto('/workspace_settings?tab=premium')
 			}
@@ -31,19 +32,19 @@
 </script>
 
 <!-- svelte-ignore missing_declaration -->
-<CenteredModal title="Subscription upgrade {success ? 'succeeded' : 'failed'}">
+<CenteredModal title={success ? t('workspaceCheckout.subscriptionUpgradeSucceeded') : t('workspaceCheckout.subscriptionUpgradeFailed')}>
 	{#if !success}
 		<div class="my-2">
-			<Alert type="error" title="Checkout failed">
-				The checkout failed, your subscription has not been updated.
+			<Alert type="error" title={($locale, t('workspaceCheckout.checkoutFailed'))}>
+				{($locale, t('workspaceCheckout.checkoutFailedBody'))}
 			</Alert>
 		</div>
 		<p class="text-sm my-6 text-primary">
-			You will be redirected to the workspace settings page in 5 seconds...
+			{($locale, t('workspaceCheckout.redirectingInFiveSeconds'))}
 		</p>
 	{:else}
 		<p class="text-sm my-6 text-primary w-full text-center">
-			Waiting for your upgrade to be processed...
+			{($locale, t('workspaceCheckout.waitingForUpgrade'))}
 		</p>
 	{/if}
 

@@ -29,6 +29,7 @@
 		discardDraftAfterDeploy,
 		runResetToDeployed
 	} from '$lib/userDraftToast'
+	import { locale, t } from '$lib/i18n'
 
 	let version: undefined | number = $state(undefined)
 
@@ -537,8 +538,8 @@
 />
 {#if notFound}
 	<div class="flex flex-col items-center justify-center h-full">
-		<h1 class="text-2xl font-bold">Flow not found at path {page.params.path}</h1>
-		<p class="text-gray-500">The flow you are looking for does not exist.</p>
+		<h1 class="text-2xl font-bold">{t('flowEditor.notFoundTitle', { path: page.params.path })}</h1>
+		<p class="text-gray-500">{($locale, t('flowEditor.notFoundBody'))}</p>
 	</div>
 {:else if renderEditor}
 	<FlowBuilder

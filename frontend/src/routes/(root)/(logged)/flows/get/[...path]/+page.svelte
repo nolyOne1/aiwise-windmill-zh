@@ -78,6 +78,7 @@
 	import NoDirectDeployAlert from '$lib/components/NoDirectDeployAlert.svelte'
 	import { buildForkEditUrl, editInForkAllowed, editInForkLabel } from '$lib/utils/editInFork'
 	import { isCloudHosted } from '$lib/cloud'
+	import { locale, t } from '$lib/i18n'
 
 	let flow: Flow | undefined = $state()
 	let can_write = $state(false)
@@ -132,7 +133,7 @@
 
 	async function deleteFlow(): Promise<void> {
 		await FlowService.deleteFlowByPath({ workspace: $workspaceStore!, path })
-		sendUserToast('Flow deleted')
+		sendUserToast(t('flowDetails.flowDeleted'))
 		goto('/')
 	}
 
@@ -165,7 +166,14 @@
 				version: versionId
 			})
 			if (versioned.path !== path) {
-				sendUserToast(`Flow version ${versionId} belongs to ${versioned.path}, not ${path}.`, true)
+				sendUserToast(
+					t('flowDetails.versionBelongsElsewhere', {
+						version: versionId,
+						actualPath: versioned.path,
+						path
+					}),
+					true
+				)
 				goto(`/flows/get/${versioned.path}?workspace=${$workspaceStore}&version=${versionId}`)
 				return
 			}
@@ -294,7 +302,7 @@
 
 		if (flow && !$userStore?.operator) {
 			buttons.push({
-				label: 'Fork',
+				label: t('flowDetails.fork'),
 				buttonProps: {
 					href: `${base}/flows/add?template=${flow.path}`,
 					variant: 'subtle',
@@ -327,7 +335,7 @@
 		}
 
 		buttons.push({
-			label: `Runs`,
+			label: t('common.runs'),
 			buttonProps: {
 				href: `${base}/runs/${flow.path}`,
 				unifiedSize: 'md',
@@ -337,7 +345,7 @@
 		})
 
 		buttons.push({
-			label: `History`,
+			label: t('flowDetails.history'),
 			buttonProps: {
 				onClick: () => flowHistory?.open(),
 				unifiedSize: 'md',
@@ -352,7 +360,7 @@
 
 		if (!$userStore?.operator) {
 			buttons.push({
-				label: 'Build app',
+				label: t('flowDetails.buildApp'),
 				buttonProps: {
 					onClick: async () => {
 						const app = createRawAppFromFlow(flow.path, flow.summary, flow.schema)
@@ -369,7 +377,7 @@
 			})
 
 			buttons.push({
-				label: 'Edit',
+				label: t('common.edit'),
 				buttonProps: {
 					href: `${base}/flows/edit/${path}`,
 					variant: 'accent',
@@ -403,7 +411,7 @@
 		const menuItems: any = []
 
 		menuItems.push({
-			label: 'Permissions',
+			label: t('common.permissions'),
 			onclick: () => shareModal?.openDrawer(flow?.path ?? '', 'flow'),
 			Icon: Shield,
 			disabled: !can_write
@@ -411,14 +419,14 @@
 
 		if (showEditButtons) {
 			menuItems.push({
-				label: 'Move/Rename',
+				label: t('flowDetails.moveRename'),
 				onclick: () => moveDrawer?.openDrawer(flow?.path ?? '', flow?.summary, 'flow'),
 				Icon: FolderOpen
 			})
 		}
 
 		menuItems.push({
-			label: 'Audit logs',
+			label: t('app.auditLogs'),
 			Icon: Eye,
 			onclick: () => {
 				goto(`/audit_logs?resource=${flow?.path}`)
@@ -427,7 +435,7 @@
 
 		if (isDeployable('flow', flow?.path ?? '', deployUiSettings)) {
 			menuItems.push({
-				label: 'Deploy to staging/prod',
+				label: t('common.deployToProdStaging'),
 				onclick: () => deploymentDrawer?.openDrawer(flow?.path ?? '', 'flow'),
 				Icon: ChevronUpSquare
 			})
@@ -435,18 +443,18 @@
 
 		if (can_write && showEditButtons) {
 			menuItems.push({
-				label: 'Deployments',
+				label: t('flowDetails.deployments'),
 				onclick: () => flowHistory?.open(),
 				Icon: HistoryIcon
 			})
 			menuItems.push({
-				label: flow.archived ? 'Unarchive' : 'Archive',
+				label: flow.archived ? t('flowDetails.unarchive') : t('flowDetails.archive'),
 				onclick: () => flow?.path && archiveFlow(),
 				Icon: Archive,
 				color: 'red'
 			})
 			menuItems.push({
-				label: 'Delete',
+				label: t('common.delete'),
 				onclick: () => flow?.path && deleteFlow(),
 				Icon: Trash,
 				color: 'red'
@@ -467,7 +475,7 @@
 						event.preventDefault()
 						runForm?.run()
 					} else {
-						sendUserToast('Please fix errors before running', true)
+						sendUserToast(t('flowDetails.fixErrorsBeforeRunning'), true)
 					}
 				}
 				break
@@ -635,15 +643,15 @@
 						{/if}
 
 						{#if flow?.archived}
-							<Alert type="error" title="Archived">This flow was archived</Alert>
+							<Alert type="error" title={($locale, t('flowDetails.archivedTitle'))}>{($locale, t('flowDetails.archivedBody'))}</Alert>
 							<div class="h-4"></div>
 						{/if}
 
 						{#if pinnedVersion !== undefined}
-							<Alert type="info" title="Viewing pinned version {pinnedVersion}">
-								This is a historical version of the flow, not the latest.
+							<Alert type="info" title={t('flowDetails.pinnedVersionTitle', { version: pinnedVersion })}>
+								{($locale, t('flowDetails.pinnedVersionBody'))}
 								<a class="underline" href="/flows/get/{path}?workspace={$workspaceStore}">
-									View latest
+									{($locale, t('flowDetails.viewLatest'))}
 								</a>
 							</Alert>
 							<div class="h-4"></div>
@@ -663,21 +671,21 @@
 							<div class="pb-4" transition:slide={{ duration: 150 }}>
 								<HeaderBadge color="yellow">
 									<Loader2 size={12} class="inline animate-spin mr-1" />
-									Deployment in progress
+									{($locale, t('flowDetails.deploymentInProgress'))}
 									{#if deploymentJobId}
 										<a
 											href="/run/{deploymentJobId}?workspace={$workspaceStore}"
 											class="underline"
-											target="_blank">view job</a
+											target="_blank">{($locale, t('flowDetails.viewJob'))}</a
 										>
 									{/if}
 								</HeaderBadge>
 							</div>
 						{/if}
 						{#if flow.lock_error_logs && flow.lock_error_logs != ''}
-							<Alert type="error" title="Deployment failed">
+							<Alert type="error" title={($locale, t('flowDetails.deploymentFailedTitle'))}>
 								<p>
-									This flow has not been deployed successfully because of the following errors:
+									{($locale, t('flowDetails.deploymentFailedBody'))}
 								</p>
 								<LogViewer content={flow.lock_error_logs} isLoading={false} tag={undefined} />
 							</Alert>
@@ -715,8 +723,8 @@
 												bind:checked={jsonView}
 												size="xs"
 												options={{
-													right: 'JSON',
-													rightTooltip: 'Fill args from JSON'
+													right: t('flowDetails.json'),
+													rightTooltip: t('flowDetails.fillArgsFromJson')
 												}}
 												lightMode
 												on:change={(e) => {

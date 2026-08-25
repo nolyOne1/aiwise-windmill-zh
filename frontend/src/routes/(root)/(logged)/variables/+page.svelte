@@ -26,6 +26,7 @@
 	import Tooltip from '$lib/components/Tooltip.svelte'
 	import VariableEditor from '$lib/components/VariableEditor.svelte'
 	import type { ContextualVariable, ListableVariable, WorkspaceDeployUISettings } from '$lib/gen'
+	import { locale, t } from '$lib/i18n'
 	import { enterpriseLicense, userStore, workspaceStore, userWorkspaces } from '$lib/stores'
 	import { sendUserToast } from '$lib/toast'
 	import { canWrite, isOwner, truncate } from '$lib/utils'
@@ -212,7 +213,7 @@
 		}
 		await VariableService.deleteVariable({ workspace: $workspaceStore!, path })
 		loadVariables()
-		sendUserToast(`Variable ${path} was deleted`)
+		sendUserToast(t('variables.variableDeleted', { path }))
 	}
 
 	$effect(() => {
@@ -236,9 +237,7 @@
 			}
 		})
 		loadContextualVariables()
-		sendUserToast(
-			`Custom contextual variable ${row.name} was deleted. It may take up to a few minutes to update.`
-		)
+		sendUserToast(t('variables.customContextualVariableDeleted', { name: row.name }))
 		setTimeout(() => {
 			loadContextualVariables()
 		}, 5000)
@@ -267,14 +266,14 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.variables}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">Unauthorized</p>
-		<p>Page not available for operators</p>
+		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
+		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		<PageHeader
-			title="Variables"
-			tooltip="Save and permission strings to be reused in Scripts and Flows."
+			title={($locale, t('variables.title'))}
+			tooltip={t('variables.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/variables_and_secrets"
 		>
 			{#if showCreateButtons}
@@ -286,7 +285,7 @@
 							startIcon={{ icon: Plus }}
 							on:click={() => contextualVariableEditor?.initNew()}
 						>
-							New&nbsp;contextual&nbsp;variable
+							{($locale, t('variables.newContextualVariable'))}
 						</Button>
 					{:else}
 						<Button
@@ -295,7 +294,7 @@
 							startIcon={{ icon: Plus }}
 							on:click={() => variableEditor?.initNew()}
 						>
-							New&nbsp;variable
+							{($locale, t('variables.newVariable'))}
 						</Button>
 					{/if}
 				</div>
@@ -317,14 +316,13 @@
 
 		<div class="flex gap-2 justify-between items-center">
 			<Tabs bind:selected={tab}>
-				<Tab value="workspace" label="Workspace" icon={Building} />
-				<Tab value="contextual" label="Contextual" icon={DollarSign}>
+				<Tab value="workspace" label={($locale, t('common.workspace'))} icon={Building} />
+				<Tab value="contextual" label={($locale, t('variables.contextual'))} icon={DollarSign}>
 					{#snippet extra()}
 						<Tooltip
 							documentationLink="https://www.windmill.dev/docs/core_concepts/variables_and_secrets#contextual-variables"
 						>
-							Contextual variables are passed as environment variables when running a script and
-							depends on the execution context.
+							{($locale, t('variables.contextualTooltip'))}
 						</Tooltip>
 					{/snippet}
 				</Tab>
@@ -334,7 +332,7 @@
 					class="grow max-w-[26rem]"
 					schema={variablesFilterSchema}
 					bind:value={filters.val}
-					placeholder="Filter variables..."
+					placeholder={t('variables.filterVariables')}
 					presets={folderPresets}
 				/>
 			{/if}
@@ -348,9 +346,9 @@
 					{/each}
 				{:else if filteredItems.length == 0}
 					<div class="flex flex-col items-center justify-center h-full">
-						<div class="text-md font-medium">No variables found</div>
+						<div class="text-md font-medium">{($locale, t('variables.noVariablesFound'))}</div>
 						<div class="text-sm text-secondary">
-							Try changing the filters or creating a new variable
+							{($locale, t('variables.noVariablesFoundHint'))}
 						</div>
 					</div>
 				{:else}
@@ -358,9 +356,9 @@
 						<Head>
 							<tr>
 								<Cell head first class="!px-0" />
-								<Cell head>Path</Cell>
-								<Cell head>Value</Cell>
-								<Cell head>Description</Cell>
+								<Cell head>{($locale, t('common.path'))}</Cell>
+								<Cell head>{($locale, t('common.value'))}</Cell>
+								<Cell head>{($locale, t('common.description'))}</Cell>
 								<Cell head />
 								<Cell head last stickyEnd />
 							</tr>
@@ -392,7 +390,7 @@
 														color="blue"
 														small
 														class="px-1"
-														title="Label: {label}"
+														title={t('variables.labelTitle', { label })}
 														clickable
 														onclick={() => {
 															const arr = (filters.val.label ?? '').split(',').filter(Boolean)
@@ -423,7 +421,7 @@
 												<Popover notClickable>
 													<EyeOff size={12} />
 													{#snippet text()}
-														<span>This item is secret</span>
+														<span>{($locale, t('variables.secretItem'))}</span>
 													{/snippet}
 												</Popover>
 											{/if}
@@ -440,8 +438,7 @@
 													<Link size={16} />
 													{#snippet text()}
 														<div>
-															This variable is linked with a resource of the same path. They are
-															deleted and renamed together.
+															{($locale, t('variables.linkedResourcePopover'))}
 														</div>
 													{/snippet}
 												</Popover>
@@ -451,8 +448,7 @@
 													<RefreshCw size={16} />
 													{#snippet text()}
 														<div>
-															This OAuth token will be kept up-to-date in the background by Windmill
-															using its refresh token
+															{($locale, t('variables.oauthBackgroundRefresh'))}
 														</div>
 													{/snippet}
 												</Popover>
@@ -479,7 +475,7 @@
 
 															{#snippet text()}
 																<div>
-																	Latest exchange of the refresh token did not succeed. Error: {refresh_error}
+																	{t('variables.refreshTokenFailed', { error: refresh_error })}
 																</div>
 															{/snippet}
 														</Popover>
@@ -491,9 +487,7 @@
 															/>
 															{#snippet text()}
 																<div>
-																	The access_token is expired, it will get renewed the next time
-																	this variable is fetched or you can request is to be refreshed in
-																	the dropdown on the right.
+																	{($locale, t('variables.accessTokenExpired'))}
 																</div>
 															{/snippet}
 														</Popover>
@@ -505,8 +499,7 @@
 															/>
 															{#snippet text()}
 																<div>
-																	The variable was connected through OAuth and the token is not
-																	expired.
+																	{($locale, t('variables.oauthHealthy'))}
 																</div>
 															{/snippet}
 														</Popover>
@@ -521,13 +514,13 @@
 												let owner = isOwner(path, $userStore, $workspaceStore)
 												return [
 													{
-														displayName: 'Edit',
+														displayName: t('common.edit'),
 														icon: Pen,
 														action: () => variableEditor?.editVariable(path),
 														disabled: !canWrite || !showCreateButtons
 													},
 													{
-														displayName: 'Delete',
+														displayName: t('common.delete'),
 														icon: Trash,
 														type: 'delete',
 														action: (event) => {
@@ -546,7 +539,7 @@
 													isDeployable(is_secret ? 'secret' : 'variable', path, deployUiSettings)
 														? [
 																{
-																	displayName: 'Deploy to prod/staging',
+																	displayName: t('common.deployToProdStaging'),
 																	icon: FileUp,
 																	action: () => {
 																		deploymentDrawer?.openDrawer(path, 'variable')
@@ -555,7 +548,7 @@
 															]
 														: []),
 													{
-														displayName: 'Permissions',
+														displayName: t('common.permissions'),
 														action: () => {
 															shareModal?.openDrawer(path, 'variable')
 														},
@@ -564,7 +557,7 @@
 													...(account != undefined
 														? [
 																{
-																	displayName: 'Refresh token',
+																	displayName: t('variables.refreshToken'),
 																	icon: RefreshCw,
 																	action: async () => {
 																		await OauthService.refreshToken({
@@ -574,7 +567,7 @@
 																				path
 																			}
 																		})
-																		sendUserToast('Token refreshed')
+																		sendUserToast(t('variables.tokenRefreshed'))
 																		loadVariables()
 																	}
 																}
@@ -598,27 +591,27 @@
 						<Skeleton layout={[[2.8], 0.5]} />
 					{/each}
 				{:else}
-					<PageHeader title="Custom contextual variables" primary={false} />
+					<PageHeader title={($locale, t('variables.customContextualVariables'))} primary={false} />
 					{#if contextualVariables.filter((x) => x.is_custom).length === 0}
 						<div class="flex flex-col items-center justify-center h-full">
 							<div class="text-xs text-primary font-normal"
-								>No custom contextual variables found</div
+								>{($locale, t('variables.noCustomContextualVariables'))}</div
 							>
 						</div>
 					{:else}
 						<TableSimple
-							headers={['Name', 'Value']}
+							headers={[t('common.name'), t('common.value')]}
 							data={contextualVariables.filter((x) => x.is_custom)}
 							keys={['name', 'value']}
 							getRowActions={$userStore?.is_admin || $userStore?.is_super_admin
 								? (row) => {
 										return [
 											{
-												displayName: 'Edit',
+												displayName: t('common.edit'),
 												action: () => contextualVariableEditor?.editVariable(row.name, row.value)
 											},
 											{
-												displayName: 'Delete',
+												displayName: t('common.delete'),
 												type: 'delete',
 												action: () => {
 													deleteContextualVariable(row)
@@ -629,9 +622,9 @@
 								: undefined}
 						/>
 					{/if}
-					<PageHeader title="Contextual variables" primary={false} />
+					<PageHeader title={($locale, t('variables.contextualVariables'))} primary={false} />
 					<TableSimple
-						headers={['Name', 'Example of value', 'Description']}
+						headers={[t('common.name'), t('variables.exampleValue'), t('common.description')]}
 						data={contextualVariables.filter((x) => !x.is_custom)}
 						keys={['name', 'value', 'description']}
 					/>
@@ -643,8 +636,8 @@
 
 <ConfirmationModal
 	{open}
-	title="Remove variable"
-	confirmationText="Remove"
+	title={($locale, t('variables.removeVariableTitle'))}
+	confirmationText={($locale, t('common.remove'))}
 	trashbin
 	on:canceled={() => {
 		deleteConfirmedCallback = undefined
@@ -657,18 +650,17 @@
 	}}
 >
 	<div class="flex flex-col w-full space-y-4">
-		<span>Are you sure you want to remove this variable?</span>
+		<span>{($locale, t('variables.removeVariableConfirm'))}</span>
 		{#if deleteIsLinked}
-			<Alert type="warning" title="Linked resource">
-				This variable is linked with a resource of the same path. The linked resource will also be
-				deleted.
+			<Alert type="warning" title={($locale, t('variables.linkedResourceTitle'))}>
+				{($locale, t('variables.linkedResourceBody'))}
 			</Alert>
 		{/if}
-		<Alert type="info" title="Bypass confirmation">
+		<Alert type="info" title={($locale, t('variables.bypassConfirmationTitle'))}>
 			<div>
-				You can press
+				{($locale, t('variables.bypassConfirmationBodyPrefix'))}
 				<Badge color="dark-gray">SHIFT</Badge>
-				while removing a variable to bypass confirmation.
+				{($locale, t('variables.bypassConfirmationBodySuffix'))}
 			</div>
 		</Alert>
 	</div>

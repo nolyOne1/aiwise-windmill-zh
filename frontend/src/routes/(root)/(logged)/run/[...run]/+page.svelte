@@ -99,6 +99,7 @@
 	import { page } from '$app/state'
 	import { setViewToken } from '$lib/viewToken'
 	import { twMerge } from 'tailwind-merge'
+	import { locale, t } from '$lib/i18n'
 	import FlowRestartButton from '$lib/components/FlowRestartButton.svelte'
 	import { useNestedRestartState } from '$lib/components/useNestedRestartState.svelte'
 	import JobOtelTraces from '$lib/components/JobOtelTraces.svelte'
@@ -198,9 +199,9 @@
 				workspace
 			)}&view_token=${encodeURIComponent(token)}`
 			copyToClipboard(url)
-			sendUserToast('Read-only share link copied to clipboard')
+			sendUserToast(t('runDetail.readOnlyLinkCopied'))
 		} catch (e) {
-			sendUserToast(`Failed to create share link: ${e}`, true)
+			sendUserToast(t('runDetail.createShareLinkFailed', { error: `${e}` }), true)
 		}
 	}
 
@@ -217,9 +218,9 @@
 			} else {
 				await JobService.cancelQueuedJob({ workspace: $workspaceStore!, id, requestBody: {} })
 			}
-			sendUserToast(`job ${id} canceled`)
+			sendUserToast(t('runDetail.jobCanceled', { id }))
 		} catch (err) {
-			sendUserToast('could not cancel job', true)
+			sendUserToast(t('runDetail.couldNotCancelJob'), true)
 		}
 	}
 
@@ -302,7 +303,7 @@
 			debugContent = await JobService.getFlowDebugInfo({ workspace: $workspaceStore!, id: job?.id })
 			debugViewer?.openDrawer()
 		} else {
-			sendUserToast('Job has no id', true)
+			sendUserToast(t('runDetail.jobHasNoId'), true)
 		}
 	}
 
@@ -351,7 +352,7 @@
 			if (isHubFlowPath(job?.script_path)) {
 				const hubFlowId = getHubFlowIdFromPath(job?.script_path)
 				if (hubFlowId === undefined) {
-					sendUserToast('Could not determine the hub flow to fork', true)
+					sendUserToast(t('runDetail.couldNotDetermineHubFlow'), true)
 					return
 				}
 				$initialArgsStore = job?.args
@@ -476,7 +477,7 @@
 				}
 				await goto('/run/' + id + '?workspace=' + $workspaceStore)
 			} else {
-				sendUserToast('Cannot run this job immediately', true)
+				sendUserToast(t('runDetail.cannotRunImmediately'), true)
 			}
 		} finally {
 			runImmediatelyLoading = false
@@ -514,11 +515,11 @@
 
 {#if (job?.job_kind == 'flow' || isFlowPreview(job?.job_kind)) && job?.['running'] && job?.parent_job == undefined}
 	<Drawer bind:this={debugViewer} size="800px">
-		<DrawerContent title="Debug Detail" on:close={debugViewer.closeDrawer}>
+		<DrawerContent title={($locale, t('runDetail.debugDetail'))} on:close={debugViewer.closeDrawer}>
 			{#snippet actions()}
 				<div class="flex items-center gap-1">
 					<div class="w-60 pt-2">
-						<Toggle bind:checked={redactSensitive} options={{ right: 'Redact args/result/logs' }} />
+						<Toggle bind:checked={redactSensitive} options={{ right: t('runDetail.redactSensitive') }} />
 					</div>
 					<Button
 						on:click={() =>
@@ -528,7 +529,7 @@
 						unifiedSize="md"
 						variant="subtle"
 					>
-						<div class="flex gap-2 items-center">Copy <ClipboardCopy /> </div>
+						<div class="flex gap-2 items-center">{($locale, t('common.copy'))} <ClipboardCopy /> </div>
 					</Button>
 				</div>
 			{/snippet}
@@ -563,21 +564,14 @@
 {#if loadError?.status === 403}
 	<div class="max-w-3xl px-4 mx-auto w-full">
 		<div class="mt-6">
-			<Alert type="warning" title="You don't have access to this run">
+			<Alert type="warning" title={($locale, t('runDetail.noAccessTitle'))}>
 				<div class="flex flex-col gap-2">
-					<p>
-						This run exists in <span class="font-semibold">{$workspaceStore}</span>, but you don't
-						have permission to view it.
-					</p>
-					<p>
-						Ask a colleague who can see it to open the run and use the
-						<span class="font-semibold">Share</span> button to send you a read-only link. Opening that
-						link will grant you access to this run (and its steps).
-					</p>
+					<p>{@html t('runDetail.noAccessBody', { workspace: `<span class="font-semibold">${$workspaceStore}</span>` })}</p>
+					<p>{@html t('runDetail.noAccessShareBody', { share: `<span class="font-semibold">${t('runDetail.share')}</span>` })}</p>
 				</div>
 			</Alert>
 			<div class="mt-4">
-				<Button href="{base}/runs" unifiedSize="md" variant="accent">Go to runs page</Button>
+				<Button href="{base}/runs" unifiedSize="md" variant="accent">{($locale, t('runDetail.goToRunsPage'))}</Button>
 			</div>
 		</div>
 	</div>
@@ -587,7 +581,7 @@
 			<h1 class="text-red-400 mt-6 text-2xl font-semibold"
 				>Job {page.params.run} not found in {$workspaceStore}</h1
 			>
-			<h2 class="text-primary text-lg font-semibold">Are you in the right workspace?</h2>
+			<h2 class="text-primary text-lg font-semibold">{($locale, t('runDetail.rightWorkspace'))}</h2>
 			<div class="flex flex-col gap-2">
 				{#each $userWorkspaces as workspace}
 					<div>
@@ -598,12 +592,12 @@
 								goto(`/run/${page.params.run}?workspace=${workspace.id}`)
 							}}
 						>
-							See in {workspace.name}
+							{t('runDetail.seeInWorkspace', { name: workspace.name })}
 						</Button>
 					</div>
 				{/each}
 				<div>
-					<Button href="{base}/runs" unifiedSize="md" variant="accent">Go to runs page</Button>
+					<Button href="{base}/runs" unifiedSize="md" variant="accent">{($locale, t('runDetail.goToRunsPage'))}</Button>
 				</div>
 			</div>
 		</div>
@@ -639,7 +633,7 @@
 				<Dropdown
 					items={[
 						{
-							displayName: 'Delete result, logs and args (admin only)',
+							displayName: t('runDetail.deleteResultLogsArgs'),
 							action: () => {
 								job?.id && deleteCompletedJob(job.id)
 							},
@@ -658,7 +652,7 @@
 				</Dropdown>
 				{#if job?.job_kind === 'script' || job?.job_kind === 'flow'}
 					<Button href={runsHref} variant="default" unifiedSize="md" startIcon={{ icon: List }}>
-						View runs
+						{($locale, t('runDetail.viewRuns'))}
 					</Button>
 				{/if}
 			{/if}
@@ -667,10 +661,10 @@
 					variant="default"
 					unifiedSize="md"
 					startIcon={{ icon: Share2 }}
-					title="Copy a read-only share link to this run for another workspace member"
+					title={t('runDetail.shareTooltip')}
 					onclick={() => job && shareReadLink(job.id)}
 				>
-					Share
+					{($locale, t('runDetail.share'))}
 				</Button>
 			{/if}
 			{@const stem = job?.job_kind === 'script_hub' ? '/scripts' : `/${job?.job_kind}s`}
@@ -680,7 +674,7 @@
 					<Dropdown
 						items={[
 							{
-								displayName: 'Show Flow Debug Info',
+								displayName: t('runDetail.showFlowDebugInfo'),
 								action: () => {
 									debugInfo()
 								}
@@ -706,8 +700,10 @@
 					on:click={forkPreview}
 				>
 					{isHubFlowPreview
-						? 'Fork flow into workspace'
-						: `Fork ${isFlowPreview(job?.job_kind) ? 'flow' : 'code'} preview`}
+						? t('runDetail.forkFlowIntoWorkspace')
+						: isFlowPreview(job?.job_kind)
+							? t('runDetail.forkFlowPreview')
+							: t('runDetail.forkCodePreview')}
 				</Button>
 			{/if}
 			{#if persistentScriptDefinition !== undefined}
@@ -719,7 +715,7 @@
 						persistentScriptDrawer?.open?.(persistentScriptDefinition)
 					}}
 				>
-					Current runs
+					{($locale, t('runDetail.currentRuns'))}
 				</Button>
 			{/if}
 			{#if job && job?.type != 'CompletedJob' && (!job?.schedule_path || job?.['running'] == true)}
@@ -739,7 +735,7 @@
 						}}
 						title={`Cancel the ${job?.job_kind === 'script' ? 'script' : job?.job_kind === 'flow' ? 'flow' : 'job'}`}
 					>
-						Cancel
+						{($locale, t('runDetail.cancel'))}
 					</Button>
 				{:else}
 					<Button
@@ -753,7 +749,7 @@
 							}
 						}}
 					>
-						Force Cancel
+						{($locale, t('runDetail.forceCancel'))}
 					</Button>
 				{/if}
 			{/if}
@@ -767,7 +763,7 @@
 						}
 						scheduleEditor?.openEdit(job.schedule_path, job.job_kind == 'flow')
 					}}
-					startIcon={{ icon: Calendar }}>Edit schedule</Button
+					startIcon={{ icon: Calendar }}>{($locale, t('runDetail.editSchedule'))}</Button
 				>
 			{/if}
 			{#if job?.type === 'CompletedJob' && job?.job_kind === 'flow' && selectedJobStep !== undefined && (restart.topLevelRestartable || restart.nestedRestartSupported) && job.id}
@@ -804,12 +800,12 @@
 					loading={runImmediatelyLoading}
 					dropdownItems={[
 						{
-							label: 'Run immediately with same args',
+							label: t('runDetail.runImmediatelyWithSameArgs'),
 							onClick: () => runImmediately()
 						}
 					]}
 				>
-					Run again
+					{($locale, t('runDetail.runAgain'))}
 				</Button>
 			{/if}
 			{#if job?.job_kind === 'script' || job?.job_kind === 'flow'}
@@ -824,7 +820,7 @@
 							variant="default"
 							disabled={!showEditButton}
 							size="sm"
-							startIcon={{ icon: Pen }}>Edit</Button
+							startIcon={{ icon: Pen }}>{($locale, t('common.edit'))}</Button
 						>
 					{/if}
 					{#if !showEditButton && !isCloudHosted() && editInForkAllowed($workspaceStore, $userWorkspaces)}
@@ -853,7 +849,7 @@
 									: Code2
 					}}
 				>
-					View {job?.job_kind === 'script_hub' ? 'script' : job?.job_kind}
+					{t('runDetail.viewRunnable', { kind: job?.job_kind === 'script_hub' ? t('common.script') : job?.job_kind === 'flow' ? t('common.flow') : t('common.script') })}
 				</Button>
 			{/if}
 		{/snippet}
@@ -876,8 +872,8 @@
 		</div>
 		{#if job?.['deleted']}
 			<div class="max-w-7xl mx-auto w-full px-4 mt-6">
-				<Alert type="error" title="Deleted">
-					The content of this run was deleted (by an admin, no less)
+				<Alert type="error" title={($locale, t('runDetail.deletedTitle'))}>
+					{($locale, t('runDetail.deletedBody'))}
 				</Alert>
 			</div>
 			<div class="my-4"></div>
@@ -908,7 +904,7 @@
 
 		<!-- Arguments and actions -->
 		<div class="max-w-7xl mx-auto w-full px-4 mt-12">
-			<div class="text-xs text-emphasis font-semibold mb-1">Inputs</div>
+			<div class="text-xs text-emphasis font-semibold mb-1">{($locale, t('runDetail.inputs'))}</div>
 			<div class="flex flex-col gap-y-6">
 				<JobArgs
 					workspace={job?.workspace_id ?? $workspaceStore ?? 'no_w'}
@@ -920,8 +916,8 @@
 						class="p-1 flex flex-row relative text-center"
 						size="xs"
 						type="info"
-						title="tip: Track progress of longer jobs"
-						tooltip="For better transparency and verbosity, you can try setting progress from within the script."
+						title={t('runDetail.progressTipTitle')}
+						tooltip={t('runDetail.progressTipTooltip')}
 						documentationLink="https://www.windmill.dev/docs/advanced/explicit_progress"
 					>
 						<button
@@ -932,7 +928,7 @@
 							}}
 							class="absolute m-2 top-0 right-0 inline-flex rounded-md bg-surface-secondary text-primary hover:text-primary focus:outline-none"
 						>
-							<span class="sr-only">Close</span>
+							<span class="sr-only">{($locale, t('common.close'))}</span>
 							<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 								<path
 									d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
@@ -955,7 +951,7 @@
 			<div class="max-w-7xl mx-auto w-full px-4 mb-10">
 				{#if job?.workflow_as_code_status && job.job_kind !== 'aiagent'}
 					<div class="mr-2 sm:mr-0 mt-12 mb-6">
-						<h3 class="text-xs font-semibold text-emphasis mb-1">Workflow Timeline</h3>
+						<h3 class="text-xs font-semibold text-emphasis mb-1">{($locale, t('runDetail.workflowTimeline'))}</h3>
 						<div class="border rounded-md overflow-hidden">
 							<WorkflowTimeline
 								flow_status={asWorkflowStatus(job.workflow_as_code_status)}
@@ -975,7 +971,7 @@
 				<!-- Result Section (moved outside tabs) -->
 				{#if job}
 					<div class="mr-2 sm:mr-0 mt-12 mb-6">
-						<h3 class="text-xs font-semibold text-emphasis mb-1">Result</h3>
+						<h3 class="text-xs font-semibold text-emphasis mb-1">{($locale, t('common.result'))}</h3>
 						<div class="border rounded-md bg-surface-tertiary p-4 overflow-auto max-h-screen">
 							{#if job.result_stream || (job.type == 'CompletedJob' && job.result !== undefined)}
 								<DisplayResult
@@ -987,7 +983,7 @@
 									isTest={false}
 								/>
 							{:else}
-								<div class="text-secondary text-sm">No output is available yet</div>
+								<div class="text-secondary text-sm">{($locale, t('runDetail.noOutputYet'))}</div>
 							{/if}
 						</div>
 					</div>
@@ -1000,12 +996,12 @@
 				<!-- Logs and outputs-->
 				<div class="mr-2 sm:mr-0 mt-6">
 					<Tabs bind:selected={viewTab}>
-						<Tab value="logs" label="Logs" />
-						<Tab value="stats" label="Metrics" />
-						<Tab value="traces" label="Traces" />
-						<Tab value="assets" label="Assets" />
+						<Tab value="logs" label={($locale, t('app.logs'))} />
+						<Tab value="stats" label={($locale, t('runDetail.metrics'))} />
+						<Tab value="traces" label={($locale, t('runDetail.traces'))} />
+						<Tab value="assets" label={($locale, t('assets.title'))} />
 						{#if isScriptPreview(job?.job_kind)}
-							<Tab value="code" label="Code" />
+							<Tab value="code" label={($locale, t('runDetail.code'))} />
 						{/if}
 					</Tabs>
 
@@ -1042,7 +1038,7 @@
 										<HighlightCode lines language={job.language} code={job.raw_code} />
 									</div>
 								{:else if job}
-									<span class="text-sm">No code available</span>
+									<span class="text-sm">{($locale, t('runDetail.noCodeAvailable'))}</span>
 								{:else}
 									<Skeleton layout={[[5]]} />
 								{/if}
@@ -1051,7 +1047,7 @@
 									<MemoryFootprintViewer jobId={job.id} {jobUpdateLastFetch} />
 								</div>
 							{:else}
-								<div class="w-full p-4 text-secondary">Select a tab to view content</div>
+								<div class="w-full p-4 text-secondary">{($locale, t('runDetail.selectTab'))}</div>
 							{/if}
 						</div>
 					{/if}

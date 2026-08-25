@@ -95,6 +95,7 @@
 	import WacDiagram from '$lib/components/graph/WacDiagram.svelte'
 	import { twMerge } from 'tailwind-merge'
 	import CiTestResults from '$lib/components/CiTestResults.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	let script: Script | undefined = $state()
 	let topHash: string | undefined = $state()
@@ -165,7 +166,7 @@
 				lock: r.lock
 			}
 		})
-		sendUserToast(`Unarchived script`)
+		sendUserToast(t('scriptDetails.scriptUnarchived'))
 		loadScript(ns)
 		goto(`/scripts/get/${ns}`)
 	}
@@ -229,7 +230,7 @@
 				can_write = false
 				return
 			} catch (e) {
-				sendUserToast('Could not load hub script: ' + e.body, true)
+				sendUserToast(t('scriptDetails.couldNotLoadHubScript', { error: e.body }), true)
 				return
 			}
 		}
@@ -251,7 +252,7 @@
 				})
 				hash = script.hash
 			} catch (e) {
-				sendUserToast('Could not load script: ' + e.body, true)
+				sendUserToast(t('scriptDetails.couldNotLoadScript', { error: e.body }), true)
 				return
 			}
 		}
@@ -338,7 +339,7 @@
 			await goto('/run/' + run + '?workspace=' + $workspaceStore)
 		} catch (err) {
 			runLoading = false
-			sendUserToast(`Could not create job: ${err.body}`, true)
+			sendUserToast(t('scriptDetails.couldNotCreateJob', { error: err.body }), true)
 		}
 	}
 
@@ -374,7 +375,7 @@
 
 		if (!topHash && script && !$userStore?.operator && !script.codebase) {
 			buttons.push({
-				label: 'Fork',
+				label: t('scriptDetails.fork'),
 				buttonProps: {
 					href: `${base}/scripts/add?template=${script.path}`,
 					unifiedSize: 'md',
@@ -407,7 +408,7 @@
 		}
 
 		buttons.push({
-			label: `Runs`,
+			label: t('common.runs'),
 			buttonProps: {
 				href: `${base}/runs/${script.path}`,
 				unifiedSize: 'md',
@@ -422,7 +423,7 @@
 
 		if (Array.isArray(script.parent_hashes) && script.parent_hashes.length > 0) {
 			buttons.push({
-				label: `History`,
+				label: t('scriptDetails.history'),
 				buttonProps: {
 					onClick: () => {
 						versionsDrawerOpen = !versionsDrawerOpen
@@ -437,7 +438,7 @@
 
 		if (!$userStore?.operator) {
 			buttons.push({
-				label: 'Build app',
+				label: t('scriptDetails.buildApp'),
 				buttonProps: {
 					onClick: async () => {
 						const app = createRawAppFromScript(script.path, script.summary, script.schema)
@@ -455,7 +456,7 @@
 
 			if (script?.restart_unless_cancelled ?? false) {
 				buttons.push({
-					label: 'Current runs',
+					label: t('scriptDetails.currentRuns'),
 					buttonProps: {
 						onClick: () => {
 							persistentScriptDrawer?.open?.(script)
@@ -469,7 +470,7 @@
 
 			if (!script.codebase) {
 				buttons.push({
-					label: 'Edit',
+					label: t('common.edit'),
 					buttonProps: {
 						href: `${base}/scripts/edit/${script.path}?${
 							topHash ? `&hash=${script.hash}&topHash=` + topHash : ''
@@ -508,7 +509,7 @@
 
 		if (showEditButtons) {
 			menuItems.push({
-				label: 'Move/Rename',
+				label: t('scriptDetails.moveRename'),
 				Icon: FolderOpen,
 				onclick: () => {
 					moveDrawer?.openDrawer(script?.path ?? '', script?.summary, 'script')
@@ -517,7 +518,7 @@
 		}
 
 		menuItems.push({
-			label: 'Audit logs',
+			label: t('app.auditLogs'),
 			Icon: Eye,
 			onclick: () => {
 				goto(`/audit_logs?resource=${script?.path}`)
@@ -525,7 +526,7 @@
 		})
 
 		menuItems.push({
-			label: 'Permissions',
+			label: t('common.permissions'),
 			Icon: Shield,
 			onclick: () => {
 				shareModal?.openDrawer(script?.path ?? '', 'script')
@@ -534,7 +535,7 @@
 
 		if (isDeployable('script', script?.path ?? '', deployUiSettings)) {
 			menuItems.push({
-				label: 'Deploy to staging/prod',
+				label: t('common.deployToProdStaging'),
 				Icon: ChevronUpSquare,
 				onclick: () => {
 					deploymentDrawer?.openDrawer(script?.path ?? '', 'script')
@@ -545,7 +546,7 @@
 		if (showEditButtons) {
 			if (script.archived) {
 				menuItems.push({
-					label: 'Unarchive',
+					label: t('scriptDetails.unarchive'),
 					Icon: ArchiveRestore,
 					onclick: async () => {
 						unarchiveScript(script.hash)
@@ -554,7 +555,7 @@
 				})
 			} else {
 				menuItems.push({
-					label: 'Archive',
+					label: t('scriptDetails.archive'),
 					Icon: Archive,
 					onclick: async () => {
 						archiveScript(script.hash)
@@ -565,7 +566,7 @@
 
 			if ($userStore?.is_admin) {
 				menuItems.push({
-					label: 'Delete',
+					label: t('common.delete'),
 					Icon: Trash,
 					onclick: async () => {
 						deleteScript(script.hash)
@@ -588,7 +589,7 @@
 						event.preventDefault()
 						runForm?.run()
 					} else {
-						sendUserToast('Please fix errors before running', true)
+						sendUserToast(t('scriptDetails.fixErrorsBeforeRunning'), true)
 					}
 				}
 				break
@@ -632,8 +633,8 @@
 <PersistentScriptDrawer bind:this={persistentScriptDrawer} />
 <ShareModal bind:this={shareModal} />
 
-<Drawer bind:open={versionsDrawerOpen} size="1200px">
-	<DrawerContent title="Versions History" on:close={() => (versionsDrawerOpen = false)} noPadding>
+	<Drawer bind:open={versionsDrawerOpen} size="1200px">
+	<DrawerContent title={($locale, t('scriptDetails.versionsHistory'))} on:close={() => (versionsDrawerOpen = false)} noPadding>
 		{#if script}
 			<ScriptVersionHistory
 				scriptPath={script.path}
@@ -703,7 +704,7 @@
 				{#if script?.auto_kind === 'wac'}
 					<Popover notClickable>
 						{#snippet text()}
-							Workflow-as-Code
+							{($locale, t('scriptDetails.workflowAsCode'))}
 						{/snippet}
 						<Badge small color="indigo" baseClass="border border-indigo-200">wac</Badge>
 					</Popover>
@@ -711,15 +712,15 @@
 				{#if script?.auto_kind === 'test'}
 					<Popover notClickable>
 						{#snippet text()}
-							CI test script
+							{($locale, t('scriptDetails.ciTestScript'))}
 						{/snippet}
-						<Badge small color="yellow" baseClass="border">CI test</Badge>
+						<Badge small color="yellow" baseClass="border">{($locale, t('scriptDetails.ciTest'))}</Badge>
 					</Popover>
 				{/if}
 				{#if script?.codebase}
 					<Badge
 						>bundle<Tooltip
-							>This script is deployed as a bundle and can only be deployed from the CLI for now</Tooltip
+							>{($locale, t('scriptDetails.bundleTooltip'))}</Tooltip
 						></Badge
 					>
 				{/if}
@@ -733,7 +734,7 @@
 				{#if script?.restart_unless_cancelled ?? false}
 					<button onclick={() => persistentScriptDrawer?.open?.(script)}>
 						<div class="hidden md:block">
-							<Badge color="red" variant="outlined" size="xs">Persistent</Badge>
+							<Badge color="red" variant="outlined" size="xs">{($locale, t('scriptDetails.persistent'))}</Badge>
 						</div>
 					</button>
 				{/if}
@@ -766,10 +767,9 @@
 							{#if script.lock_error_logs || topHash || script.archived || script.deleted}
 								<div class="flex flex-col gap-2 my-2">
 									{#if script.lock_error_logs}
-										<Alert type="error" title="Deployment failed">
+										<Alert type="error" title={($locale, t('scriptDetails.deploymentFailedTitle'))}>
 											<p>
-												This script has not been deployed successfully because of the following
-												errors:
+												{($locale, t('scriptDetails.deploymentFailedBody'))}
 											</p>
 											<LogViewer
 												content={script.lock_error_logs}
@@ -780,19 +780,19 @@
 									{/if}
 									{#if topHash}
 										<div class="mt-2"></div>
-										<Alert type="warning" title="Not HEAD">
-											This hash is not HEAD (latest non-archived version at this path) :
+										<Alert type="warning" title={($locale, t('scriptDetails.notHeadTitle'))}>
+											{($locale, t('scriptDetails.notHeadBody'))}
 											<a href="{base}/scripts/get/{topHash}?workspace={$workspaceStore}"
-												>Go to the HEAD of this path</a
+												>{($locale, t('scriptDetails.goToHead'))}</a
 											>
 										</Alert>
 									{/if}
 									{#if script.archived && !topHash}
-										<Alert type="error" title="Archived">This path was archived</Alert>
+										<Alert type="error" title={($locale, t('scriptDetails.archivedTitle'))}>{($locale, t('scriptDetails.archivedBody'))}</Alert>
 									{/if}
 									{#if script.deleted}
-										<Alert type="error" title="Deleted">
-											<p>The content of this script was deleted (by an admin, no less)</p>
+										<Alert type="error" title={($locale, t('scriptDetails.deletedTitle'))}>
+											<p>{($locale, t('scriptDetails.deletedBody'))}</p>
 										</Alert>
 									{/if}
 								</div>
@@ -813,12 +813,12 @@
 							<div class="pb-4" transition:slide={{ duration: 150 }}>
 								<Badge color="yellow">
 									<Loader2 size={12} class="inline animate-spin mr-1" />
-									Deployment in progress
+									{($locale, t('scriptDetails.deploymentInProgress'))}
 									{#if deploymentJobId}
 										<a
 											href="/run/{deploymentJobId}?workspace={$workspaceStore}"
 											class="underline"
-											target="_blank">view job</a
+											target="_blank">{($locale, t('scriptDetails.viewJob'))}</a
 										>
 									{/if}
 								</Badge>
@@ -844,8 +844,8 @@
 											bind:checked={jsonView}
 											size="xs"
 											options={{
-												right: 'JSON',
-												rightTooltip: 'Fill args from JSON'
+												right: t('scriptDetails.json'),
+												rightTooltip: t('scriptDetails.fillArgsFromJson')
 											}}
 											lightMode
 											on:change={(e) => {
@@ -899,7 +899,7 @@
 									</Badge>
 								{/if}
 								{#if script?.is_template}
-									<Badge color="blue">Template</Badge>
+									<Badge color="blue">{($locale, t('scriptDetails.template'))}</Badge>
 								{/if}
 								{#if script && script.kind !== 'script'}
 									<Badge color="blue">
@@ -962,9 +962,9 @@
 				<Skeleton {loading} layout={[[20]]} />
 
 				<Tabs selected="code">
-					<Tab value="code" label="Code" />
-					<Tab value="dependencies" label="Lockfile" />
-					<Tab value="schema" label="Schema" />
+					<Tab value="code" label={($locale, t('scriptDetails.code'))} />
+					<Tab value="dependencies" label={($locale, t('scriptDetails.lockfile'))} />
+					<Tab value="schema" label={($locale, t('common.schema'))} />
 					{#snippet content()}
 						{#if script}
 							<TabContent value="code">
@@ -1023,7 +1023,7 @@
 										</div>
 									{:else}
 										<p class="bg-surface-secondary text-sm p-2">
-											There is no lock file for this script
+											{($locale, t('scriptDetails.noLockfile'))}
 										</p>
 									{/if}
 									{#if script?.modules}
@@ -1084,7 +1084,7 @@
 			</div>
 
 			{#if script?.envs && script.envs.length > 0}
-				<h3>Static Env Variables</h3>
+				<h3>{($locale, t('scriptDetails.staticEnvVariables'))}</h3>
 				<ul>
 					{#each script?.envs as e}
 						<li>{e}</li>

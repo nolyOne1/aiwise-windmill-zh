@@ -88,6 +88,7 @@
 	import SettingsFooter from '$lib/components/workspaceSettings/SettingsFooter.svelte'
 	import WorkspaceRulesets from '$lib/components/workspaceSettings/WorkspaceRulesets.svelte'
 	import SettingCard from '$lib/components/instanceSettings/SettingCard.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	let slackInitialPath: string = $state('')
 	let slackScriptPath: string = $state('')
@@ -1173,13 +1174,13 @@
 			items: [
 				{
 					id: 'general',
-					label: 'General',
+					label: t('workspaceSettings.general'),
 					aiId: 'workspace-settings-general',
 					aiDescription: 'General workspace settings'
 				},
 				{
 					id: 'users',
-					label: 'Users',
+					label: t('workspaceSettings.users'),
 					aiId: 'workspace-settings-users',
 					aiDescription: 'Users workspace settings'
 				},
@@ -1191,7 +1192,7 @@
 				},
 				{
 					id: 'premium',
-					label: 'Premium plans',
+					label: t('workspaceSettings.premiumPlans'),
 					aiId: 'workspace-settings-premium',
 					aiDescription: 'Premium plans workspace settings',
 					showIf: isCloudHosted()
@@ -1199,18 +1200,18 @@
 			]
 		},
 		{
-			title: 'Git & deployment',
+			title: t('workspaceSettings.gitAndDeployment'),
 			items: [
 				{
 					id: 'git_sync',
-					label: 'Git sync',
+					label: t('workspaceSettings.gitSync'),
 					aiId: 'workspace-settings-git-sync',
 					aiDescription: 'Git sync workspace settings',
 					isEE: true
 				},
 				{
 					id: 'deploy_to',
-					label: 'Deployment UI',
+					label: t('workspaceSettings.deploymentUi'),
 					aiId: 'workspace-settings-deploy-to',
 					aiDescription: 'Deployment UI workspace settings',
 					isEE: true
@@ -1219,7 +1220,7 @@
 					? [
 							{
 								id: 'dev_workspace',
-								label: 'Dev workspace',
+								label: t('workspaceSettings.devWorkspace'),
 								aiId: 'workspace-settings-dev-workspace',
 								aiDescription:
 									'Pair this workspace with a dev workspace (same code, different environment)'
@@ -1228,7 +1229,7 @@
 					: []),
 				{
 					id: 'rulesets',
-					label: 'Rulesets',
+					label: t('workspaceSettings.rulesets'),
 					aiId: 'workspace-settings-rulesets',
 					aiDescription: 'Protection Rulesets workspace settings',
 					isEE: true
@@ -1236,43 +1237,43 @@
 			]
 		},
 		{
-			title: 'Integrations',
+			title: t('workspaceSettings.integrations'),
 			items: [
 				{
 					id: 'slack',
-					label: 'Slack / Teams',
+					label: t('workspaceSettings.slackTeams'),
 					aiId: 'workspace-settings-slack',
 					aiDescription: 'Slack / Teams workspace settings',
 					showIf: WORKSPACE_SHOW_SLACK_CMD
 				},
 				{
 					id: 'webhook',
-					label: 'Webhook',
+					label: t('workspaceSettings.webhook'),
 					aiId: 'workspace-settings-webhook',
 					aiDescription: 'Webhook workspace settings',
 					showIf: WORKSPACE_SHOW_WEBHOOK_CLI_SYNC && !isCloudHosted()
 				},
 				{
 					id: 'native_triggers',
-					label: 'Native triggers',
+					label: t('workspaceSettings.nativeTriggers'),
 					aiId: 'workspace-settings-integrations',
 					aiDescription: 'Workspace integrations for native triggers'
 				}
 			]
 		},
 		{
-			title: 'Hooks',
+			title: t('workspaceSettings.hooks'),
 			items: [
 				{
 					id: 'error_handler',
-					label: 'Error / success handler',
+					label: t('workspaceSettings.errorSuccessHandler'),
 					aiId: 'workspace-settings-error-handler',
 					aiDescription: 'Error and success handler workspace settings',
 					isEE: true
 				},
 				{
 					id: 'critical_alerts',
-					label: 'Critical alerts',
+					label: t('workspaceSettings.criticalAlerts'),
 					aiId: 'workspace-settings-critical-alerts',
 					aiDescription: 'Critical alerts workspace settings',
 					isEE: true
@@ -1280,23 +1281,23 @@
 			]
 		},
 		{
-			title: 'Data & storage',
+			title: t('workspaceSettings.dataAndStorage'),
 			items: [
 				{
 					id: 'windmill_data_tables',
-					label: 'Data tables',
+					label: t('workspaceSettings.dataTables'),
 					aiId: 'workspace-settings-windmill-data-tables',
 					aiDescription: 'Data tables workspace settings'
 				},
 				{
 					id: 'windmill_lfs',
-					label: 'Object storage (S3)',
+					label: t('workspaceSettings.objectStorage'),
 					aiId: 'workspace-settings-windmill-lfs',
 					aiDescription: 'Object Storage (S3) workspace settings'
 				},
 				{
 					id: 'volume_storage',
-					label: 'Volumes',
+					label: t('workspaceSettings.volumes'),
 					aiId: 'workspace-settings-volume-storage',
 					aiDescription: 'Volume storage workspace settings'
 				},
@@ -1309,36 +1310,36 @@
 			]
 		},
 		{
-			title: 'Advanced',
+			title: t('workspaceSettings.advanced'),
 			items: [
 				{
 					id: 'default_app',
-					label: 'Apps',
+					label: t('workspaceSettings.apps'),
 					aiId: 'workspace-settings-apps',
 					aiDescription: 'Apps workspace settings',
 					isEE: true
 				},
 				{
 					id: 'shared_ui',
-					label: 'Shared UI folder',
+					label: t('workspaceSettings.sharedUiFolder'),
 					aiId: 'workspace-settings-shared-ui',
 					aiDescription: 'Shared frontend folder usable by raw apps'
 				},
 				{
 					id: 'dependencies',
-					label: 'Dependencies',
+					label: t('workspaceSettings.dependencies'),
 					aiId: 'workspace-settings-dependencies',
 					aiDescription: 'Workspace dependencies settings'
 				},
 				{
 					id: 'encryption',
-					label: 'Encryption',
+					label: t('workspaceSettings.encryption'),
 					aiId: 'workspace-settings-encryption',
 					aiDescription: 'Encryption workspace settings'
 				},
 				{
 					id: 'trashbin',
-					label: 'Trashbin',
+					label: t('workspaceSettings.trashbin'),
 					aiId: 'workspace-settings-trashbin',
 					aiDescription: 'Trashbin for recently deleted items'
 				}
@@ -1356,7 +1357,7 @@
 						items: [
 							{
 								id: 'users',
-								label: 'Members',
+								label: t('workspaceSettings.members'),
 								aiId: 'workspace-settings-users',
 								aiDescription: 'Members of the fork you created'
 							}
@@ -1368,15 +1369,15 @@
 
 <CenteredPage wrapperClasses="pb-0 h-screen" handleOverflow={false} class="flex flex-col h-full">
 	{#if canAdmin || isForkOwner}
-		<PageHeader title="Workspace settings: {$workspaceStore}">
+		<PageHeader title={t('workspaceSettings.title', { workspace: $workspaceStore ?? '' })}>
 			{#snippet titleActions()}
 				{#if $workspaceStore}
-					<CopyButton value={$workspaceStore} title={`Copy id: ${$workspaceStore}`} />
+					<CopyButton value={$workspaceStore} title={t('workspace.copyId', { id: $workspaceStore })} />
 				{/if}
 			{/snippet}
 			{#if $superadmin}
 				<Button variant="default" size="sm" on:click={() => goto('#superadmin-settings')}>
-					Instance settings
+					{($locale, t('account.instanceSettings'))}
 				</Button>
 			{/if}</PageHeader
 		>
@@ -1409,8 +1410,8 @@
 							{/if}
 						{:else if tab == 'deploy_to'}
 							<SettingsPageHeader
-								title="Link this workspace to another staging / prod workspace"
-								description="Connecting this workspace with another staging/production workspace enables web-based deployment to that workspace."
+								title={t('workspaceSettings.linkWorkspaceTitle')}
+								description={t('workspaceSettings.linkWorkspaceDescription')}
 								link="https://www.windmill.dev/docs/core_concepts/staging_prod"
 							/>
 							{#if $enterpriseLicense}
@@ -1431,16 +1432,15 @@
 								/>
 							{:else}
 								<div class="my-2"
-									><Alert type="warning" title="Enterprise license required"
-										>Deploy to staging/prod from the web UI is only available with an enterprise
-										license</Alert
+									><Alert type="warning" title={($locale, t('workspaceSettings.enterpriseLicenseRequired'))}
+										>{($locale, t('workspaceSettings.enterpriseLicenseRequiredBody'))}</Alert
 									></div
 								>
 							{/if}
 						{:else if tab == 'dev_workspace'}
 							<SettingsPageHeader
-								title="Dev workspace"
-								description="Pair this workspace with a dev workspace: the same code with a different environment. Edits are made in the dev workspace and promoted to prod."
+								title={t('workspaceSettings.devWorkspace')}
+								description={t('workspaceSettings.devWorkspaceDescription')}
 							/>
 							<DevWorkspaceSetting />
 						{:else if tab == 'rulesets'}
@@ -1659,8 +1659,8 @@
 							</div>
 						{:else if tab == 'general'}
 							<SettingsPageHeader
-								title="General"
-								description="Configure general workspace settings."
+								title={t('workspaceSettings.general')}
+								description={t('workspaceSettings.generalDescription')}
 								link="https://www.windmill.dev/docs/core_concepts/workspace_settings"
 							/>
 
@@ -1675,7 +1675,7 @@
 								<ChangeWorkspaceColor />
 							</div>
 
-							<div class="text-xs font-semibold text-emphasis mt-6 mb-1">Export workspace</div>
+							<div class="text-xs font-semibold text-emphasis mt-6 mb-1">{($locale, t('workspaceSettings.exportWorkspace'))}</div>
 							<div class="flex justify-start">
 								{#if shouldDownloadViaClient()}
 									<Button
@@ -1686,7 +1686,7 @@
 												`${$workspaceStore ?? 'workspace'}.zip`
 											)}
 									>
-										Export workspace as zip file
+										{($locale, t('workspaceSettings.exportZip'))}
 									</Button>
 								{:else}
 									<Button
@@ -1694,22 +1694,21 @@
 										href="{base}/api/w/{$workspaceStore ?? ''}/workspaces/tarball?archive_type=zip"
 										target="_blank"
 									>
-										Export workspace as zip file
+										{($locale, t('workspaceSettings.exportZip'))}
 									</Button>
 								{/if}
 							</div>
 
 							<div class="mt-12"></div>
-							<span class="text-sm font-semibold text-emphasis">Delete workspace</span>
+							<span class="text-sm font-semibold text-emphasis">{($locale, t('workspaceSettings.deleteWorkspace'))}</span>
 							{#if !$superadmin}
 								<p class="text-2xs text-secondary">
-									Only instance superadmins can delete a workspace.
+									{($locale, t('workspaceSettings.onlySuperadminCanDelete'))}
 								</p>
 							{/if}
 							{#if $workspaceStore === 'admins' || $workspaceStore === 'starter'}
 								<p class="text-2xs text-secondary">
-									This workspace cannot be deleted as it has a special function. Consult the
-									documentation for more information.
+									{($locale, t('workspaceSettings.specialWorkspaceCannotDelete'))}
 								</p>
 							{/if}
 							<div class="flex gap-2">
@@ -1720,7 +1719,7 @@
 									btnClasses="mt-2"
 									on:click={openArchiveConfirm}
 								>
-									Archive workspace
+									{($locale, t('workspaceSettings.archiveWorkspace'))}
 								</Button>
 
 								{#if $superadmin}
@@ -1731,15 +1730,15 @@
 										btnClasses="mt-2"
 										on:click={openDeleteConfirm}
 									>
-										Delete workspace (superadmin)
+										{($locale, t('workspaceSettings.deleteWorkspaceSuperadmin'))}
 									</Button>
 								{/if}
 							</div>
 
 							<ConfirmationModal
 								open={archiveConfirmOpen}
-								title="Archive workspace"
-								confirmationText="Archive"
+								title={($locale, t('workspaceSettings.archiveWorkspace'))}
+								confirmationText={($locale, t('workspaceSettings.archiveAction'))}
 								onConfirmed={async () => {
 									archiveConfirmOpen = false
 									await doArchiveWorkspace()
@@ -1748,17 +1747,15 @@
 							>
 								<div class="flex flex-col gap-2">
 									<span>
-										Archiving this workspace also archives its AI sessions{affectedSessionCount > 0
-											? ` (${affectedSessionCount})`
-											: ''}. Unarchiving the workspace restores them.
+										{t('workspaceSettings.archiveWorkspaceBody', { count: affectedSessionCount > 0 ? ` (${affectedSessionCount})` : '' })}
 									</span>
 								</div>
 							</ConfirmationModal>
 
 							<ConfirmationModal
 								open={deleteConfirmOpen}
-								title="Delete workspace"
-								confirmationText="Delete"
+								title={($locale, t('workspaceSettings.deleteWorkspace'))}
+								confirmationText={($locale, t('common.delete'))}
 								onConfirmed={async () => {
 									deleteConfirmOpen = false
 									await doDeleteWorkspace()
@@ -1767,10 +1764,7 @@
 							>
 								<div class="flex flex-col gap-2">
 									<span>
-										Permanently deleting this workspace also permanently deletes its AI sessions{affectedSessionCount >
-										0
-											? ` (${affectedSessionCount})`
-											: ''}. This cannot be undone.
+										{t('workspaceSettings.deleteWorkspaceBody', { count: affectedSessionCount > 0 ? ` (${affectedSessionCount})` : '' })}
 									</span>
 								</div>
 							</ConfirmationModal>
@@ -2178,8 +2172,8 @@ export async function main(
 		</div>
 	{:else}
 		<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4" role="alert">
-			<p class="font-bold">Not an admin</p>
-			<p>Workspace settings are only available for admin of workspaces</p>
+			<p class="font-bold">{($locale, t('workspaceSettings.notAdminTitle'))}</p>
+			<p>{($locale, t('workspaceSettings.notAdminBody'))}</p>
 		</div>
 	{/if}
 </CenteredPage>
