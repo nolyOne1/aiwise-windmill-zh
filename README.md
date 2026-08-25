@@ -333,6 +333,12 @@ running options.
   <img src="https://contrib.rocks/image?repo=windmill-labs/windmill" />
 </a>
 
+## Fork Provenance
+
+This public fork tracks the documented upstream baseline in [UPSTREAM.md](./UPSTREAM.md).
+
+This fork contains no production data, credentials, `.env` files, SSH keys, inventory scripts, logs, or database exports.
+
 ## Copyright
 
 © 2023-2026 Windmill Labs, Inc.
