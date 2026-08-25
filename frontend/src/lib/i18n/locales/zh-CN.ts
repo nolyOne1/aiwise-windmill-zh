@@ -62,7 +62,8 @@ export const zhCN = {
 		leaveWorkspaceConfirm: '确定要退出这个工作区吗？',
 		switchTheme: '切换主题',
 		githubVariant: 'GitHub',
-		userExecUsage: '{count}/1000 次用户执行'
+		userExecUsage: '{count}/1000 次用户执行',
+		superadminNotMember: '{email}（超级管理员，非成员）'
 	},
 	workspace: {
 		settingsSuffix: '设置',
@@ -94,7 +95,9 @@ export const zhCN = {
 		hideForks: '隐藏分支',
 		copyId: '复制 ID：{id}',
 		freeExecUsage: '{count}/1000 次免费工作区执行',
-		upgrade: '升级'
+		upgrade: '升级',
+		forkingWorkspace: '正在派生 {workspace}',
+		userDisabled: '（用户已禁用）'
 	},
 	login: {
 		pageTitle: '登录或注册',

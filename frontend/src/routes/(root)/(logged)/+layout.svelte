@@ -1360,7 +1360,7 @@
 <ForkConflictModal />
 
 <Modal2
-	title="Forking {$workspaceStore}"
+	title={t('workspace.forkingWorkspace', { workspace: $workspaceStore })}
 	target="#content"
 	fixedHeight="adaptive"
 	fixedWidth="sm"

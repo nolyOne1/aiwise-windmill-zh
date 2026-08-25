@@ -300,7 +300,7 @@
 												style={forkAccent}
 												title={workspace.name}
 											>
-												{workspace.name}{workspace.disabled ? ' (user disabled)' : ''}
+												{workspace.name}{workspace.disabled ? t('workspace.userDisabled') : ''}
 											</div>
 											{#if workspace.is_dev_workspace}
 												<Badge

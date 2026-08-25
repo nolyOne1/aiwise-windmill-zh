@@ -217,7 +217,7 @@
 			},
 			{
 				displayName: $userStore?.non_member
-					? `${$userStore?.email} (superadmin, not a member)`
+					? t('account.superadminNotMember', { email: $userStore?.email ?? '' })
 					: ($userStore?.email ?? t('account.userFallback')),
 				icon: $userStore?.is_admin || $userStore?.non_member ? Crown : User,
 				submenuItems: [

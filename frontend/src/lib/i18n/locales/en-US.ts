@@ -62,7 +62,8 @@ export const enUS = {
 		leaveWorkspaceConfirm: 'Are you sure you want to leave this workspace?',
 		switchTheme: 'Switch theme',
 		githubVariant: 'GitHub',
-		userExecUsage: '{count}/1000 user execs'
+		userExecUsage: '{count}/1000 user execs',
+		superadminNotMember: '{email} (superadmin, not a member)'
 	},
 	workspace: {
 		settingsSuffix: 'settings',
@@ -96,7 +97,9 @@ export const enUS = {
 		hideForks: 'Hide forks',
 		copyId: 'Copy id: {id}',
 		freeExecUsage: '{count}/1000 free workspace execs',
-		upgrade: 'Upgrade'
+		upgrade: 'Upgrade',
+		forkingWorkspace: 'Forking {workspace}',
+		userDisabled: '(user disabled)'
 	},
 	login: {
 		pageTitle: 'Log in or sign up',

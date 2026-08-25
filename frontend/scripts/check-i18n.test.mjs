@@ -91,3 +91,16 @@ test('validateLocalePair rejects placeholder mismatches with the offending key',
 		await rm(fixtureDir, { recursive: true, force: true })
 	}
 })
+
+test('task 3 locale dictionaries include shell status labels for forking and membership states', async () => {
+	const { loadLocaleFile } = await import('./check-i18n.mjs')
+	const english = await loadLocaleFile(path.resolve('src/lib/i18n/locales/en-US.ts'))
+	const chinese = await loadLocaleFile(path.resolve('src/lib/i18n/locales/zh-CN.ts'))
+
+	assert.equal(english.workspace.forkingWorkspace, 'Forking {workspace}')
+	assert.equal(chinese.workspace.forkingWorkspace, '正在派生 {workspace}')
+	assert.equal(english.account.superadminNotMember, '{email} (superadmin, not a member)')
+	assert.equal(chinese.account.superadminNotMember, '{email}（超级管理员，非成员）')
+	assert.equal(english.workspace.userDisabled, '(user disabled)')
+	assert.equal(chinese.workspace.userDisabled, '（用户已禁用）')
+})
