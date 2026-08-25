@@ -153,13 +153,13 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.assets}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
-		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
+		<p class="font-bold">{$locale ? t('common.unauthorized') : t('common.unauthorized')}</p>
+		<p>{$locale ? t('common.pageNotAvailableForOperators') : t('common.pageNotAvailableForOperators')}</p>
 	</div>
 {:else}
 	<CenteredPage id="scrollable-container">
 		<PageHeader
-			title={($locale, t('assets.title'))}
+			title={$locale ? t('assets.title') : t('assets.title')}
 			tooltip={t('assets.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/assets"
 		/>
@@ -189,7 +189,7 @@
 									href={props.docsHref}
 									target="_blank"
 								>
-									{($locale, t('assets.seeDocumentation'))}
+									{$locale ? t('assets.seeDocumentation') : t('assets.seeDocumentation')}
 								</Button>
 								{#if !($userStore?.operator || (!$userStore?.is_admin && !$superadmin))}
 									<Button
@@ -227,7 +227,7 @@
 
 							{#if !props.data.loading && !props.data.error && props.favorites != undefined}
 								<div class="mb-4 pt-2 px-6">
-									<h3 class="text-xs font-bold mb-1"> {($locale, t('assets.favoriteTables'))}</h3>
+									<h3 class="text-xs font-bold mb-1"> {$locale ? t('assets.favoriteTables') : t('assets.favoriteTables')}</h3>
 									<div class="flex gap-1 flex-wrap">
 										{#each props.favorites as fav}
 											<button
@@ -248,7 +248,7 @@
 										{/each}
 									</div>
 									{#if props.favorites.length === 0}
-										<div class="text-xs text-secondary"> {($locale, t('assets.noFavoriteTableYet'))}</div>
+										<div class="text-xs text-secondary"> {$locale ? t('assets.noFavoriteTableYet') : t('assets.noFavoriteTableYet')}</div>
 									{/if}
 								</div>
 							{/if}
@@ -329,7 +329,7 @@
 			{#if assetsQuery.isFetchingNextPage}
 				<Loader2 size={32} class="mx-auto my-4 text-primary animate-spin" />
 			{:else if assets?.length && !assetsQuery.hasNextPage}
-				<div class="text-center text-2xs text-secondary my-4"> {($locale, t('assets.noMoreAssetsToLoad'))} </div>
+				<div class="text-center text-2xs text-secondary my-4"> {$locale ? t('assets.noMoreAssetsToLoad') : t('assets.noMoreAssetsToLoad')} </div>
 			{/if}
 		</Section>
 	</CenteredPage>
@@ -351,7 +351,7 @@
 		<Head>
 			<tr>
 				<Cell head first class="w-16"></Cell>
-				<Cell head>{($locale, t('assets.assetName'))}</Cell>
+				<Cell head>{$locale ? t('assets.assetName') : t('assets.assetName')}</Cell>
 				<Cell head></Cell>
 				<Cell head></Cell>
 			</tr>
@@ -360,7 +360,7 @@
 			{#if assets != undefined && assets.length === 0}
 				<tr class="h-14">
 					<Cell></Cell>
-					<Cell colspan="3">{($locale, t('assets.noAssetsFound'))}</Cell>
+					<Cell colspan="3">{$locale ? t('assets.noAssetsFound') : t('assets.noAssetsFound')}</Cell>
 				</tr>
 			{/if}
 			{#each assets as asset}
@@ -391,7 +391,7 @@
 							<Tooltip class={'w-24 flex items-center justify-center'}>
 								<AlertTriangle size={20} class="text-orange-600 dark:text-orange-500" />
 								{#snippet text()}
-									{($locale, t('assets.couldNotFindResource'))}
+									{$locale ? t('assets.couldNotFindResource') : t('assets.couldNotFindResource')}
 								{/snippet}
 							</Tooltip>
 						{/if}
@@ -403,7 +403,7 @@
 					<Cell colspan="4" class="text-center">
 						<div class="flex items-center justify-center gap-2">
 							<Loader2 class="animate-spin" size={16} />
-							<span>{($locale, t('assets.loadingAssets'))}</span>
+							<span>{$locale ? t('assets.loadingAssets') : t('assets.loadingAssets')}</span>
 						</div>
 					</Cell>
 				</tr>

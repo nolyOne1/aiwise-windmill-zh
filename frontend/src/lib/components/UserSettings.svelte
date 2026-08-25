@@ -68,7 +68,7 @@
 	on:close={removeHash}
 	{disableChatOffset}
 >
-	<DrawerContent title={($locale, t('account.userSettingsTitle'))} on:close={closeDrawer}>
+	<DrawerContent title={$locale ? t('account.userSettingsTitle') : t('account.userSettingsTitle')} on:close={closeDrawer}>
 		<div class="flex flex-col gap-6 pb-8">
 			{#if scopes == undefined}
 				<div
@@ -76,10 +76,10 @@
 				>
 					<div class="flex flex-col gap-2">
 						<div class="font-semibold text-emphasis text-xs flex items-center">
-							{($locale, t('account.theme'))} <DarkModeToggle forcedDarkMode={false} />
+							{$locale ? t('account.theme') : t('account.theme')} <DarkModeToggle forcedDarkMode={false} />
 						</div>
 						<div class="flex items-center gap-2">
-							<span class="text-xs text-secondary">{($locale, t('account.darkVariant'))}</span>
+							<span class="text-xs text-secondary">{$locale ? t('account.darkVariant') : t('account.darkVariant')}</span>
 							<ToggleButtonGroup
 								selected={darkVariant}
 								class="w-fit"
@@ -91,13 +91,13 @@
 								{#snippet children({ item })}
 									<ToggleButton
 										value="default"
-										label={($locale, t('common.default'))}
+										label={$locale ? t('common.default') : t('common.default')}
 										size="sm"
 										{item}
 									/>
 									<ToggleButton
 										value="github"
-										label={($locale, t('account.githubVariant'))}
+										label={$locale ? t('account.githubVariant') : t('account.githubVariant')}
 										size="sm"
 										{item}
 									/>

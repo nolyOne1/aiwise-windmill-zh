@@ -266,13 +266,13 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.variables}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
-		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
+		<p class="font-bold">{$locale ? t('common.unauthorized') : t('common.unauthorized')}</p>
+		<p>{$locale ? t('common.pageNotAvailableForOperators') : t('common.pageNotAvailableForOperators')}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		<PageHeader
-			title={($locale, t('variables.title'))}
+			title={$locale ? t('variables.title') : t('variables.title')}
 			tooltip={t('variables.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/variables_and_secrets"
 		>
@@ -285,7 +285,7 @@
 							startIcon={{ icon: Plus }}
 							on:click={() => contextualVariableEditor?.initNew()}
 						>
-							{($locale, t('variables.newContextualVariable'))}
+							{$locale ? t('variables.newContextualVariable') : t('variables.newContextualVariable')}
 						</Button>
 					{:else}
 						<Button
@@ -294,7 +294,7 @@
 							startIcon={{ icon: Plus }}
 							on:click={() => variableEditor?.initNew()}
 						>
-							{($locale, t('variables.newVariable'))}
+							{$locale ? t('variables.newVariable') : t('variables.newVariable')}
 						</Button>
 					{/if}
 				</div>
@@ -316,13 +316,13 @@
 
 		<div class="flex gap-2 justify-between items-center">
 			<Tabs bind:selected={tab}>
-				<Tab value="workspace" label={($locale, t('common.workspace'))} icon={Building} />
-				<Tab value="contextual" label={($locale, t('variables.contextual'))} icon={DollarSign}>
+				<Tab value="workspace" label={$locale ? t('common.workspace') : t('common.workspace')} icon={Building} />
+				<Tab value="contextual" label={$locale ? t('variables.contextual') : t('variables.contextual')} icon={DollarSign}>
 					{#snippet extra()}
 						<Tooltip
 							documentationLink="https://www.windmill.dev/docs/core_concepts/variables_and_secrets#contextual-variables"
 						>
-							{($locale, t('variables.contextualTooltip'))}
+							{$locale ? t('variables.contextualTooltip') : t('variables.contextualTooltip')}
 						</Tooltip>
 					{/snippet}
 				</Tab>
@@ -346,9 +346,9 @@
 					{/each}
 				{:else if filteredItems.length == 0}
 					<div class="flex flex-col items-center justify-center h-full">
-						<div class="text-md font-medium">{($locale, t('variables.noVariablesFound'))}</div>
+						<div class="text-md font-medium">{$locale ? t('variables.noVariablesFound') : t('variables.noVariablesFound')}</div>
 						<div class="text-sm text-secondary">
-							{($locale, t('variables.noVariablesFoundHint'))}
+							{$locale ? t('variables.noVariablesFoundHint') : t('variables.noVariablesFoundHint')}
 						</div>
 					</div>
 				{:else}
@@ -356,9 +356,9 @@
 						<Head>
 							<tr>
 								<Cell head first class="!px-0" />
-								<Cell head>{($locale, t('common.path'))}</Cell>
-								<Cell head>{($locale, t('common.value'))}</Cell>
-								<Cell head>{($locale, t('common.description'))}</Cell>
+								<Cell head>{$locale ? t('common.path') : t('common.path')}</Cell>
+								<Cell head>{$locale ? t('common.value') : t('common.value')}</Cell>
+								<Cell head>{$locale ? t('common.description') : t('common.description')}</Cell>
 								<Cell head />
 								<Cell head last stickyEnd />
 							</tr>
@@ -421,7 +421,7 @@
 												<Popover notClickable>
 													<EyeOff size={12} />
 													{#snippet text()}
-														<span>{($locale, t('variables.secretItem'))}</span>
+														<span>{$locale ? t('variables.secretItem') : t('variables.secretItem')}</span>
 													{/snippet}
 												</Popover>
 											{/if}
@@ -438,7 +438,7 @@
 													<Link size={16} />
 													{#snippet text()}
 														<div>
-															{($locale, t('variables.linkedResourcePopover'))}
+															{$locale ? t('variables.linkedResourcePopover') : t('variables.linkedResourcePopover')}
 														</div>
 													{/snippet}
 												</Popover>
@@ -448,7 +448,7 @@
 													<RefreshCw size={16} />
 													{#snippet text()}
 														<div>
-															{($locale, t('variables.oauthBackgroundRefresh'))}
+															{$locale ? t('variables.oauthBackgroundRefresh') : t('variables.oauthBackgroundRefresh')}
 														</div>
 													{/snippet}
 												</Popover>
@@ -487,7 +487,7 @@
 															/>
 															{#snippet text()}
 																<div>
-																	{($locale, t('variables.accessTokenExpired'))}
+																	{$locale ? t('variables.accessTokenExpired') : t('variables.accessTokenExpired')}
 																</div>
 															{/snippet}
 														</Popover>
@@ -499,7 +499,7 @@
 															/>
 															{#snippet text()}
 																<div>
-																	{($locale, t('variables.oauthHealthy'))}
+																	{$locale ? t('variables.oauthHealthy') : t('variables.oauthHealthy')}
 																</div>
 															{/snippet}
 														</Popover>
@@ -591,11 +591,11 @@
 						<Skeleton layout={[[2.8], 0.5]} />
 					{/each}
 				{:else}
-					<PageHeader title={($locale, t('variables.customContextualVariables'))} primary={false} />
+					<PageHeader title={$locale ? t('variables.customContextualVariables') : t('variables.customContextualVariables')} primary={false} />
 					{#if contextualVariables.filter((x) => x.is_custom).length === 0}
 						<div class="flex flex-col items-center justify-center h-full">
 							<div class="text-xs text-primary font-normal"
-								>{($locale, t('variables.noCustomContextualVariables'))}</div
+								>{$locale ? t('variables.noCustomContextualVariables') : t('variables.noCustomContextualVariables')}</div
 							>
 						</div>
 					{:else}
@@ -622,7 +622,7 @@
 								: undefined}
 						/>
 					{/if}
-					<PageHeader title={($locale, t('variables.contextualVariables'))} primary={false} />
+					<PageHeader title={$locale ? t('variables.contextualVariables') : t('variables.contextualVariables')} primary={false} />
 					<TableSimple
 						headers={[t('common.name'), t('variables.exampleValue'), t('common.description')]}
 						data={contextualVariables.filter((x) => !x.is_custom)}
@@ -636,8 +636,8 @@
 
 <ConfirmationModal
 	{open}
-	title={($locale, t('variables.removeVariableTitle'))}
-	confirmationText={($locale, t('common.remove'))}
+	title={$locale ? t('variables.removeVariableTitle') : t('variables.removeVariableTitle')}
+	confirmationText={$locale ? t('common.remove') : t('common.remove')}
 	trashbin
 	on:canceled={() => {
 		deleteConfirmedCallback = undefined
@@ -650,17 +650,17 @@
 	}}
 >
 	<div class="flex flex-col w-full space-y-4">
-		<span>{($locale, t('variables.removeVariableConfirm'))}</span>
+		<span>{$locale ? t('variables.removeVariableConfirm') : t('variables.removeVariableConfirm')}</span>
 		{#if deleteIsLinked}
-			<Alert type="warning" title={($locale, t('variables.linkedResourceTitle'))}>
-				{($locale, t('variables.linkedResourceBody'))}
+			<Alert type="warning" title={$locale ? t('variables.linkedResourceTitle') : t('variables.linkedResourceTitle')}>
+				{$locale ? t('variables.linkedResourceBody') : t('variables.linkedResourceBody')}
 			</Alert>
 		{/if}
-		<Alert type="info" title={($locale, t('variables.bypassConfirmationTitle'))}>
+		<Alert type="info" title={$locale ? t('variables.bypassConfirmationTitle') : t('variables.bypassConfirmationTitle')}>
 			<div>
-				{($locale, t('variables.bypassConfirmationBodyPrefix'))}
+				{$locale ? t('variables.bypassConfirmationBodyPrefix') : t('variables.bypassConfirmationBodyPrefix')}
 				<Badge color="dark-gray">SHIFT</Badge>
-				{($locale, t('variables.bypassConfirmationBodySuffix'))}
+				{$locale ? t('variables.bypassConfirmationBodySuffix') : t('variables.bypassConfirmationBodySuffix')}
 			</div>
 		</Alert>
 	</div>

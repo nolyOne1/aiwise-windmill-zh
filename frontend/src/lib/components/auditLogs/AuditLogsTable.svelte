@@ -133,14 +133,14 @@
 		<div
 			class="flex flex-row bg-surface-secondary sticky top-0 w-full p-2 pr-4 text-2xs font-normal text-primary"
 		>
-			<div class="w-1/12">{($locale, t('common.id'))}</div>
-			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>{($locale, t('auditLogs.timestamp'))}</div>
-			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>{($locale, t('common.username'))}</div>
+			<div class="w-1/12">{$locale ? t('common.id') : t('common.id')}</div>
+			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>{$locale ? t('auditLogs.timestamp') : t('auditLogs.timestamp')}</div>
+			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>{$locale ? t('common.username') : t('common.username')}</div>
 			{#if showWorkspace}
-				<div class="w-2/12">{($locale, t('common.workspace'))}</div>
+				<div class="w-2/12">{$locale ? t('common.workspace') : t('common.workspace')}</div>
 			{/if}
-			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>{($locale, t('common.operation'))}</div>
-			<div class="w-2/12">{($locale, t('common.resource'))}</div>
+			<div class={showWorkspace ? 'w-2/12' : 'w-3/12'}>{$locale ? t('common.operation') : t('common.operation')}</div>
+			<div class="w-2/12">{$locale ? t('common.resource') : t('common.resource')}</div>
 		</div>
 	</div>
 
@@ -153,7 +153,7 @@
 			class="text-xs text-secondary p-8 flex justify-center items-center"
 			style="height: {height}px;"
 		>
-			{($locale, t('auditLogs.noLogsForSelectedFilters'))}
+			{$locale ? t('auditLogs.noLogsForSelectedFilters') : t('auditLogs.noLogsForSelectedFilters')}
 		</div>
 	{:else}
 		<VirtualList
@@ -271,12 +271,12 @@
 							{/if}
 						{:else}
 							<div class="flex flex-row items-center h-full w-full px-2">
-								<div class="text-xs text-secondary">{($locale, t('common.loading'))}</div>
+								<div class="text-xs text-secondary">{$locale ? t('common.loading') : t('common.loading')}</div>
 							</div>
 						{/if}
 					{:else}
 						<div class="flex flex-row items-center h-full w-full px-2">
-							<div class="text-xs text-secondary">{($locale, t('common.loading'))}</div>
+							<div class="text-xs text-secondary">{$locale ? t('common.loading') : t('common.loading')}</div>
 						</div>
 					{/if}
 				</div>
@@ -299,7 +299,7 @@
 				}}
 				disabled={pageIndex <= 1}
 			>
-				{($locale, t('common.previous'))}
+				{$locale ? t('common.previous') : t('common.previous')}
 			</Button>
 			<span class="text-xs text-secondary px-2">{t('common.pageNumber', { page: pageIndex })}</span>
 			<Button
@@ -311,11 +311,11 @@
 				}}
 				disabled={!hasMore}
 			>
-				{($locale, t('common.next'))}
+				{$locale ? t('common.next') : t('common.next')}
 			</Button>
 		</div>
 		<div class="flex flex-row gap-2 items-center">
-			<span class="text-xs text-secondary">{($locale, t('auditLogs.perPage'))}</span>
+			<span class="text-xs text-secondary">{$locale ? t('auditLogs.perPage') : t('auditLogs.perPage')}</span>
 			<select bind:value={perPage} class="text-xs border rounded-md px-2 py-1">
 				<option value={25}>25</option>
 				<option value={100}>100</option>

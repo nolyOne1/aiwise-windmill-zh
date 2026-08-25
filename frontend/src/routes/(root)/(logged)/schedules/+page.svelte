@@ -332,13 +332,13 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.schedules}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
-		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
+		<p class="font-bold">{$locale ? t('common.unauthorized') : t('common.unauthorized')}</p>
+		<p>{$locale ? t('common.pageNotAvailableForOperators') : t('common.pageNotAvailableForOperators')}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		<PageHeader
-			title={($locale, t('schedules.title'))}
+			title={$locale ? t('schedules.title') : t('schedules.title')}
 			tooltip={t('schedules.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/scheduling"
 		>
@@ -350,7 +350,7 @@
 				aiId="schedules-add-schedule"
 				aiDescription="Add schedule"
 			>
-				{($locale, t('schedules.newSchedule'))}
+				{$locale ? t('schedules.newSchedule') : t('schedules.newSchedule')}
 			</Button>
 		</PageHeader>
 		<div class="w-full h-full flex flex-col">
@@ -374,7 +374,7 @@
 					<Skeleton layout={[[6], 0.4]} />
 				{/each}
 			{:else if !schedules?.length}
-				<div class="text-center text-xs font-semibold text-emphasis mt-2"> {($locale, t('schedules.noSchedules'))} </div>
+				<div class="text-center text-xs font-semibold text-emphasis mt-2"> {$locale ? t('schedules.noSchedules') : t('schedules.noSchedules')} </div>
 			{:else if items?.length}
 				<div class="border rounded-md divide-y">
 					{#each items.slice(0, nbDisplayed) as { path, error, summary, edited_by, edited_at, schedule, timezone, enabled, script_path, is_flow, extra_perms, canWrite, jobs, paused_until, labels, inherited_labels, draft_only, is_draft } (path)}
@@ -505,7 +505,7 @@
 										startIcon={{ icon: List }}
 										variant="subtle"
 									>
-										{($locale, t('common.runs'))}
+										{$locale ? t('common.runs') : t('common.runs')}
 									</Button>
 									<Button
 										on:click={() => scheduleEditor?.openEdit(path, is_flow)}
@@ -513,7 +513,7 @@
 										startIcon={{ icon: canWrite ? Pen : Eye }}
 										variant="subtle"
 									>
-										{canWrite ? ($locale, t('common.edit')) : ($locale, t('common.view'))}
+										{canWrite ? $locale ? t('common.edit') : t('common.edit') : $locale ? t('common.view') : t('common.view')}
 									</Button>
 									<Dropdown
 										size="md"
@@ -601,7 +601,7 @@
 								{#if loadingSchedulesWithJobStats}
 									<div class="flex gap-1 ml-0.5 text-xs text-secondary items-center">
 										<Loader2 size={14} class="animate-spin" />
-										<span>{($locale, t('schedules.jobStatsLoading'))}</span>
+										<span>{$locale ? t('schedules.jobStatsLoading') : t('schedules.jobStatsLoading')}</span>
 									</div>
 								{:else}
 									<div class="flex gap-1.5 ml-0.5 items-baseline flex-row-reverse">
@@ -646,7 +646,7 @@
 			<div class="flex items-center gap-4 text-xs font-semibold text-emphasis">
 				<span>{t('schedules.itemsShown', { shown: nbDisplayed, total: items.length })}</span>
 				<Button size="xs" variant="subtle" on:click={() => (nbDisplayed += 30)}>
-					{($locale, t('common.load30More'))}
+					{$locale ? t('common.load30More') : t('common.load30More')}
 				</Button>
 			</div>
 		{/if}

@@ -634,7 +634,7 @@
 <ShareModal bind:this={shareModal} />
 
 	<Drawer bind:open={versionsDrawerOpen} size="1200px">
-	<DrawerContent title={($locale, t('scriptDetails.versionsHistory'))} on:close={() => (versionsDrawerOpen = false)} noPadding>
+	<DrawerContent title={$locale ? t('scriptDetails.versionsHistory') : t('scriptDetails.versionsHistory')} on:close={() => (versionsDrawerOpen = false)} noPadding>
 		{#if script}
 			<ScriptVersionHistory
 				scriptPath={script.path}
@@ -704,7 +704,7 @@
 				{#if script?.auto_kind === 'wac'}
 					<Popover notClickable>
 						{#snippet text()}
-							{($locale, t('scriptDetails.workflowAsCode'))}
+							{$locale ? t('scriptDetails.workflowAsCode') : t('scriptDetails.workflowAsCode')}
 						{/snippet}
 						<Badge small color="indigo" baseClass="border border-indigo-200">wac</Badge>
 					</Popover>
@@ -712,15 +712,15 @@
 				{#if script?.auto_kind === 'test'}
 					<Popover notClickable>
 						{#snippet text()}
-							{($locale, t('scriptDetails.ciTestScript'))}
+							{$locale ? t('scriptDetails.ciTestScript') : t('scriptDetails.ciTestScript')}
 						{/snippet}
-						<Badge small color="yellow" baseClass="border">{($locale, t('scriptDetails.ciTest'))}</Badge>
+						<Badge small color="yellow" baseClass="border">{$locale ? t('scriptDetails.ciTest') : t('scriptDetails.ciTest')}</Badge>
 					</Popover>
 				{/if}
 				{#if script?.codebase}
 					<Badge
 						>bundle<Tooltip
-							>{($locale, t('scriptDetails.bundleTooltip'))}</Tooltip
+							>{$locale ? t('scriptDetails.bundleTooltip') : t('scriptDetails.bundleTooltip')}</Tooltip
 						></Badge
 					>
 				{/if}
@@ -734,7 +734,7 @@
 				{#if script?.restart_unless_cancelled ?? false}
 					<button onclick={() => persistentScriptDrawer?.open?.(script)}>
 						<div class="hidden md:block">
-							<Badge color="red" variant="outlined" size="xs">{($locale, t('scriptDetails.persistent'))}</Badge>
+							<Badge color="red" variant="outlined" size="xs">{$locale ? t('scriptDetails.persistent') : t('scriptDetails.persistent')}</Badge>
 						</div>
 					</button>
 				{/if}
@@ -767,9 +767,9 @@
 							{#if script.lock_error_logs || topHash || script.archived || script.deleted}
 								<div class="flex flex-col gap-2 my-2">
 									{#if script.lock_error_logs}
-										<Alert type="error" title={($locale, t('scriptDetails.deploymentFailedTitle'))}>
+										<Alert type="error" title={$locale ? t('scriptDetails.deploymentFailedTitle') : t('scriptDetails.deploymentFailedTitle')}>
 											<p>
-												{($locale, t('scriptDetails.deploymentFailedBody'))}
+												{$locale ? t('scriptDetails.deploymentFailedBody') : t('scriptDetails.deploymentFailedBody')}
 											</p>
 											<LogViewer
 												content={script.lock_error_logs}
@@ -780,19 +780,19 @@
 									{/if}
 									{#if topHash}
 										<div class="mt-2"></div>
-										<Alert type="warning" title={($locale, t('scriptDetails.notHeadTitle'))}>
-											{($locale, t('scriptDetails.notHeadBody'))}
+										<Alert type="warning" title={$locale ? t('scriptDetails.notHeadTitle') : t('scriptDetails.notHeadTitle')}>
+											{$locale ? t('scriptDetails.notHeadBody') : t('scriptDetails.notHeadBody')}
 											<a href="{base}/scripts/get/{topHash}?workspace={$workspaceStore}"
-												>{($locale, t('scriptDetails.goToHead'))}</a
+												>{$locale ? t('scriptDetails.goToHead') : t('scriptDetails.goToHead')}</a
 											>
 										</Alert>
 									{/if}
 									{#if script.archived && !topHash}
-										<Alert type="error" title={($locale, t('scriptDetails.archivedTitle'))}>{($locale, t('scriptDetails.archivedBody'))}</Alert>
+										<Alert type="error" title={$locale ? t('scriptDetails.archivedTitle') : t('scriptDetails.archivedTitle')}>{$locale ? t('scriptDetails.archivedBody') : t('scriptDetails.archivedBody')}</Alert>
 									{/if}
 									{#if script.deleted}
-										<Alert type="error" title={($locale, t('scriptDetails.deletedTitle'))}>
-											<p>{($locale, t('scriptDetails.deletedBody'))}</p>
+										<Alert type="error" title={$locale ? t('scriptDetails.deletedTitle') : t('scriptDetails.deletedTitle')}>
+											<p>{$locale ? t('scriptDetails.deletedBody') : t('scriptDetails.deletedBody')}</p>
 										</Alert>
 									{/if}
 								</div>
@@ -813,12 +813,12 @@
 							<div class="pb-4" transition:slide={{ duration: 150 }}>
 								<Badge color="yellow">
 									<Loader2 size={12} class="inline animate-spin mr-1" />
-									{($locale, t('scriptDetails.deploymentInProgress'))}
+									{$locale ? t('scriptDetails.deploymentInProgress') : t('scriptDetails.deploymentInProgress')}
 									{#if deploymentJobId}
 										<a
 											href="/run/{deploymentJobId}?workspace={$workspaceStore}"
 											class="underline"
-											target="_blank">{($locale, t('scriptDetails.viewJob'))}</a
+											target="_blank">{$locale ? t('scriptDetails.viewJob') : t('scriptDetails.viewJob')}</a
 										>
 									{/if}
 								</Badge>
@@ -899,7 +899,7 @@
 									</Badge>
 								{/if}
 								{#if script?.is_template}
-									<Badge color="blue">{($locale, t('scriptDetails.template'))}</Badge>
+									<Badge color="blue">{$locale ? t('scriptDetails.template') : t('scriptDetails.template')}</Badge>
 								{/if}
 								{#if script && script.kind !== 'script'}
 									<Badge color="blue">
@@ -962,9 +962,9 @@
 				<Skeleton {loading} layout={[[20]]} />
 
 				<Tabs selected="code">
-					<Tab value="code" label={($locale, t('scriptDetails.code'))} />
-					<Tab value="dependencies" label={($locale, t('scriptDetails.lockfile'))} />
-					<Tab value="schema" label={($locale, t('common.schema'))} />
+					<Tab value="code" label={$locale ? t('scriptDetails.code') : t('scriptDetails.code')} />
+					<Tab value="dependencies" label={$locale ? t('scriptDetails.lockfile') : t('scriptDetails.lockfile')} />
+					<Tab value="schema" label={$locale ? t('common.schema') : t('common.schema')} />
 					{#snippet content()}
 						{#if script}
 							<TabContent value="code">
@@ -1023,7 +1023,7 @@
 										</div>
 									{:else}
 										<p class="bg-surface-secondary text-sm p-2">
-											{($locale, t('scriptDetails.noLockfile'))}
+											{$locale ? t('scriptDetails.noLockfile') : t('scriptDetails.noLockfile')}
 										</p>
 									{/if}
 									{#if script?.modules}
@@ -1084,7 +1084,7 @@
 			</div>
 
 			{#if script?.envs && script.envs.length > 0}
-				<h3>{($locale, t('scriptDetails.staticEnvVariables'))}</h3>
+				<h3>{$locale ? t('scriptDetails.staticEnvVariables') : t('scriptDetails.staticEnvVariables')}</h3>
 				<ul>
 					{#each script?.envs as e}
 						<li>{e}</li>

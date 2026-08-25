@@ -539,7 +539,7 @@
 {#if notFound}
 	<div class="flex flex-col items-center justify-center h-full">
 		<h1 class="text-2xl font-bold">{t('flowEditor.notFoundTitle', { path: page.params.path })}</h1>
-		<p class="text-gray-500">{($locale, t('flowEditor.notFoundBody'))}</p>
+		<p class="text-gray-500">{$locale ? t('flowEditor.notFoundBody') : t('flowEditor.notFoundBody')}</p>
 	</div>
 {:else if renderEditor}
 	<FlowBuilder

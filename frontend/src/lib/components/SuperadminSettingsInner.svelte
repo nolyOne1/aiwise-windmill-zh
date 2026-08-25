@@ -302,13 +302,13 @@
 						<div class="h-full">
 							{#if !automateUsernameCreation && !isCloudHosted()}
 								<div class="mb-4">
-									<h3 class="mb-2"> {($locale, t('superadmin.automaticUsernameCreation'))} </h3>
+									<h3 class="mb-2"> {$locale ? t('superadmin.automaticUsernameCreation') : t('superadmin.automaticUsernameCreation')} </h3>
 									<div class="mb-2">
 										<span class="text-primary text-sm"
-											>{($locale, t('superadmin.automaticUsernameCreationDescription'))} <a
+											>{$locale ? t('superadmin.automaticUsernameCreationDescription') : t('superadmin.automaticUsernameCreationDescription')} <a
 												target="_blank"
 												href="https://www.windmill.dev/docs/advanced/instance_settings#automatic-username-creation"
-												>{($locale, t('common.learnMore'))}</a
+												>{$locale ? t('common.learnMore') : t('common.learnMore')}</a
 											></span
 										>
 									</div>
@@ -320,7 +320,7 @@
 											automateUsernameModalOpen = true
 										}}
 									>
-										{($locale, t('superadmin.enableRecommended'))}
+										{$locale ? t('superadmin.enableRecommended') : t('superadmin.enableRecommended')}
 									</Button>
 									<ConfirmationModal
 										open={automateUsernameModalOpen}
@@ -329,18 +329,18 @@
 											enableAutomateUsernameCreationSetting()
 										}}
 										on:canceled={() => (automateUsernameModalOpen = false)}
-										title={($locale, t('superadmin.automaticUsernameCreation'))}
-										confirmationText={($locale, t('superadmin.enable'))}
+										title={$locale ? t('superadmin.automaticUsernameCreation') : t('superadmin.automaticUsernameCreation')}
+										confirmationText={$locale ? t('superadmin.enable') : t('superadmin.enable')}
 									>
-										{($locale, t('superadmin.automaticUsernameCreationConfirm'))}
+										{$locale ? t('superadmin.automaticUsernameCreationConfirm') : t('superadmin.automaticUsernameCreationConfirm')}
 									</ConfirmationModal>
 								</div>
 							{/if}
 
 							{#if extJwtTokens.length > 0}
 								<Tabs bind:selected={usersSubTab} class="mb-4">
-									<Tab value="users" label={($locale, t('workspaceSettings.users'))} />
-									<Tab value="ext_jwt" label={($locale, t('superadmin.externalJwts'))} />
+									<Tab value="users" label={$locale ? t('workspaceSettings.users') : t('workspaceSettings.users')} />
+									<Tab value="ext_jwt" label={$locale ? t('superadmin.externalJwts') : t('superadmin.externalJwts')} />
 								</Tabs>
 							{/if}
 
@@ -374,7 +374,7 @@
 												nonCaptureEvent
 												wrapperClasses="w-fit shrink-0"
 											>
-												{($locale, t('superadmin.addNewUser'))}
+												{$locale ? t('superadmin.addNewUser') : t('superadmin.addNewUser')}
 											</Button>
 										{/snippet}
 										{#snippet content()}
@@ -395,18 +395,18 @@
 									>
 										<Head>
 											<tr>
-												<Cell head first>{($locale, t('common.email'))}</Cell>
+												<Cell head first>{$locale ? t('common.email') : t('common.email')}</Cell>
 												{#if automateUsernameCreation}
-													<Cell head>{($locale, t('common.username'))}</Cell>
+													<Cell head>{$locale ? t('common.username') : t('common.username')}</Cell>
 												{/if}
-												<Cell head>{($locale, t('common.name'))}</Cell>
-												<Cell head>{($locale, t('superadmin.auth'))}</Cell>
+												<Cell head>{$locale ? t('common.name') : t('common.name')}</Cell>
+												<Cell head>{$locale ? t('superadmin.auth') : t('superadmin.auth')}</Cell>
 												{#if activeOnly}
-													<Cell head>{($locale, t('superadmin.kind'))}</Cell>
+													<Cell head>{$locale ? t('superadmin.kind') : t('superadmin.kind')}</Cell>
 												{/if}
-												<Cell head>{($locale, t('superadmin.role'))}</Cell>
+												<Cell head>{$locale ? t('superadmin.role') : t('superadmin.role')}</Cell>
 												<Cell head last>
-													<span class="sr-only">{($locale, t('superadmin.actions'))}</span>
+													<span class="sr-only">{$locale ? t('superadmin.actions') : t('superadmin.actions')}</span>
 												</Cell>
 											</tr>
 										</Head>
@@ -440,7 +440,7 @@
 																{#if disabled}
 																	<span
 																		class="text-2xs px-1.5 py-0.5 rounded bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300 whitespace-nowrap"
-																		>{($locale, t('common.disabled'))}</span
+																		>{$locale ? t('common.disabled') : t('common.disabled')}</span
 																	>
 																{/if}
 															</div>
@@ -475,11 +475,11 @@
 														{#if activeOnly}
 															<Cell>
 																{#if is_workspace_admin}
-																	{($locale, t('superadmin.admin'))}
+																	{$locale ? t('superadmin.admin') : t('superadmin.admin')}
 																{:else if operator_only}
-																	{($locale, t('superadmin.operatorOnly'))}
+																	{$locale ? t('superadmin.operatorOnly') : t('superadmin.operatorOnly')}
 																{:else}
-																	{($locale, t('superadmin.developer'))}
+																	{$locale ? t('superadmin.developer') : t('superadmin.developer')}
 																{/if}
 															</Cell>
 														{/if}
@@ -496,7 +496,7 @@
 																				: t('superadmin.developer')}
 																	</span>
 																	<Tooltip>
-																		{($locale, t('superadmin.serviceAccountRoleTooltip'))}
+																		{$locale ? t('superadmin.serviceAccountRoleTooltip') : t('superadmin.serviceAccountRoleTooltip')}
 																	</Tooltip>
 																</div>
 															{:else}
@@ -586,7 +586,7 @@
 																			title={t('superadmin.instanceGroupRoleTitle')}
 																			onclick={() => closeDrawer?.()}
 																		>
-																			{($locale, t('superadmin.setByInstanceGroup'))}
+																			{$locale ? t('superadmin.setByInstanceGroup') : t('superadmin.setByInstanceGroup')}
 																		</a>
 																	{/if}
 																</div>
@@ -599,7 +599,7 @@
 																		<a
 																			href="{base}/workspace_settings?tab=users&workspace={workspace_id}"
 																			class="text-xs text-secondary hover:text-primary hover:underline"
-																			title={t('superadmin.manageInWorkspace')}>{($locale, t('superadmin.manageInWorkspace'))}</a
+																			title={t('superadmin.manageInWorkspace')}>{$locale ? t('superadmin.manageInWorkspace') : t('superadmin.manageInWorkspace')}</a
 																		>
 																	{/if}
 																{:else}
@@ -751,8 +751,8 @@
 {/if}
 <ConfirmationModal
 	open={Boolean(disableConfirmedCallback)}
-	title={($locale, t('superadmin.disableUser'))}
-	confirmationText={($locale, t('superadmin.disable'))}
+	title={$locale ? t('superadmin.disableUser') : t('superadmin.disableUser')}
+	confirmationText={$locale ? t('superadmin.disable') : t('superadmin.disable')}
 	on:canceled={() => {
 		disableConfirmedCallback = undefined
 		listUsers(activeOnly)

@@ -182,7 +182,7 @@
 									{/if}
 								{/if}
 								{#if isWorkspaceDisabled(workspace)}
-									<span class="text-red-500 ml-1">{($locale, t('workspace.userDisabledInWorkspace'))}</span>
+									<span class="text-red-500 ml-1">{$locale ? t('workspace.userDisabledInWorkspace') : t('workspace.userDisabledInWorkspace')}</span>
 								{/if}
 								{#if workspace.id === 'admins'}
 									<span class="text-accent ml-1">Used to manage your Windmill instance</span>

@@ -9,7 +9,7 @@
 </script>
 
 <div class="flex flex-col gap-2 pt-1">
-	<div class="text-xs text-secondary">{($locale, t('account.language'))}</div>
+	<div class="text-xs text-secondary">{$locale ? t('account.language') : t('account.language')}</div>
 	<ToggleButtonGroup
 		selected={$locale}
 		noWFull

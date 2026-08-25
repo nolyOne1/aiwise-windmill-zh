@@ -515,7 +515,7 @@
 
 {#if (job?.job_kind == 'flow' || isFlowPreview(job?.job_kind)) && job?.['running'] && job?.parent_job == undefined}
 	<Drawer bind:this={debugViewer} size="800px">
-		<DrawerContent title={($locale, t('runDetail.debugDetail'))} on:close={debugViewer.closeDrawer}>
+		<DrawerContent title={$locale ? t('runDetail.debugDetail') : t('runDetail.debugDetail')} on:close={debugViewer.closeDrawer}>
 			{#snippet actions()}
 				<div class="flex items-center gap-1">
 					<div class="w-60 pt-2">
@@ -529,7 +529,7 @@
 						unifiedSize="md"
 						variant="subtle"
 					>
-						<div class="flex gap-2 items-center">{($locale, t('common.copy'))} <ClipboardCopy /> </div>
+						<div class="flex gap-2 items-center">{$locale ? t('common.copy') : t('common.copy')} <ClipboardCopy /> </div>
 					</Button>
 				</div>
 			{/snippet}
@@ -564,14 +564,14 @@
 {#if loadError?.status === 403}
 	<div class="max-w-3xl px-4 mx-auto w-full">
 		<div class="mt-6">
-			<Alert type="warning" title={($locale, t('runDetail.noAccessTitle'))}>
+			<Alert type="warning" title={$locale ? t('runDetail.noAccessTitle') : t('runDetail.noAccessTitle')}>
 				<div class="flex flex-col gap-2">
 					<p>{@html t('runDetail.noAccessBody', { workspace: `<span class="font-semibold">${$workspaceStore}</span>` })}</p>
 					<p>{@html t('runDetail.noAccessShareBody', { share: `<span class="font-semibold">${t('runDetail.share')}</span>` })}</p>
 				</div>
 			</Alert>
 			<div class="mt-4">
-				<Button href="{base}/runs" unifiedSize="md" variant="accent">{($locale, t('runDetail.goToRunsPage'))}</Button>
+				<Button href="{base}/runs" unifiedSize="md" variant="accent">{$locale ? t('runDetail.goToRunsPage') : t('runDetail.goToRunsPage')}</Button>
 			</div>
 		</div>
 	</div>
@@ -581,7 +581,7 @@
 			<h1 class="text-red-400 mt-6 text-2xl font-semibold"
 				>Job {page.params.run} not found in {$workspaceStore}</h1
 			>
-			<h2 class="text-primary text-lg font-semibold">{($locale, t('runDetail.rightWorkspace'))}</h2>
+			<h2 class="text-primary text-lg font-semibold">{$locale ? t('runDetail.rightWorkspace') : t('runDetail.rightWorkspace')}</h2>
 			<div class="flex flex-col gap-2">
 				{#each $userWorkspaces as workspace}
 					<div>
@@ -597,7 +597,7 @@
 					</div>
 				{/each}
 				<div>
-					<Button href="{base}/runs" unifiedSize="md" variant="accent">{($locale, t('runDetail.goToRunsPage'))}</Button>
+					<Button href="{base}/runs" unifiedSize="md" variant="accent">{$locale ? t('runDetail.goToRunsPage') : t('runDetail.goToRunsPage')}</Button>
 				</div>
 			</div>
 		</div>
@@ -652,7 +652,7 @@
 				</Dropdown>
 				{#if job?.job_kind === 'script' || job?.job_kind === 'flow'}
 					<Button href={runsHref} variant="default" unifiedSize="md" startIcon={{ icon: List }}>
-						{($locale, t('runDetail.viewRuns'))}
+						{$locale ? t('runDetail.viewRuns') : t('runDetail.viewRuns')}
 					</Button>
 				{/if}
 			{/if}
@@ -664,7 +664,7 @@
 					title={t('runDetail.shareTooltip')}
 					onclick={() => job && shareReadLink(job.id)}
 				>
-					{($locale, t('runDetail.share'))}
+					{$locale ? t('runDetail.share') : t('runDetail.share')}
 				</Button>
 			{/if}
 			{@const stem = job?.job_kind === 'script_hub' ? '/scripts' : `/${job?.job_kind}s`}
@@ -715,7 +715,7 @@
 						persistentScriptDrawer?.open?.(persistentScriptDefinition)
 					}}
 				>
-					{($locale, t('runDetail.currentRuns'))}
+					{$locale ? t('runDetail.currentRuns') : t('runDetail.currentRuns')}
 				</Button>
 			{/if}
 			{#if job && job?.type != 'CompletedJob' && (!job?.schedule_path || job?.['running'] == true)}
@@ -735,7 +735,7 @@
 						}}
 						title={`Cancel the ${job?.job_kind === 'script' ? 'script' : job?.job_kind === 'flow' ? 'flow' : 'job'}`}
 					>
-						{($locale, t('runDetail.cancel'))}
+						{$locale ? t('runDetail.cancel') : t('runDetail.cancel')}
 					</Button>
 				{:else}
 					<Button
@@ -749,7 +749,7 @@
 							}
 						}}
 					>
-						{($locale, t('runDetail.forceCancel'))}
+						{$locale ? t('runDetail.forceCancel') : t('runDetail.forceCancel')}
 					</Button>
 				{/if}
 			{/if}
@@ -763,7 +763,7 @@
 						}
 						scheduleEditor?.openEdit(job.schedule_path, job.job_kind == 'flow')
 					}}
-					startIcon={{ icon: Calendar }}>{($locale, t('runDetail.editSchedule'))}</Button
+					startIcon={{ icon: Calendar }}>{$locale ? t('runDetail.editSchedule') : t('runDetail.editSchedule')}</Button
 				>
 			{/if}
 			{#if job?.type === 'CompletedJob' && job?.job_kind === 'flow' && selectedJobStep !== undefined && (restart.topLevelRestartable || restart.nestedRestartSupported) && job.id}
@@ -805,7 +805,7 @@
 						}
 					]}
 				>
-					{($locale, t('runDetail.runAgain'))}
+					{$locale ? t('runDetail.runAgain') : t('runDetail.runAgain')}
 				</Button>
 			{/if}
 			{#if job?.job_kind === 'script' || job?.job_kind === 'flow'}
@@ -820,7 +820,7 @@
 							variant="default"
 							disabled={!showEditButton}
 							size="sm"
-							startIcon={{ icon: Pen }}>{($locale, t('common.edit'))}</Button
+							startIcon={{ icon: Pen }}>{$locale ? t('common.edit') : t('common.edit')}</Button
 						>
 					{/if}
 					{#if !showEditButton && !isCloudHosted() && editInForkAllowed($workspaceStore, $userWorkspaces)}
@@ -872,8 +872,8 @@
 		</div>
 		{#if job?.['deleted']}
 			<div class="max-w-7xl mx-auto w-full px-4 mt-6">
-				<Alert type="error" title={($locale, t('runDetail.deletedTitle'))}>
-					{($locale, t('runDetail.deletedBody'))}
+				<Alert type="error" title={$locale ? t('runDetail.deletedTitle') : t('runDetail.deletedTitle')}>
+					{$locale ? t('runDetail.deletedBody') : t('runDetail.deletedBody')}
 				</Alert>
 			</div>
 			<div class="my-4"></div>
@@ -904,7 +904,7 @@
 
 		<!-- Arguments and actions -->
 		<div class="max-w-7xl mx-auto w-full px-4 mt-12">
-			<div class="text-xs text-emphasis font-semibold mb-1">{($locale, t('runDetail.inputs'))}</div>
+			<div class="text-xs text-emphasis font-semibold mb-1">{$locale ? t('runDetail.inputs') : t('runDetail.inputs')}</div>
 			<div class="flex flex-col gap-y-6">
 				<JobArgs
 					workspace={job?.workspace_id ?? $workspaceStore ?? 'no_w'}
@@ -928,7 +928,7 @@
 							}}
 							class="absolute m-2 top-0 right-0 inline-flex rounded-md bg-surface-secondary text-primary hover:text-primary focus:outline-none"
 						>
-							<span class="sr-only">{($locale, t('common.close'))}</span>
+							<span class="sr-only">{$locale ? t('common.close') : t('common.close')}</span>
 							<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 								<path
 									d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
@@ -951,7 +951,7 @@
 			<div class="max-w-7xl mx-auto w-full px-4 mb-10">
 				{#if job?.workflow_as_code_status && job.job_kind !== 'aiagent'}
 					<div class="mr-2 sm:mr-0 mt-12 mb-6">
-						<h3 class="text-xs font-semibold text-emphasis mb-1">{($locale, t('runDetail.workflowTimeline'))}</h3>
+						<h3 class="text-xs font-semibold text-emphasis mb-1">{$locale ? t('runDetail.workflowTimeline') : t('runDetail.workflowTimeline')}</h3>
 						<div class="border rounded-md overflow-hidden">
 							<WorkflowTimeline
 								flow_status={asWorkflowStatus(job.workflow_as_code_status)}
@@ -971,7 +971,7 @@
 				<!-- Result Section (moved outside tabs) -->
 				{#if job}
 					<div class="mr-2 sm:mr-0 mt-12 mb-6">
-						<h3 class="text-xs font-semibold text-emphasis mb-1">{($locale, t('common.result'))}</h3>
+						<h3 class="text-xs font-semibold text-emphasis mb-1">{$locale ? t('common.result') : t('common.result')}</h3>
 						<div class="border rounded-md bg-surface-tertiary p-4 overflow-auto max-h-screen">
 							{#if job.result_stream || (job.type == 'CompletedJob' && job.result !== undefined)}
 								<DisplayResult
@@ -983,7 +983,7 @@
 									isTest={false}
 								/>
 							{:else}
-								<div class="text-secondary text-sm">{($locale, t('runDetail.noOutputYet'))}</div>
+								<div class="text-secondary text-sm">{$locale ? t('runDetail.noOutputYet') : t('runDetail.noOutputYet')}</div>
 							{/if}
 						</div>
 					</div>
@@ -996,12 +996,12 @@
 				<!-- Logs and outputs-->
 				<div class="mr-2 sm:mr-0 mt-6">
 					<Tabs bind:selected={viewTab}>
-						<Tab value="logs" label={($locale, t('app.logs'))} />
-						<Tab value="stats" label={($locale, t('runDetail.metrics'))} />
-						<Tab value="traces" label={($locale, t('runDetail.traces'))} />
-						<Tab value="assets" label={($locale, t('assets.title'))} />
+						<Tab value="logs" label={$locale ? t('app.logs') : t('app.logs')} />
+						<Tab value="stats" label={$locale ? t('runDetail.metrics') : t('runDetail.metrics')} />
+						<Tab value="traces" label={$locale ? t('runDetail.traces') : t('runDetail.traces')} />
+						<Tab value="assets" label={$locale ? t('assets.title') : t('assets.title')} />
 						{#if isScriptPreview(job?.job_kind)}
-							<Tab value="code" label={($locale, t('runDetail.code'))} />
+							<Tab value="code" label={$locale ? t('runDetail.code') : t('runDetail.code')} />
 						{/if}
 					</Tabs>
 
@@ -1038,7 +1038,7 @@
 										<HighlightCode lines language={job.language} code={job.raw_code} />
 									</div>
 								{:else if job}
-									<span class="text-sm">{($locale, t('runDetail.noCodeAvailable'))}</span>
+									<span class="text-sm">{$locale ? t('runDetail.noCodeAvailable') : t('runDetail.noCodeAvailable')}</span>
 								{:else}
 									<Skeleton layout={[[5]]} />
 								{/if}
@@ -1047,7 +1047,7 @@
 									<MemoryFootprintViewer jobId={job.id} {jobUpdateLastFetch} />
 								</div>
 							{:else}
-								<div class="w-full p-4 text-secondary">{($locale, t('runDetail.selectTab'))}</div>
+								<div class="w-full p-4 text-secondary">{$locale ? t('runDetail.selectTab') : t('runDetail.selectTab')}</div>
 							{/if}
 						</div>
 					{/if}

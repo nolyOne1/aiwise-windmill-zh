@@ -285,7 +285,7 @@
 <div class="flex flex-col gap-1 pb-1">
 	<MenuLink
 		class="!text-xs"
-		label={($locale, t('app.workers'))}
+		label={$locale ? t('app.workers') : t('app.workers')}
 		href="{base}/workers"
 		icon={ServerCog}
 		{isCollapsed}
@@ -309,7 +309,7 @@
 				>
 					<Logs size={16} />
 					{#if !isCollapsed}
-						{($locale, t('app.logs'))}
+						{$locale ? t('app.logs') : t('app.logs')}
 						<span class="ml-auto flex items-center gap-2">
 							{#if numUnacknowledgedCriticalAlerts > 0}
 								<SideBarNotification notificationCount={numUnacknowledgedCriticalAlerts} />
@@ -330,7 +330,7 @@
 	{:else}
 		<MenuLink
 			class="!text-xs"
-			label={($locale, t('app.auditLogs'))}
+			label={$locale ? t('app.auditLogs') : t('app.auditLogs')}
 			href="{base}/audit_logs"
 			icon={Eye}
 			disabled={$userStore?.operator}
@@ -358,7 +358,7 @@
 		>
 			<Settings size={16} />
 			{#if !isCollapsed}
-				{($locale, t('app.settings'))}
+				{$locale ? t('app.settings') : t('app.settings')}
 				<ChevronDown size={14} class="ml-auto flex-shrink-0 text-tertiary" />
 			{/if}
 			{#if hasNewChangelogs}
@@ -379,8 +379,8 @@
 
 <ConfirmationModal
 	open={leaveWorkspaceModal}
-	title={($locale, t('account.leaveWorkspaceTitle'))}
-	confirmationText={($locale, t('account.leaveWorkspaceAction'))}
+	title={$locale ? t('account.leaveWorkspaceTitle') : t('account.leaveWorkspaceTitle')}
+	confirmationText={$locale ? t('account.leaveWorkspaceAction') : t('account.leaveWorkspaceAction')}
 	on:canceled={() => {
 		leaveWorkspaceModal = false
 	}}
@@ -390,7 +390,7 @@
 	}}
 >
 	<div class="flex flex-col w-full space-y-4">
-		<span>{($locale, t('account.leaveWorkspaceConfirm'))}</span>
+		<span>{$locale ? t('account.leaveWorkspaceConfirm') : t('account.leaveWorkspaceConfirm')}</span>
 	</div>
 </ConfirmationModal>
 

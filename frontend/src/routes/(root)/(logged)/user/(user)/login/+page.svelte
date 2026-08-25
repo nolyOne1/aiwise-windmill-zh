@@ -146,10 +146,10 @@
 			{/if}
 		</div>
 		<h2 class="mt-6 text-center text-2xl font-semibold tracking-tight text-emphasis">
-			{($locale, t('login.pageTitle'))}
+			{$locale ? t('login.pageTitle') : t('login.pageTitle')}
 		</h2>
 		<p class="mt-2 text-center text-xs text-secondary">
-			{($locale, t('login.pageSubtitle'))}
+			{$locale ? t('login.pageSubtitle') : t('login.pageSubtitle')}
 		</p>
 	</div>
 

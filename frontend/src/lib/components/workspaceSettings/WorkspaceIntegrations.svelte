@@ -344,8 +344,8 @@
 
 <div class="flex flex-col">
 	<SettingsPageHeader
-		title={($locale, t('workspaceIntegrations.title'))}
-		description={($locale, t('workspaceIntegrations.description'))}
+		title={$locale ? t('workspaceIntegrations.title') : t('workspaceIntegrations.title')}
+		description={$locale ? t('workspaceIntegrations.description') : t('workspaceIntegrations.description')}
 		link="https://www.windmill.dev/docs/core_concepts/native_triggers"
 	/>
 
@@ -354,12 +354,14 @@
 		{@const config = supportedServices[serviceName]}
 		<div class="border border-gray-200 dark:border-gray-700 rounded-md p-4 bg-surface-tertiary">
 			<div class="text-sm font-semibold text-emphasis mb-2">
-				{$locale, t('workspaceIntegrations.saveCredentialsAsResource', {
+				{$locale ? t('workspaceIntegrations.saveCredentialsAsResource', {
+					name: config?.displayName ?? serviceName
+				}) : t('workspaceIntegrations.saveCredentialsAsResource', {
 					name: config?.displayName ?? serviceName
 				})}
 			</div>
 			<div class="text-xs text-secondary mb-3">
-				{$locale, t('workspaceIntegrations.saveCredentialsDescription')}
+				{$locale ? t('workspaceIntegrations.saveCredentialsDescription') : t('workspaceIntegrations.saveCredentialsDescription')}
 			</div>
 			<Path
 				kind="resource"
@@ -374,7 +376,7 @@
 					disabled={!resourcePath || !!pathError}
 					onclick={finalizePendingCallback}
 				>
-					{$locale, t('common.save')}
+					{$locale ? t('common.save') : t('common.save')}
 				</Button>
 				<Button
 					onclick={() => {
@@ -383,7 +385,7 @@
 						pathError = undefined
 					}}
 				>
-					{$locale, t('common.cancel')}
+					{$locale ? t('common.cancel') : t('common.cancel')}
 				</Button>
 			</div>
 		</div>
@@ -418,7 +420,7 @@
 							{#if isServiceConnected}
 								<div class="flex items-center gap-1 text-green-600 text-xs">
 									<Check size={16} />
-									<span class="font-semibold">{$locale, t('workspaceIntegrations.connected')}</span>
+									<span class="font-semibold">{$locale ? t('workspaceIntegrations.connected') : t('workspaceIntegrations.connected')}</span>
 								</div>
 								<Button
 									onclick={() =>
@@ -429,15 +431,15 @@
 									startIcon={{ icon: Plug }}
 								>
 									{isConnecting
-										? ($locale, t('workspaceIntegrations.reconnecting'))
-										: ($locale, t('workspaceIntegrations.reconnect'))}
+										? $locale ? t('workspaceIntegrations.reconnecting') : t('workspaceIntegrations.reconnecting')
+										: $locale ? t('workspaceIntegrations.reconnect') : t('workspaceIntegrations.reconnect')}
 								</Button>
 								<Button
 									destructive
 									onclick={() => deleteIntegration(serviceName)}
 									startIcon={{ icon: X }}
 								>
-									{$locale, t('common.delete')}
+									{$locale ? t('common.delete') : t('common.delete')}
 								</Button>
 							{:else if isOAuthConfigured}
 								<Button
@@ -447,15 +449,15 @@
 									startIcon={{ icon: Plug }}
 								>
 									{isConnecting
-										? ($locale, t('workspaceIntegrations.connecting'))
-										: ($locale, t('workspaceIntegrations.connect'))}
+										? $locale ? t('workspaceIntegrations.connecting') : t('workspaceIntegrations.connecting')
+										: $locale ? t('workspaceIntegrations.connect') : t('workspaceIntegrations.connect')}
 								</Button>
 								<Button
 									destructive
 									onclick={() => deleteIntegration(serviceName)}
 									startIcon={{ icon: X }}
 								>
-									{$locale, t('common.delete')}
+									{$locale ? t('common.delete') : t('common.delete')}
 								</Button>
 							{:else if instanceSharingAvailable[serviceName]}
 								<Button
@@ -465,8 +467,8 @@
 									startIcon={{ icon: Plug }}
 								>
 									{isConnecting
-										? ($locale, t('workspaceIntegrations.connecting'))
-										: ($locale, t('workspaceIntegrations.connect'))}
+										? $locale ? t('workspaceIntegrations.connecting') : t('workspaceIntegrations.connecting')
+										: $locale ? t('workspaceIntegrations.connect') : t('workspaceIntegrations.connect')}
 								</Button>
 							{:else}
 								<Button
@@ -475,13 +477,13 @@
 										(showingConfig = showingConfig === serviceName ? null : serviceName)}
 									startIcon={{ icon: Cog }}
 								>
-									{$locale, t('workspaceIntegrations.configureOAuth')}
+									{$locale ? t('workspaceIntegrations.configureOAuth') : t('workspaceIntegrations.configureOAuth')}
 								</Button>
 							{/if}
 
 							{#if config.docsUrl}
 								<Button href={config.docsUrl} target="_blank" startIcon={{ icon: ExternalLink }}>
-									{$locale, t('workspaceIntegrations.docs')}
+									{$locale ? t('workspaceIntegrations.docs') : t('workspaceIntegrations.docs')}
 								</Button>
 							{/if}
 						</div>
@@ -489,15 +491,15 @@
 
 					{#if instanceSharingAvailable[serviceName] && !isOAuthConfigured}
 						<div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-							<Alert type="info" title={($locale, t('workspaceIntegrations.redirectUriRequired'))}>
+							<Alert type="info" title={$locale ? t('workspaceIntegrations.redirectUriRequired') : t('workspaceIntegrations.redirectUriRequired')}>
 								<p class="text-sm mb-2">
-									{$locale, t('workspaceIntegrations.redirectUriDescriptionPrefix')}
+									{$locale ? t('workspaceIntegrations.redirectUriDescriptionPrefix') : t('workspaceIntegrations.redirectUriDescriptionPrefix')}
 									<a
 										href="https://console.cloud.google.com/apis/credentials"
 										target="_blank"
 										rel="noopener noreferrer"
 										class="underline">Google Cloud Console</a
-									>{$locale, t('workspaceIntegrations.redirectUriDescriptionSuffix')}
+									>{$locale ? t('workspaceIntegrations.redirectUriDescriptionSuffix') : t('workspaceIntegrations.redirectUriDescriptionSuffix')}
 								</p>
 								<ClipboardPanel content={getRedirectUri(serviceName)} size="sm" />
 							</Alert>
@@ -507,10 +509,10 @@
 					{#if isShowingConfig}
 						<div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
 							{#if serviceName === 'nextcloud'}
-								<Alert type="info" title={($locale, t('workspaceIntegrations.requirements'))} class="mb-4">
-									<p>{$locale, t('workspaceIntegrations.nextcloudRequirementsTitle')}</p>
+								<Alert type="info" title={$locale ? t('workspaceIntegrations.requirements') : t('workspaceIntegrations.requirements')} class="mb-4">
+									<p>{$locale ? t('workspaceIntegrations.nextcloudRequirementsTitle') : t('workspaceIntegrations.nextcloudRequirementsTitle')}</p>
 									<ul class="list-disc pl-4 mt-2 space-y-1">
-										<li>{$locale, t('workspaceIntegrations.nextcloudRequirement1')}</li>
+										<li>{$locale ? t('workspaceIntegrations.nextcloudRequirement1') : t('workspaceIntegrations.nextcloudRequirement1')}</li>
 										<li>
 											The <a
 												href="https://apps.nextcloud.com/apps/integration_windmill"
@@ -519,7 +521,7 @@
 												class="underline hover:text-blue-600"
 											>
 												Windmill integration app
-											</a>{$locale, t('workspaceIntegrations.nextcloudRequirement2')}
+											</a>{$locale ? t('workspaceIntegrations.nextcloudRequirement2') : t('workspaceIntegrations.nextcloudRequirement2')}
 										</li>
 										<li>
 											<a
@@ -530,7 +532,7 @@
 											>
 												Pretty URLs
 											</a>
-											{$locale, t('workspaceIntegrations.nextcloudRequirement3')}
+											{$locale ? t('workspaceIntegrations.nextcloudRequirement3') : t('workspaceIntegrations.nextcloudRequirement3')}
 										</li>
 									</ul>
 								</Alert>
@@ -556,8 +558,8 @@
 		</div>
 
 		{#if integrations.length === 0}
-			<Alert type="warning" title={($locale, t('workspaceIntegrations.noIntegrationsConnected'))}>
-				{$locale, t('workspaceIntegrations.noIntegrationsConnectedBody')}
+			<Alert type="warning" title={$locale ? t('workspaceIntegrations.noIntegrationsConnected') : t('workspaceIntegrations.noIntegrationsConnected')}>
+				{$locale ? t('workspaceIntegrations.noIntegrationsConnectedBody') : t('workspaceIntegrations.noIntegrationsConnectedBody')}
 			</Alert>
 		{/if}
 	{/if}

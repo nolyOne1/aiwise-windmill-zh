@@ -33,18 +33,18 @@
 </script>
 
 <div class="border border-border-light rounded-md p-4 h-full">
-	<h2 class="text-emphasis text-sm font-semibold mb-2">{($locale, t('userInfo.title'))}</h2>
+	<h2 class="text-emphasis text-sm font-semibold mb-2">{$locale ? t('userInfo.title') : t('userInfo.title')}</h2>
 
 	<form class="flex flex-col gap-6">
 		<div class="w-full text-primary flex flex-col gap-1">
-			<div class="text-xs text-emphasis font-semibold">{($locale, t('common.email'))}</div>
+			<div class="text-xs text-emphasis font-semibold">{$locale ? t('common.email') : t('common.email')}</div>
 			<span class="text-xs font-normal text-primary">
 				{$usersWorkspaceStore?.email}
 			</span>
 		</div>
 
 		<label class="flex flex-col gap-1 w-120">
-			<span class="text-xs text-emphasis font-semibold">{($locale, t('common.password'))}</span>
+			<span class="text-xs text-emphasis font-semibold">{$locale ? t('common.password') : t('common.password')}</span>
 			{#if login_type == 'password'}
 				<div class="flex flex-row gap-1 items-center">
 					<TextInput
@@ -56,7 +56,7 @@
 						size="sm"
 						variant="default"
 						btnClasses="w-min whitespace-nowrap"
-						on:click={setPassword}>{($locale, t('userInfo.setPassword'))}</Button
+						on:click={setPassword}>{$locale ? t('userInfo.setPassword') : t('userInfo.setPassword')}</Button
 					>
 				</div>
 				{#if passwordError}
@@ -64,7 +64,7 @@
 				{/if}
 			{:else if login_type == 'github'}
 				<span class="text-xs text-primary font-normal"
-					>{($locale, t('userInfo.authenticatedGithub'))}</span
+					>{$locale ? t('userInfo.authenticatedGithub') : t('userInfo.authenticatedGithub')}</span
 				>
 			{/if}
 		</label>

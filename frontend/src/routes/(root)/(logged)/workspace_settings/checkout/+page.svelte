@@ -35,16 +35,16 @@
 <CenteredModal title={success ? t('workspaceCheckout.subscriptionUpgradeSucceeded') : t('workspaceCheckout.subscriptionUpgradeFailed')}>
 	{#if !success}
 		<div class="my-2">
-			<Alert type="error" title={($locale, t('workspaceCheckout.checkoutFailed'))}>
-				{($locale, t('workspaceCheckout.checkoutFailedBody'))}
+			<Alert type="error" title={$locale ? t('workspaceCheckout.checkoutFailed') : t('workspaceCheckout.checkoutFailed')}>
+				{$locale ? t('workspaceCheckout.checkoutFailedBody') : t('workspaceCheckout.checkoutFailedBody')}
 			</Alert>
 		</div>
 		<p class="text-sm my-6 text-primary">
-			{($locale, t('workspaceCheckout.redirectingInFiveSeconds'))}
+			{$locale ? t('workspaceCheckout.redirectingInFiveSeconds') : t('workspaceCheckout.redirectingInFiveSeconds')}
 		</p>
 	{:else}
 		<p class="text-sm my-6 text-primary w-full text-center">
-			{($locale, t('workspaceCheckout.waitingForUpgrade'))}
+			{$locale ? t('workspaceCheckout.waitingForUpgrade') : t('workspaceCheckout.waitingForUpgrade')}
 		</p>
 	{/if}
 

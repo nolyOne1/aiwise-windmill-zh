@@ -377,7 +377,7 @@
 		>
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col gap-1">
-					<span class="text-xs font-semibold text-secondary">{($locale, t('common.email'))}</span>
+					<span class="text-xs font-semibold text-secondary">{$locale ? t('common.email') : t('common.email')}</span>
 					<TextInput
 						bind:value={newEmail}
 						inputProps={{
@@ -392,7 +392,7 @@
 					{/if}
 				</div>
 				<div class="flex flex-col gap-1">
-					<span class="text-xs font-semibold text-secondary">{($locale, t('common.password'))}</span>
+					<span class="text-xs font-semibold text-secondary">{$locale ? t('common.password') : t('common.password')}</span>
 					<TextInput
 						bind:value={newPassword}
 						inputProps={{ type: 'password', placeholder: t('instanceSetup.enterPassword') }}
@@ -429,10 +429,10 @@
 						loading={hubSyncStatus === 'loading'}
 						onClick={syncFromHub}
 					>
-						{($locale, t('instanceSetup.syncLatestFromHub'))}
+						{$locale ? t('instanceSetup.syncLatestFromHub') : t('instanceSetup.syncLatestFromHub')}
 					</Button>
 					<p class="text-tertiary text-2xs">
-						{($locale, t('instanceSetup.syncLatestFromHubHelp'))}
+						{$locale ? t('instanceSetup.syncLatestFromHubHelp') : t('instanceSetup.syncLatestFromHubHelp')}
 					</p>
 				</div>
 				{#if hubSyncStatus === 'success'}
@@ -450,7 +450,7 @@
 					size="xs"
 				/>
 				<p class="text-tertiary text-2xs">
-					{($locale, t('instanceSetup.dailyScheduleSyncHelp'))}
+					{$locale ? t('instanceSetup.dailyScheduleSyncHelp') : t('instanceSetup.dailyScheduleSyncHelp')}
 				</p>
 			</div>
 		</SettingCard>
@@ -487,7 +487,7 @@
 				{#if isSettingsStep(wizardStep)}
 					{#if settingsSteps[wizardStep].id === 'Auth/OAuth/SAML'}
 						<p class="text-secondary text-xs mb-4">
-							{($locale, t('instanceSetup.authenticationHelp'))}
+							{$locale ? t('instanceSetup.authenticationHelp') : t('instanceSetup.authenticationHelp')}
 						</p>
 					{/if}
 					{#key wizardStep}
@@ -591,7 +591,7 @@
 							startIcon={{ icon: ArrowLeft }}
 							onClick={() => saveAndProceed(() => (wizardStep -= 1))}
 						>
-							{($locale, t('common.back'))}
+							{$locale ? t('common.back') : t('common.back')}
 						</Button>
 					{/if}
 				</div>
@@ -603,7 +603,7 @@
 							unifiedSize="md"
 							onClick={() => saveAndProceed(switchToFullMode)}
 						>
-							{($locale, t('instanceSetup.advancedSetup'))}
+							{$locale ? t('instanceSetup.advancedSetup') : t('instanceSetup.advancedSetup')}
 						</Button>
 					{/if}
 					{#if wizardStep < wizardStepLabels.length - 1}
@@ -612,7 +612,7 @@
 							unifiedSize="md"
 							onClick={() => proceedFromCore(() => (wizardStep += 1))}
 						>
-							{currentStepDirty ? ($locale, t('instanceSetup.saveAndNext')) : ($locale, t('common.next'))}
+							{currentStepDirty ? $locale ? t('instanceSetup.saveAndNext') : t('instanceSetup.saveAndNext') : $locale ? t('common.next') : t('common.next')}
 						</Button>
 					{:else}
 						<Button
@@ -622,7 +622,7 @@
 							loading={accountSubmitting}
 							onClick={submitAccount}
 						>
-							{($locale, t('instanceSetup.setAccountAndFinish'))}
+							{$locale ? t('instanceSetup.setAccountAndFinish') : t('instanceSetup.setAccountAndFinish')}
 						</Button>
 					{/if}
 				</div>
@@ -633,7 +633,7 @@
 					startIcon={{ icon: ArrowLeft }}
 					onClick={switchToWizardMode}
 				>
-					{($locale, t('instanceSetup.quickSetup'))}
+					{$locale ? t('instanceSetup.quickSetup') : t('instanceSetup.quickSetup')}
 				</Button>
 				<Button
 					variant="accent"
@@ -644,7 +644,7 @@
 							fullStep = 1
 						})}
 				>
-					{($locale, t('common.continue'))}
+					{$locale ? t('common.continue') : t('common.continue')}
 				</Button>
 			{:else}
 				<Button
@@ -653,7 +653,7 @@
 					startIcon={{ icon: ArrowLeft }}
 					onClick={() => saveAndProceed(() => (fullStep = 0))}
 				>
-					{($locale, t('common.back'))}
+					{$locale ? t('common.back') : t('common.back')}
 				</Button>
 				<Button
 					variant="accent"
@@ -662,16 +662,16 @@
 					loading={accountSubmitting}
 					onClick={submitAccount}
 				>
-					{($locale, t('instanceSetup.setAccountAndFinish'))}
+					{$locale ? t('instanceSetup.setAccountAndFinish') : t('instanceSetup.setAccountAndFinish')}
 				</Button>
 			{/if}
 		</div>
 
 		<div class="flex items-center justify-start gap-2 mt-2 shrink-0">
 			<p class="text-secondary text-xs">
-				{($locale, t('instanceSetup.changeSettingsLater'))}
+				{$locale ? t('instanceSetup.changeSettingsLater') : t('instanceSetup.changeSettingsLater')}
 			</p>
-			<Button variant="subtle" unifiedSize="sm" onClick={finishSetup}>{($locale, t('instanceSetup.skipSetup'))}</Button>
+			<Button variant="subtle" unifiedSize="sm" onClick={finishSetup}>{$locale ? t('instanceSetup.skipSetup') : t('instanceSetup.skipSetup')}</Button>
 		</div>
 	</div>
 </CenteredModal>
@@ -694,7 +694,7 @@
 	>
 		<div class="flex flex-col w-full space-y-4">
 			<span>
-				{($locale, t('instanceSetup.licenseKeyWarningBody'))}
+				{$locale ? t('instanceSetup.licenseKeyWarningBody') : t('instanceSetup.licenseKeyWarningBody')}
 			</span>
 		</div>
 	</ConfirmationModal>
@@ -727,7 +727,7 @@
 				{ossAccountError}
 			</Alert>
 			<span>
-				{($locale, t('instanceSetup.continueWithDefaultCredentialsHelp'))}
+				{$locale ? t('instanceSetup.continueWithDefaultCredentialsHelp') : t('instanceSetup.continueWithDefaultCredentialsHelp')}
 			</span>
 		</div>
 	</ConfirmationModal>

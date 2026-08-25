@@ -1377,7 +1377,7 @@
 			{/snippet}
 			{#if $superadmin}
 				<Button variant="default" size="sm" on:click={() => goto('#superadmin-settings')}>
-					{($locale, t('account.instanceSettings'))}
+					{$locale ? t('account.instanceSettings') : t('account.instanceSettings')}
 				</Button>
 			{/if}</PageHeader
 		>
@@ -1432,8 +1432,8 @@
 								/>
 							{:else}
 								<div class="my-2"
-									><Alert type="warning" title={($locale, t('workspaceSettings.enterpriseLicenseRequired'))}
-										>{($locale, t('workspaceSettings.enterpriseLicenseRequiredBody'))}</Alert
+									><Alert type="warning" title={$locale ? t('workspaceSettings.enterpriseLicenseRequired') : t('workspaceSettings.enterpriseLicenseRequired')}
+										>{$locale ? t('workspaceSettings.enterpriseLicenseRequiredBody') : t('workspaceSettings.enterpriseLicenseRequiredBody')}</Alert
 									></div
 								>
 							{/if}
@@ -1675,7 +1675,7 @@
 								<ChangeWorkspaceColor />
 							</div>
 
-							<div class="text-xs font-semibold text-emphasis mt-6 mb-1">{($locale, t('workspaceSettings.exportWorkspace'))}</div>
+							<div class="text-xs font-semibold text-emphasis mt-6 mb-1">{$locale ? t('workspaceSettings.exportWorkspace') : t('workspaceSettings.exportWorkspace')}</div>
 							<div class="flex justify-start">
 								{#if shouldDownloadViaClient()}
 									<Button
@@ -1686,7 +1686,7 @@
 												`${$workspaceStore ?? 'workspace'}.zip`
 											)}
 									>
-										{($locale, t('workspaceSettings.exportZip'))}
+										{$locale ? t('workspaceSettings.exportZip') : t('workspaceSettings.exportZip')}
 									</Button>
 								{:else}
 									<Button
@@ -1694,21 +1694,21 @@
 										href="{base}/api/w/{$workspaceStore ?? ''}/workspaces/tarball?archive_type=zip"
 										target="_blank"
 									>
-										{($locale, t('workspaceSettings.exportZip'))}
+										{$locale ? t('workspaceSettings.exportZip') : t('workspaceSettings.exportZip')}
 									</Button>
 								{/if}
 							</div>
 
 							<div class="mt-12"></div>
-							<span class="text-sm font-semibold text-emphasis">{($locale, t('workspaceSettings.deleteWorkspace'))}</span>
+							<span class="text-sm font-semibold text-emphasis">{$locale ? t('workspaceSettings.deleteWorkspace') : t('workspaceSettings.deleteWorkspace')}</span>
 							{#if !$superadmin}
 								<p class="text-2xs text-secondary">
-									{($locale, t('workspaceSettings.onlySuperadminCanDelete'))}
+									{$locale ? t('workspaceSettings.onlySuperadminCanDelete') : t('workspaceSettings.onlySuperadminCanDelete')}
 								</p>
 							{/if}
 							{#if $workspaceStore === 'admins' || $workspaceStore === 'starter'}
 								<p class="text-2xs text-secondary">
-									{($locale, t('workspaceSettings.specialWorkspaceCannotDelete'))}
+									{$locale ? t('workspaceSettings.specialWorkspaceCannotDelete') : t('workspaceSettings.specialWorkspaceCannotDelete')}
 								</p>
 							{/if}
 							<div class="flex gap-2">
@@ -1719,7 +1719,7 @@
 									btnClasses="mt-2"
 									on:click={openArchiveConfirm}
 								>
-									{($locale, t('workspaceSettings.archiveWorkspace'))}
+									{$locale ? t('workspaceSettings.archiveWorkspace') : t('workspaceSettings.archiveWorkspace')}
 								</Button>
 
 								{#if $superadmin}
@@ -1730,15 +1730,15 @@
 										btnClasses="mt-2"
 										on:click={openDeleteConfirm}
 									>
-										{($locale, t('workspaceSettings.deleteWorkspaceSuperadmin'))}
+										{$locale ? t('workspaceSettings.deleteWorkspaceSuperadmin') : t('workspaceSettings.deleteWorkspaceSuperadmin')}
 									</Button>
 								{/if}
 							</div>
 
 							<ConfirmationModal
 								open={archiveConfirmOpen}
-								title={($locale, t('workspaceSettings.archiveWorkspace'))}
-								confirmationText={($locale, t('workspaceSettings.archiveAction'))}
+								title={$locale ? t('workspaceSettings.archiveWorkspace') : t('workspaceSettings.archiveWorkspace')}
+								confirmationText={$locale ? t('workspaceSettings.archiveAction') : t('workspaceSettings.archiveAction')}
 								onConfirmed={async () => {
 									archiveConfirmOpen = false
 									await doArchiveWorkspace()
@@ -1754,8 +1754,8 @@
 
 							<ConfirmationModal
 								open={deleteConfirmOpen}
-								title={($locale, t('workspaceSettings.deleteWorkspace'))}
-								confirmationText={($locale, t('common.delete'))}
+								title={$locale ? t('workspaceSettings.deleteWorkspace') : t('workspaceSettings.deleteWorkspace')}
+								confirmationText={$locale ? t('common.delete') : t('common.delete')}
 								onConfirmed={async () => {
 									deleteConfirmOpen = false
 									await doDeleteWorkspace()
@@ -2172,8 +2172,8 @@ export async function main(
 		</div>
 	{:else}
 		<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4" role="alert">
-			<p class="font-bold">{($locale, t('workspaceSettings.notAdminTitle'))}</p>
-			<p>{($locale, t('workspaceSettings.notAdminBody'))}</p>
+			<p class="font-bold">{$locale ? t('workspaceSettings.notAdminTitle') : t('workspaceSettings.notAdminTitle')}</p>
+			<p>{$locale ? t('workspaceSettings.notAdminBody') : t('workspaceSettings.notAdminBody')}</p>
 		</div>
 	{/if}
 </CenteredPage>

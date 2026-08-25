@@ -460,7 +460,7 @@
 
 <div class="bg-surface px-4 py-8 border sm:rounded-lg sm:px-10">
 	{#if autoRedirecting}
-		<p class="text-sm text-center text-secondary py-4">{($locale, t('login.signingIn'))}</p>
+		<p class="text-sm text-center text-secondary py-4">{$locale ? t('login.signingIn') : t('login.signingIn')}</p>
 	{/if}
 	<div
 		class="grid {logins && logins.length > 2 ? 'grid-cols-2' : ''} gap-4 {autoRedirecting
@@ -494,7 +494,7 @@
 			{/each}
 		{/if}
 		{#if saml}
-			<Button variant="default" btnClasses="mt-2 w-full" on:click={redirectSaml}>{($locale, t('login.sso'))}</Button>
+			<Button variant="default" btnClasses="mt-2 w-full" on:click={redirectSaml}>{$locale ? t('login.sso') : t('login.sso')}</Button>
 		{/if}
 	</div>
 	{#if !autoRedirecting && !disablePasswordLogin && (saml || (logins && logins.length > 0))}
@@ -506,7 +506,7 @@
 					showPassword = !showPassword
 				}}
 			>
-				{($locale, t('login.signInWithoutThirdParty'))}
+				{$locale ? t('login.signInWithoutThirdParty') : t('login.signInWithoutThirdParty')}
 			</Button>
 		</div>
 	{/if}
@@ -515,18 +515,18 @@
 		<div>
 			{#if firstTime}
 				<p class="text-xs text-center w-full pb-4 text-secondary">
-					{($locale, t('login.welcomePrefill'))}
+					{$locale ? t('login.welcomePrefill') : t('login.welcomePrefill')}
 				</p>
 			{/if}
 			<div class="space-y-6">
 				{#if isCloudHosted()}
 					<p class="text-xs text-secondary pb-6">
-						{($locale, t('login.cloudCredentials'))}
+						{$locale ? t('login.cloudCredentials') : t('login.cloudCredentials')}
 					</p>
 				{/if}
 				<div class="space-y-1">
 					<label for="email" class="block text-xs font-semibold text-emphasis">
-						{($locale, t('common.email'))}
+						{$locale ? t('common.email') : t('common.email')}
 					</label>
 					<div>
 						<input type="email" bind:value={email} id="email" autocomplete="email" />
@@ -535,7 +535,7 @@
 
 				<div class="space-y-1">
 					<label for="password" class="block text-xs font-semibold text-emphasis">
-						{($locale, t('common.password'))}
+						{$locale ? t('common.password') : t('common.password')}
 					</label>
 					<div>
 						<input
@@ -552,26 +552,26 @@
 								href="{base}/user/forgot-password"
 								class="text-2xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
 							>
-								{($locale, t('login.forgotPassword'))}
+								{$locale ? t('login.forgotPassword') : t('login.forgotPassword')}
 							</a>
 						</div>
 					{/if}
 				</div>
 
 				<div class="pt-2">
-					<Button onClick={login} variant="accent" disabled={!email || !password}>{($locale, t('login.signIn'))}</Button>
+					<Button onClick={login} variant="accent" disabled={!email || !password}>{$locale ? t('login.signIn') : t('login.signIn')}</Button>
 				</div>
 			</div>
 
 			{#if isCloudHosted()}
 				<p class="text-2xs text-secondary mt-10 text-center">
-					{($locale, t('login.agreeToTermsPrefix'))}
+					{$locale ? t('login.agreeToTermsPrefix') : t('login.agreeToTermsPrefix')}
 					<a href="https://windmill.dev/terms_of_service" target="_blank" rel="noreferrer">
-						{($locale, t('login.termsOfService'))}
+						{$locale ? t('login.termsOfService') : t('login.termsOfService')}
 					</a>
-					{($locale, ` ${t('login.agreeToTermsAnd')} `)}
+					{$locale ? ` ${t('login.agreeToTermsAnd')} ` : ` ${t('login.agreeToTermsAnd')} `}
 					<a href="https://windmill.dev/privacy_policy" target="_blank" rel="noreferrer">
-						{($locale, t('login.privacyPolicy'))}
+						{$locale ? t('login.privacyPolicy') : t('login.privacyPolicy')}
 					</a>
 				</p>
 			{/if}

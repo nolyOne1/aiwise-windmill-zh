@@ -92,8 +92,8 @@
 	<DrawerContent
 		title={
 			selectedRule
-				? ($locale, t('workspaceRulesets.protectionRuleTitle', { name: selectedRule.name }))
-				: ($locale, t('workspaceRulesets.newProtectionRule'))
+				? $locale ? t('workspaceRulesets.protectionRuleTitle', { name: selectedRule.name }) : t('workspaceRulesets.protectionRuleTitle', { name: selectedRule.name })
+				: $locale ? t('workspaceRulesets.newProtectionRule') : t('workspaceRulesets.newProtectionRule')
 		}
 		on:close={ruleDrawer?.closeDrawer}
 	>
@@ -109,14 +109,14 @@
 </Drawer>
 
 {#if !$enterpriseLicense}
-	<Alert type="warning" title={($locale, t('workspaceRulesets.eeFeatureTitle'))}>
-		{$locale, t('workspaceRulesets.eeFeatureBody')}
+	<Alert type="warning" title={$locale ? t('workspaceRulesets.eeFeatureTitle') : t('workspaceRulesets.eeFeatureTitle')}>
+		{$locale ? t('workspaceRulesets.eeFeatureBody') : t('workspaceRulesets.eeFeatureBody')}
 	</Alert>
 	<div class="pb-4"></div>
 {/if}
 
 <div class="flex flex-row justify-between items-center mb-4">
-	<div class="text-xs font-semibold text-emphasis">{$locale, t('workspaceRulesets.protectionRules')}</div>
+	<div class="text-xs font-semibold text-emphasis">{$locale ? t('workspaceRulesets.protectionRules') : t('workspaceRulesets.protectionRules')}</div>
 	<Button
 		unifiedSize="md"
 		variant="accent"
@@ -126,7 +126,7 @@
 			ruleDrawer?.openDrawer()
 		}}
 	>
-		{$locale, t('workspaceRulesets.newRule')}
+		{$locale ? t('workspaceRulesets.newRule') : t('workspaceRulesets.newRule')}
 	</Button>
 </div>
 
@@ -134,9 +134,9 @@
 	<DataTable containerClass="bg-surface-tertiary">
 		<Head>
 			<tr>
-				<Cell head first>{$locale, t('common.name')}</Cell>
-				<Cell head>{$locale, t('workspaceRulesets.bypassers')}</Cell>
-				<Cell head>{$locale, t('workspaceRulesets.rules')}</Cell>
+				<Cell head first>{$locale ? t('common.name') : t('common.name')}</Cell>
+				<Cell head>{$locale ? t('workspaceRulesets.bypassers') : t('workspaceRulesets.bypassers')}</Cell>
+				<Cell head>{$locale ? t('workspaceRulesets.rules') : t('workspaceRulesets.rules')}</Cell>
 				<Cell head last />
 			</tr>
 		</Head>
@@ -153,7 +153,7 @@
 				<tr>
 					<Cell first last colspan={4}>
 						<div class="text-center py-8 text-secondary text-sm">
-							{$locale, t('workspaceRulesets.noProtectionRules')}
+							{$locale ? t('workspaceRulesets.noProtectionRules') : t('workspaceRulesets.noProtectionRules')}
 						</div>
 					</Cell>
 				</tr>

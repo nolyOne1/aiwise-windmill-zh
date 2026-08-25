@@ -250,7 +250,7 @@ export const zhCN = {
 		jobStatsLoading: '正在加载作业统计...',
 		averageDuration: '平均耗时：{seconds}s',
 		editedBy: '编辑者：{user}',
-		onDatePrefix: '',
+		onDatePrefix: '于',
 		itemsShown: '已显示 {shown} / {total} 项'
 	},
 	groups: {

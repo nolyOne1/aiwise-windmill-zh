@@ -296,12 +296,12 @@
 						startIcon={{ icon: RotateCcw }}
 						on:click={() => void resetToOwnDraft()}
 					>
-						{($locale, t('autosave.resetToDraft'))}
+						{$locale ? t('autosave.resetToDraft') : t('autosave.resetToDraft')}
 					</Button>
 				{:else}
 					{#if syncState === 'failed'}
 						<div class="flex flex-col gap-1">
-							<p class="text-red-500 font-semibold text-xs">{($locale, t('autosave.saveFailed'))}</p>
+							<p class="text-red-500 font-semibold text-xs">{$locale ? t('autosave.saveFailed') : t('autosave.saveFailed')}</p>
 							{#if failureMessage}
 								<pre
 									class="text-red-500 text-xs whitespace-pre-wrap break-words font-mono max-h-40 overflow-y-auto"
@@ -312,11 +312,11 @@
 					{/if}
 					{#if autosaveEnabled}
 						<p class="text-primary text-xs">
-							{($locale, t('autosave.allChangesSavedAsDraft'))}
+							{$locale ? t('autosave.allChangesSavedAsDraft') : t('autosave.allChangesSavedAsDraft')}
 						</p>
 					{:else}
 						<p class="text-primary text-xs">
-							{($locale, t('autosave.autoSaveOffDescription'))}
+							{$locale ? t('autosave.autoSaveOffDescription') : t('autosave.autoSaveOffDescription')}
 						</p>
 					{/if}
 					<Toggle

@@ -302,8 +302,8 @@
 	<DrawerContent
 		title={
 			edit
-				? ($locale, t('variableEditor.updateVariableAt', { path: initialPath }))
-				: ($locale, t('variableEditor.addVariable'))
+				? $locale ? t('variableEditor.updateVariableAt', { path: initialPath }) : t('variableEditor.updateVariableAt', { path: initialPath })
+				: $locale ? t('variableEditor.addVariable') : t('variableEditor.addVariable')
 		}
 		bannerReserved={edit}
 		on:close={drawer?.closeDrawer}
@@ -325,14 +325,14 @@
 		{/snippet}
 		<div class="flex flex-col gap-8 pb-2">
 			{#if !can_write}
-				<Alert type="warning" title={($locale, t('variableEditor.onlyReadAccessTitle'))}>
-					{$locale, t('variableEditor.onlyReadAccessBody')}
+				<Alert type="warning" title={$locale ? t('variableEditor.onlyReadAccessTitle') : t('variableEditor.onlyReadAccessTitle')}>
+					{$locale ? t('variableEditor.onlyReadAccessBody') : t('variableEditor.onlyReadAccessBody')}
 				</Alert>
 			{/if}
 
 			{#if otherDirty.length > 0}
-				<Alert type="warning" title={($locale, t('variableEditor.editingMultipleWorkspacesTitle'))}>
-					{$locale, t('variableEditor.editingMultipleWorkspacesBody', { workspaces: otherDirty.join(', ') })}
+				<Alert type="warning" title={$locale ? t('variableEditor.editingMultipleWorkspacesTitle') : t('variableEditor.editingMultipleWorkspacesTitle')}>
+					{$locale ? t('variableEditor.editingMultipleWorkspacesBody', { workspaces: otherDirty.join(', ') }) : t('variableEditor.editingMultipleWorkspacesBody', { workspaces: otherDirty.join(', ') })}
 				</Alert>
 			{/if}
 
@@ -366,7 +366,7 @@
 				variant="accent"
 				size="sm"
 			>
-				{edit ? ($locale, t('common.update')) : ($locale, t('common.save'))}
+				{edit ? $locale ? t('common.update') : t('common.update') : $locale ? t('common.save') : t('common.save')}
 			</Button>
 		{/snippet}
 	</DrawerContent>

@@ -60,30 +60,30 @@
 	<DrawerContent
 		title={
 			edit
-				? ($locale, t('contextualVariableEditor.updateTitle', { name }))
-				: ($locale, t('contextualVariableEditor.createTitle'))
+				? $locale ? t('contextualVariableEditor.updateTitle', { name }) : t('contextualVariableEditor.updateTitle', { name })
+				: $locale ? t('contextualVariableEditor.createTitle') : t('contextualVariableEditor.createTitle')
 		}
 		on:close={drawer?.closeDrawer}
 	>
 		<div class="flex flex-col gap-8">
 			{#if !edit}
-				<Label for="name" label={($locale, t('common.name'))}>
+				<Label for="name" label={$locale ? t('common.name') : t('common.name')}>
 					<TextInput
 						inputProps={{
 							type: 'text',
-							placeholder: ($locale, t('contextualVariableEditor.variableNamePlaceholder')),
+							placeholder: $locale ? t('contextualVariableEditor.variableNamePlaceholder') : t('contextualVariableEditor.variableNamePlaceholder'),
 							id: 'name'
 						}}
 						bind:value={name}
 					/>
 				</Label>
 			{/if}
-			<Label for="value" label={($locale, t('common.value'))}>
+			<Label for="value" label={$locale ? t('common.value') : t('common.value')}>
 				<textarea
 					rows="4"
 					use:autosize
 					bind:value
-					placeholder={($locale, t('contextualVariableEditor.variableValuePlaceholder'))}
+					placeholder={$locale ? t('contextualVariableEditor.variableValuePlaceholder') : t('contextualVariableEditor.variableValuePlaceholder')}
 					id="value"
 				></textarea>
 			</Label>
@@ -96,7 +96,7 @@
 				variant="accent"
 				unifiedSize="md"
 			>
-				{edit ? ($locale, t('common.update')) : ($locale, t('common.save'))}
+				{edit ? $locale ? t('common.update') : t('common.update') : $locale ? t('common.save') : t('common.save')}
 			</Button>
 		{/snippet}
 	</DrawerContent>

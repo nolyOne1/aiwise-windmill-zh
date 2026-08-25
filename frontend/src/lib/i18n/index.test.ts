@@ -40,10 +40,15 @@ describe('i18n locale core', () => {
 	})
 
 	it('falls back to English before returning the key itself', async () => {
+		const { zhCN } = await import('./locales/zh-CN')
+		const chineseCommon = zhCN.common as Record<string, unknown>
+		const originalCancel = chineseCommon.cancel
+		delete chineseCommon.cancel
 		const mod = await loadI18nModule()
 
 		expect(mod?.t('common.cancel')).toBe('Cancel')
 		expect(mod?.t('missing.key')).toBe('missing.key')
+		chineseCommon.cancel = originalCancel
 	})
 
 	it('defaults safely when storage is unavailable', async () => {

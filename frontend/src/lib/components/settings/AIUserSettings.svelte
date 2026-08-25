@@ -38,7 +38,7 @@
 </script>
 
 <div class="border border-border-light rounded-md p-4 h-full">
-	<h2 class="text-emphasis text-sm font-semibold mb-2">{($locale, t('ai.userSettingsTitle'))}</h2>
+	<h2 class="text-emphasis text-sm font-semibold mb-2">{$locale ? t('ai.userSettingsTitle') : t('ai.userSettingsTitle')}</h2>
 
 	<div class="flex flex-col gap-4">
 		<Toggle

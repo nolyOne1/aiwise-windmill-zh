@@ -363,7 +363,7 @@
 					{#if isCloudHosted() || $superadmin}
 						<MenuItem href="{base}/user/create_workspace" class={itemClass} {item}>
 							<Plus size={16} />
-							{($locale, t('workspace.create'))}
+							{$locale ? t('workspace.create') : t('workspace.create')}
 						</MenuItem>
 					{/if}
 					{#if canForkHere}
@@ -373,7 +373,7 @@
 							{item}
 						>
 							<Plus size={16} />
-							{($locale, t('workspace.createFork'))}
+							{$locale ? t('workspace.createFork') : t('workspace.createFork')}
 						</MenuItem>
 					{/if}
 				</div>
@@ -388,7 +388,7 @@
 						<Settings size={16} />
 						{(activeWorkspace && ambiguousNames.has(activeWorkspace.name)
 							? activeWorkspace.id
-							: activeWorkspace?.name) ?? $workspaceStore} {($locale, t('workspace.settingsSuffix'))}
+							: activeWorkspace?.name) ?? $workspaceStore} {$locale ? t('workspace.settingsSuffix') : t('workspace.settingsSuffix')}
 					</MenuItem>
 				</div>
 			{/if}
@@ -400,7 +400,7 @@
 						class={itemClass}
 						{item}
 					>
-						{($locale, t('workspace.allWorkspaces'))}
+						{$locale ? t('workspace.allWorkspaces') : t('workspace.allWorkspaces')}
 					</MenuItem>
 				</div>
 			{/if}
@@ -427,7 +427,7 @@
 						}}
 						{item}
 					>
-						{($locale, t('workspace.upgrade'))}
+						{$locale ? t('workspace.upgrade') : t('workspace.upgrade')}
 					</MenuItem>
 				{/if}
 			</div>

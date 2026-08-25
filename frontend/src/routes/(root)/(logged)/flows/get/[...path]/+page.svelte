@@ -643,15 +643,15 @@
 						{/if}
 
 						{#if flow?.archived}
-							<Alert type="error" title={($locale, t('flowDetails.archivedTitle'))}>{($locale, t('flowDetails.archivedBody'))}</Alert>
+							<Alert type="error" title={$locale ? t('flowDetails.archivedTitle') : t('flowDetails.archivedTitle')}>{$locale ? t('flowDetails.archivedBody') : t('flowDetails.archivedBody')}</Alert>
 							<div class="h-4"></div>
 						{/if}
 
 						{#if pinnedVersion !== undefined}
 							<Alert type="info" title={t('flowDetails.pinnedVersionTitle', { version: pinnedVersion })}>
-								{($locale, t('flowDetails.pinnedVersionBody'))}
+								{$locale ? t('flowDetails.pinnedVersionBody') : t('flowDetails.pinnedVersionBody')}
 								<a class="underline" href="/flows/get/{path}?workspace={$workspaceStore}">
-									{($locale, t('flowDetails.viewLatest'))}
+									{$locale ? t('flowDetails.viewLatest') : t('flowDetails.viewLatest')}
 								</a>
 							</Alert>
 							<div class="h-4"></div>
@@ -671,21 +671,21 @@
 							<div class="pb-4" transition:slide={{ duration: 150 }}>
 								<HeaderBadge color="yellow">
 									<Loader2 size={12} class="inline animate-spin mr-1" />
-									{($locale, t('flowDetails.deploymentInProgress'))}
+									{$locale ? t('flowDetails.deploymentInProgress') : t('flowDetails.deploymentInProgress')}
 									{#if deploymentJobId}
 										<a
 											href="/run/{deploymentJobId}?workspace={$workspaceStore}"
 											class="underline"
-											target="_blank">{($locale, t('flowDetails.viewJob'))}</a
+											target="_blank">{$locale ? t('flowDetails.viewJob') : t('flowDetails.viewJob')}</a
 										>
 									{/if}
 								</HeaderBadge>
 							</div>
 						{/if}
 						{#if flow.lock_error_logs && flow.lock_error_logs != ''}
-							<Alert type="error" title={($locale, t('flowDetails.deploymentFailedTitle'))}>
+							<Alert type="error" title={$locale ? t('flowDetails.deploymentFailedTitle') : t('flowDetails.deploymentFailedTitle')}>
 								<p>
-									{($locale, t('flowDetails.deploymentFailedBody'))}
+									{$locale ? t('flowDetails.deploymentFailedBody') : t('flowDetails.deploymentFailedBody')}
 								</p>
 								<LogViewer content={flow.lock_error_logs} isLoading={false} tag={undefined} />
 							</Alert>

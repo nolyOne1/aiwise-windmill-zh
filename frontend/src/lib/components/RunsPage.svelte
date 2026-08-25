@@ -614,7 +614,7 @@
 		{#if forceCancelInPopup}
 			<div class="mt-4 text-red-500 p-2 text-sm">
 				<p>
-					{$locale, t('runsPage.forceCancelWarning')}
+					{$locale ? t('runsPage.forceCancelWarning') : t('runsPage.forceCancelWarning')}
 				</p>
 			</div>
 		{/if}
@@ -622,10 +622,10 @@
 </ConfirmationModal>
 
 <Drawer bind:this={runDrawer}>
-	<DrawerContent title={($locale, t('runsPage.runDetails'))} on:close={runDrawer.closeDrawer}>
+	<DrawerContent title={$locale ? t('runsPage.runDetails') : t('runsPage.runDetails')} on:close={runDrawer.closeDrawer}>
 		{#if selectedIds.length === 1}
 			{#if selectedIds[0] === '-'}
-				<div class="p-4">{$locale, t('runsPage.noJobInformation')}</div>
+				<div class="p-4">{$locale ? t('runsPage.noJobInformation') : t('runsPage.noJobInformation')}</div>
 			{:else}
 				<JobRunsPreview id={selectedIds[0]} workspace={selectedWorkspace} />
 			{/if}
@@ -641,8 +641,8 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.runs}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">{$locale, t('common.unauthorized')}</p>
-		<p>{$locale, t('common.pageNotAvailableForOperators')}</p>
+		<p class="font-bold">{$locale ? t('common.unauthorized') : t('common.unauthorized')}</p>
+		<p>{$locale ? t('common.pageNotAvailableForOperators') : t('common.pageNotAvailableForOperators')}</p>
 	</div>
 {:else}
 	<div class="w-full h-screen flex flex-col" bind:clientWidth={innerWidth}>
@@ -655,13 +655,13 @@
 						$userStore?.operator ? 'pl-10' : ''
 					)}
 				>
-					{$locale, t('runsPage.title')}
+					{$locale ? t('runsPage.title') : t('runsPage.title')}
 				</h1>
 
 				<Tooltip
 					documentationLink="https://www.windmill.dev/docs/core_concepts/monitor_past_and_future_runs"
 				>
-					{$locale, t('runsPage.tooltip')}
+					{$locale ? t('runsPage.tooltip') : t('runsPage.tooltip')}
 				</Tooltip>
 
 				<!-- Queue -->
@@ -688,31 +688,31 @@
 					}
 				>
 					{#snippet children({ item })}
-						<ToggleButton value="all" label={($locale, t('common.all'))} {item} />
+						<ToggleButton value="all" label={$locale ? t('common.all') : t('common.all')} {item} />
 						<ToggleButton
 							value="runs"
-							label={($locale, t('common.runs'))}
-							tooltip={($locale, t('runsPage.runsTooltip'))}
+							label={$locale ? t('common.runs') : t('common.runs')}
+							tooltip={$locale ? t('runsPage.runsTooltip') : t('runsPage.runsTooltip')}
 							{item}
 						/>
 						<ToggleButton
 							value="dependencies"
-							label={($locale, t('runsPage.depsShort'))}
-							tooltip={($locale, t('runsPage.depsTooltip'))}
+							label={$locale ? t('runsPage.depsShort') : t('runsPage.depsShort')}
+							tooltip={$locale ? t('runsPage.depsTooltip') : t('runsPage.depsTooltip')}
 							{item}
 						/>
 						<ToggleButtonMore
 							hideSelectedOption={innerWidth < smallScreenWidth}
 							togglableItems={[
 								{
-									label: ($locale, t('runsPage.previews')),
+									label: $locale ? t('runsPage.previews') : t('runsPage.previews'),
 									value: 'previews',
-									tooltip: ($locale, t('runsPage.previewsTooltip'))
+									tooltip: $locale ? t('runsPage.previewsTooltip') : t('runsPage.previewsTooltip')
 								},
 								{
-									label: ($locale, t('runsPage.sync')),
+									label: $locale ? t('runsPage.sync') : t('runsPage.sync'),
 									value: 'deploymentcallbacks',
-									tooltip: ($locale, t('runsPage.syncTooltip'))
+									tooltip: $locale ? t('runsPage.syncTooltip') : t('runsPage.syncTooltip')
 								}
 							]}
 							{item}
@@ -728,10 +728,10 @@
 					id="status"
 				>
 					{#snippet children({ item })}
-						<ToggleButton value={'all'} label={($locale, t('common.all'))} {item} />
+						<ToggleButton value={'all'} label={$locale ? t('common.all') : t('common.all')} {item} />
 						<ToggleButton
 							value={'running'}
-							tooltip={($locale, t('runsPage.statusRunning'))}
+							tooltip={$locale ? t('runsPage.statusRunning') : t('runsPage.statusRunning')}
 							class="whitespace-nowrap"
 							icon={CirclePlay}
 							iconProps={{
@@ -742,7 +742,7 @@
 						/>
 						<ToggleButton
 							value={'success'}
-							tooltip={($locale, t('runsPage.statusSuccess'))}
+							tooltip={$locale ? t('runsPage.statusSuccess') : t('runsPage.statusSuccess')}
 							class="whitespace-nowrap"
 							icon={CircleCheck}
 							iconProps={{
@@ -753,7 +753,7 @@
 						/>
 						<ToggleButton
 							value={'failure'}
-							tooltip={($locale, t('runsPage.statusFailure'))}
+							tooltip={$locale ? t('runsPage.statusFailure') : t('runsPage.statusFailure')}
 							class="whitespace-nowrap"
 							icon={CircleAlert}
 							iconProps={{
@@ -763,7 +763,7 @@
 						/>
 						<ToggleButton
 							value={'canceled'}
-							tooltip={($locale, t('runsPage.statusCanceled'))}
+							tooltip={$locale ? t('runsPage.statusCanceled') : t('runsPage.statusCanceled')}
 							class="whitespace-nowrap"
 							icon={Hourglass}
 							selectedColor="gray"
@@ -772,7 +772,7 @@
 						{#if filters.val.status == 'waiting'}
 							<ToggleButton
 								value={'waiting'}
-								tooltip={($locale, t('runsPage.statusWaiting'))}
+								tooltip={$locale ? t('runsPage.statusWaiting') : t('runsPage.statusWaiting')}
 								class="whitespace-nowrap"
 								icon={Hourglass}
 								selectedColor="blue"
@@ -781,7 +781,7 @@
 						{:else if filters.val.status == 'suspended'}
 							<ToggleButton
 								value={'suspended'}
-								tooltip={($locale, t('runsPage.statusSuspended'))}
+								tooltip={$locale ? t('runsPage.statusSuspended') : t('runsPage.statusSuspended')}
 								class="whitespace-nowrap"
 								icon={Hourglass}
 								selectedColor="purple"
@@ -794,7 +794,7 @@
 
 			<div class="hidden xl:flex gap-2 items-center min-h-8 ml-2">
 				{#if !filters.val.job_trigger_kind || filters.val.job_trigger_kind === '!schedule'}
-					<div class="flex items-center gap-1" title={($locale, t('runsPage.showSchedules'))}>
+					<div class="flex items-center gap-1" title={$locale ? t('runsPage.showSchedules') : t('runsPage.showSchedules')}>
 						<Toggle
 							size="xs"
 							color="nord"
@@ -810,7 +810,7 @@
 						<Calendar size={14} />
 					</div>
 				{/if}
-				<div class="flex items-center gap-1" title={($locale, t('runsPage.showFutureJobs'))}>
+				<div class="flex items-center gap-1" title={$locale ? t('runsPage.showFutureJobs') : t('runsPage.showFutureJobs')}>
 					<Toggle
 						size="xs"
 						color="nord"
@@ -846,7 +846,7 @@
 					isAdminsWorkspace: $workspaceStore === 'admins'
 				})}
 				bind:value={filters.val}
-				placeholder={($locale, t('runsPage.filterPlaceholder'))}
+				placeholder={$locale ? t('runsPage.filterPlaceholder') : t('runsPage.filterPlaceholder')}
 				autofocus
 			/>
 		</div>
@@ -855,10 +855,10 @@
 		<div id="runs-chart" class="p-2 px-4 bg-surface-tertiary mx-4 border rounded-md">
 			<div class="relative z-10 mb-2 flex gap-2">
 				<Tabs bind:selected={graph}>
-					<Tab value="RunChart" label={($locale, t('runsPage.duration'))} id="runs-chart-duration-tab" />
+					<Tab value="RunChart" label={$locale ? t('runsPage.duration') : t('runsPage.duration')} id="runs-chart-duration-tab" />
 					<Tab
 						value="ConcurrencyChart"
-						label={($locale, t('runsPage.concurrency'))}
+						label={$locale ? t('runsPage.concurrency') : t('runsPage.concurrency')}
 						id="runs-chart-concurrency-tab"
 					>
 						{#snippet extra()}
@@ -874,13 +874,13 @@
 						class="ml-2"
 						bind:value={lookback}
 						items={[
-							{ label: ($locale, t('runsPage.none')), value: 0 },
-							{ label: ($locale, t('runsPage.dayCount', { count: 1 })), value: 1 },
-							{ label: ($locale, t('runsPage.dayCount', { count: 3 })), value: 3 },
-							{ label: ($locale, t('runsPage.dayCount', { count: 7 })), value: 7 }
+							{ label: $locale ? t('runsPage.none') : t('runsPage.none'), value: 0 },
+							{ label: $locale ? t('runsPage.dayCount', { count: 1 }) : t('runsPage.dayCount', { count: 1 }), value: 1 },
+							{ label: $locale ? t('runsPage.dayCount', { count: 3 }) : t('runsPage.dayCount', { count: 3 }), value: 3 },
+							{ label: $locale ? t('runsPage.dayCount', { count: 7 }) : t('runsPage.dayCount', { count: 7 }), value: 7 }
 						]}
 						transformInputSelectedText={(_, v) => t('runsPage.lookbackValue', { count: v })}
-						tooltip={($locale, t('runsPage.lookbackTooltip'))}
+						tooltip={$locale ? t('runsPage.lookbackTooltip') : t('runsPage.lookbackTooltip')}
 					/>
 				{:else if !lastFetchWentToEnd && (jobs?.length ?? 0) >= (perPage.val ?? 1000)}
 					<Button
@@ -889,8 +889,8 @@
 						loading={jobsLoader.loadingExtra}
 						onClick={() => jobsLoader.loadExtraJobs()}
 					>
-						{$locale, t('runsPage.loadMore')}
-						<Tooltip>{$locale, t('runsPage.moreJobsToLoad')}</Tooltip>
+						{$locale ? t('runsPage.loadMore') : t('runsPage.loadMore')}
+						<Tooltip>{$locale ? t('runsPage.moreJobsToLoad') : t('runsPage.moreJobsToLoad')}</Tooltip>
 					</Button>
 				{/if}
 			</div>
@@ -931,7 +931,10 @@
 							{#if batchProgress}
 								<div class="flex items-center gap-3 px-1 pb-2 text-xs text-secondary">
 									<span>
-										{$locale, t('runsPage.loadingJobsProgress', {
+										{$locale ? t('runsPage.loadingJobsProgress', {
+											loaded: batchProgress.loaded,
+											total: batchProgress.total
+										}) : t('runsPage.loadingJobsProgress', {
 											loaded: batchProgress.loaded,
 											total: batchProgress.total
 										})}
@@ -945,7 +948,7 @@
 										></div>
 									</div>
 									{#if currentBatchSize != null}
-										<span class="whitespace-nowrap shrink-0">{$locale, t('runsPage.batchSize')}</span>
+										<span class="whitespace-nowrap shrink-0">{$locale ? t('runsPage.batchSize') : t('runsPage.batchSize')}</span>
 										<input
 											type="number"
 											min="1"
@@ -961,7 +964,7 @@
 										/>
 									{/if}
 									<Button size="xs" destructive onClick={() => jobsLoader.stopBatchLoading()}>
-										{$locale, t('common.stop')}
+										{$locale ? t('common.stop') : t('common.stop')}
 									</Button>
 								</div>
 							{/if}
@@ -1007,15 +1010,15 @@
 							>
 								{#if !manualSelectionMode}
 									<DropdownV2
-										btnText={($locale, t('runsPage.batchActions'))}
+										btnText={$locale ? t('runsPage.batchActions') : t('runsPage.batchActions')}
 										size="xs"
 										items={[
 											{
-												displayName: ($locale, t('runsPage.cancelJobs')),
+												displayName: $locale ? t('runsPage.cancelJobs') : t('runsPage.cancelJobs'),
 												action: () => ((manualSelectionMode = 'cancel'), (selectedIds = []))
 											},
 											{
-												displayName: ($locale, t('runsPage.rerunJobs')),
+												displayName: $locale ? t('runsPage.rerunJobs') : t('runsPage.rerunJobs'),
 												action: () => {
 													manualSelectionMode = 'rerun'
 													selectedIds = []
@@ -1026,7 +1029,7 @@
 												? [
 														{
 															// Operators are rejected by the endpoint, so offering it would only 403.
-															displayName: ($locale, t('runsPage.resolveFailedJobs')),
+															displayName: $locale ? t('runsPage.resolveFailedJobs') : t('runsPage.resolveFailedJobs'),
 															action: () => (
 																(manualSelectionMode = 'resolve'),
 																(selectedIds = []),
@@ -1036,11 +1039,11 @@
 													]
 												: []),
 											{
-												displayName: ($locale, t('runsPage.cancelAllMatchingFilters')),
+												displayName: $locale ? t('runsPage.cancelAllMatchingFilters') : t('runsPage.cancelAllMatchingFilters'),
 												action: () => onCancelAllJobsMatchingFilters()
 											},
 											{
-												displayName: ($locale, t('runsPage.rerunAllMatchingFilters')),
+												displayName: $locale ? t('runsPage.rerunAllMatchingFilters') : t('runsPage.rerunAllMatchingFilters'),
 												action: () => onRerunAllJobsMatchingFilters()
 											}
 										]}
@@ -1054,7 +1057,7 @@
 											batchRerunOptionsIsOpen = false
 										}}
 									>
-										{$locale, t('runsPage.exitSelectionMode')}
+										{$locale ? t('runsPage.exitSelectionMode') : t('runsPage.exitSelectionMode')}
 									</Button>
 								{/if}
 								<div class="flex-1"></div>
@@ -1112,7 +1115,7 @@
 								class="rounded-md bg-surface-tertiary border absolute inset-0 mb-4 flex flex-col items-center justify-center gap-3 p-4"
 							>
 								<p class="text-xs text-secondary text-center max-w-xs">
-									{$locale, t('runsPage.resolvingDescription')}
+									{$locale ? t('runsPage.resolvingDescription') : t('runsPage.resolvingDescription')}
 								</p>
 								<TextInput
 									bind:value={resolutionNote}
@@ -1130,14 +1133,14 @@
 										disabled={!selectedIds.length}
 										onClick={() => setJobsResolution(selectedIds, true, resolutionNote)}
 									>
-										{$locale, t('runsPage.markResolved', { count: selectedIds.length })}
+										{$locale ? t('runsPage.markResolved', { count: selectedIds.length }) : t('runsPage.markResolved', { count: selectedIds.length })}
 									</Button>
 									<Button
 										variant="default"
 										disabled={!selectedIds.length}
 										onClick={() => setJobsResolution(selectedIds, false)}
 									>
-										{$locale, t('runsPage.unresolve', { count: selectedIds.length })}
+										{$locale ? t('runsPage.unresolve', { count: selectedIds.length }) : t('runsPage.unresolve', { count: selectedIds.length })}
 									</Button>
 								</div>
 							</div>
@@ -1154,7 +1157,7 @@
 							/>
 						{:else if selectedIds.length === 1}
 							{#if selectedIds[0] === '-'}
-								<div class="p-4">{$locale, t('runsPage.noJobInformation')}</div>
+								<div class="p-4">{$locale ? t('runsPage.noJobInformation') : t('runsPage.noJobInformation')}</div>
 							{:else}
 								<JobRunsPreview
 									id={selectedIds[0]}
@@ -1169,7 +1172,7 @@
 								class="rounded-md bg-surface-tertiary border absolute inset-0 mb-4 flex items-center justify-center"
 							>
 								<div class="text-xs m-4">
-									{$locale, t('runsPage.jobsSelected', { count: selectedIds.length })}
+									{$locale ? t('runsPage.jobsSelected', { count: selectedIds.length }) : t('runsPage.jobsSelected', { count: selectedIds.length })}
 								</div>
 							</div>
 						{/if}

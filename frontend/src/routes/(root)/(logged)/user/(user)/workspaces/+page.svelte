@@ -187,7 +187,7 @@
 {/if}
 
 <CenteredModal
-	title={($locale, t('workspace.selectTitle'))}
+	title={$locale ? t('workspace.selectTitle') : t('workspace.selectTitle')}
 	subtitle={t('workspace.loggedInAs', { email: $usersWorkspaceStore?.email ?? '' })}
 	centerVertically={false}
 >
@@ -195,7 +195,7 @@
 	<div class="flex flex-col">
 		<div class="flex flex-row items-center gap-2 justify-between mb-4">
 			<h2 class="inline-flex gap-2 text-sm font-semibold text-emphasis flex-shrink-0">
-				{($locale, t('workspace.allWorkspaces'))}{#if loading}<WindmillIcon spin="fast" />{/if}
+				{$locale ? t('workspace.allWorkspaces') : t('workspace.allWorkspaces')}{#if loading}<WindmillIcon spin="fast" />{/if}
 			</h2>
 
 			{#if allWorkspaces.length > 1}
@@ -219,7 +219,7 @@
 							size="xs2"
 							variant="default"
 						>
-							{workspaceAllExpanded ? ($locale, t('common.collapse')) : ($locale, t('common.expand'))}
+							{workspaceAllExpanded ? $locale ? t('common.collapse') : t('common.collapse') : $locale ? t('common.expand') : t('common.expand')}
 						</Button>
 					{/if}
 				</div>
@@ -240,9 +240,9 @@
 			{#if workspaces.length == 0}
 				<p class="text-xs text-secondary mt-2">
 					{#if createWorkspace}
-						{($locale, t('workspace.youAreNotMemberWithCreate'))}
+						{$locale ? t('workspace.youAreNotMemberWithCreate') : t('workspace.youAreNotMemberWithCreate')}
 					{:else}
-						{($locale, t('workspace.youAreNotMemberWithoutCreate'))}
+						{$locale ? t('workspace.youAreNotMemberWithoutCreate') : t('workspace.youAreNotMemberWithoutCreate')}
 					{/if}
 				</p>
 			{:else}
@@ -282,14 +282,14 @@
 						href="{base}/user/create_workspace{rd ? `?rd=${encodeURIComponent(rd)}` : ''}"
 						variant={onlyAdminsWorkspace || noWorkspaces ? 'accent' : 'default'}
 						wrapperClasses="w-full"
-						>+&nbsp;{($locale, t('workspace.createNew'))}
+						>+&nbsp;{$locale ? t('workspace.createNew') : t('workspace.createNew')}
 					</Button>
 				</AnimatedButton>
 			</div>
 		{/if}
 
 		<div class="flex flex-row items-center justify-between mt-8">
-			<h2 class="text-sm font-semibold text-emphasis">{($locale, t('workspace.invitesTitle'))}</h2>
+			<h2 class="text-sm font-semibold text-emphasis">{$locale ? t('workspace.invitesTitle') : t('workspace.invitesTitle')}</h2>
 			{#if workspaces}
 				<Toggle size="xs" bind:checked={showAllForks} options={{ right: t('workspace.showWorkspaceForks') }} />
 			{/if}
@@ -298,7 +298,7 @@
 		<div class="mt-4"></div>
 
 		{#if nonForkInvites.length == 0}
-			<p class="text-xs text-secondary">{($locale, t('workspace.noInvites'))}</p>
+			<p class="text-xs text-secondary">{$locale ? t('workspace.noInvites') : t('workspace.noInvites')}</p>
 		{/if}
 
 		{#each nonForkInvites as invite}
@@ -309,9 +309,9 @@
 				<div class="grow">
 					<span class="font-mono font-semibold text-emphasis">{invite.workspace_id}</span>
 					{#if invite.is_admin}
-						<span class="text-xs text-primary">{($locale, t('workspace.asAdmin'))}</span>
+						<span class="text-xs text-primary">{$locale ? t('workspace.asAdmin') : t('workspace.asAdmin')}</span>
 					{:else if invite.operator}
-						<span class="text-xs text-primary">{($locale, t('workspace.asOperator'))}</span>
+						<span class="text-xs text-primary">{$locale ? t('workspace.asOperator') : t('workspace.asOperator')}</span>
 					{/if}
 				</div>
 				<div class="flex justify-end items-center flex-col sm:flex-row gap-1">
@@ -322,7 +322,7 @@
 							? `&rd=${encodeURIComponent(rd)}`
 							: ''}"
 					>
-						{($locale, t('common.accept'))}
+						{$locale ? t('common.accept') : t('common.accept')}
 					</Button>
 
 					<Button
@@ -337,7 +337,7 @@
 						}}
 						destructive
 					>
-						{($locale, t('common.decline'))}
+						{$locale ? t('common.decline') : t('common.decline')}
 					</Button>
 				</div>
 			</div>
@@ -350,11 +350,11 @@
 			<div class="mt-4"></div>
 			{#if filteredInvites.length == 0}
 				<p class="text-xs text-secondary"
-					>{($locale, t('workspace.noForkInvites'))}</p
+					>{$locale ? t('workspace.noForkInvites') : t('workspace.noForkInvites')}</p
 				>
 			{:else}
 				<span class="mb-2 text-xs font-normal text-secondary"
-					>{($locale, t('workspace.forksOfYourWorkspaces'))}</span
+					>{$locale ? t('workspace.forksOfYourWorkspaces') : t('workspace.forksOfYourWorkspaces')}</span
 				>
 			{/if}
 
@@ -372,9 +372,9 @@
 							<span class="font-mono font-semibold text-emphasis">{invite.workspace_id}</span>
 						</div>
 						{#if invite.is_admin}
-							<span class="text-xs text-primary">{($locale, t('workspace.asAdmin'))}</span>
+							<span class="text-xs text-primary">{$locale ? t('workspace.asAdmin') : t('workspace.asAdmin')}</span>
 						{:else if invite.operator}
-							<span class="text-xs text-primary">{($locale, t('workspace.asOperator'))}</span>
+							<span class="text-xs text-primary">{$locale ? t('workspace.asOperator') : t('workspace.asOperator')}</span>
 						{/if}
 						{#if invite.parent_workspace_id}
 							<div class="text-secondary text-2xs mt-1">
@@ -390,7 +390,7 @@
 								? `&rd=${encodeURIComponent(rd)}`
 								: ''}"
 						>
-							{($locale, t('common.accept'))}
+							{$locale ? t('common.accept') : t('common.accept')}
 						</Button>
 
 						<Button
@@ -405,7 +405,7 @@
 								loadInvites()
 							}}
 						>
-							{($locale, t('common.decline'))}
+							{$locale ? t('common.decline') : t('common.decline')}
 						</Button>
 					</div>
 				</div>
@@ -427,7 +427,7 @@
 						}
 					]}
 				>
-					{($locale, t('account.instanceSettings'))}
+					{$locale ? t('account.instanceSettings') : t('account.instanceSettings')}
 				</Button>
 			{:else}
 				<Button
@@ -436,7 +436,7 @@
 					onClick={() => userSettings?.openDrawer()}
 					startIcon={{ icon: Settings }}
 				>
-					{($locale, t('account.userSettingsTitle'))}
+					{$locale ? t('account.userSettingsTitle') : t('account.userSettingsTitle')}
 				</Button>
 			{/if}
 
@@ -447,7 +447,7 @@
 					logout()
 				}}
 			>
-				{($locale, t('account.logout'))}
+				{$locale ? t('account.logout') : t('account.logout')}
 			</Button>
 		</div>
 	</div>

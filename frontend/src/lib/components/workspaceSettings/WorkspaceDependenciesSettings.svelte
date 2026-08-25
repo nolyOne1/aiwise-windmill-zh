@@ -255,8 +255,8 @@
 />
 
 <SettingsPageHeader
-	title={($locale, t('workspaceDependencies.title'))}
-	description={($locale, t('workspaceDependencies.description'))}
+	title={$locale ? t('workspaceDependencies.title') : t('workspaceDependencies.title')}
+	description={$locale ? t('workspaceDependencies.description') : t('workspaceDependencies.description')}
 	link="https://www.windmill.dev/docs/core_concepts/workspace_dependencies"
 >
 	{#snippet actions()}
@@ -266,7 +266,7 @@
 			startIcon={{ icon: Plus }}
 			onClick={createNewWorkspaceDependencies}
 		>
-			{$locale, t('workspaceDependencies.newButton')}
+			{$locale ? t('workspaceDependencies.newButton') : t('workspaceDependencies.newButton')}
 		</Button>
 	{/snippet}
 </SettingsPageHeader>
@@ -274,11 +274,11 @@
 <div class="pt-2">
 	<div class="relative text-tertiary">
 		<input
-			placeholder={($locale, t('workspaceDependencies.searchPlaceholder'))}
+			placeholder={$locale ? t('workspaceDependencies.searchPlaceholder') : t('workspaceDependencies.searchPlaceholder')}
 			bind:value={filter}
 			class="bg-surface !h-10 !px-4 !pr-10 !rounded-lg text-sm focus:outline-none w-full"
 		/>
-		<button aria-label={($locale, t('common.search'))} type="submit" class="absolute right-0 top-0 mt-3 mr-4">
+		<button aria-label={$locale ? t('common.search') : t('common.search')} type="submit" class="absolute right-0 top-0 mt-3 mr-4">
 			<Search class="h-4 w-4" />
 		</button>
 	</div>
@@ -297,24 +297,24 @@
 	{:else if filteredItems.length == 0}
 		<div class="flex flex-col items-center justify-center h-full py-12">
 			<FileText size={48} class="text-secondary mb-4" />
-			<div class="text-md font-medium">{$locale, t('workspaceDependencies.noDependenciesFound')}</div>
+			<div class="text-md font-medium">{$locale ? t('workspaceDependencies.noDependenciesFound') : t('workspaceDependencies.noDependenciesFound')}</div>
 			<div class="text-sm text-secondary mb-4">
-				{$locale, t('workspaceDependencies.noDependenciesFoundHint')}
+				{$locale ? t('workspaceDependencies.noDependenciesFoundHint') : t('workspaceDependencies.noDependenciesFoundHint')}
 			</div>
 			<Button startIcon={{ icon: Plus }} on:click={createNewWorkspaceDependencies}>
-				{$locale, t('workspaceDependencies.createFirst')}
+				{$locale ? t('workspaceDependencies.createFirst') : t('workspaceDependencies.createFirst')}
 			</Button>
 		</div>
 	{:else}
 		<DataTable size="xs">
 			<Head>
 				<tr>
-					<Cell head first>{$locale, t('common.name')}</Cell>
-					<Cell head>{$locale, t('workspaceDependencies.language')}</Cell>
-					<Cell head>{$locale, t('common.description')}</Cell>
-					<Cell head>{$locale, t('workspaceDependencies.type')}</Cell>
-					<Cell head>{$locale, t('workspaceDependencies.edited')}</Cell>
-					<Cell head last>{$locale, t('workspaceDependencies.actions')}</Cell>
+					<Cell head first>{$locale ? t('common.name') : t('common.name')}</Cell>
+					<Cell head>{$locale ? t('workspaceDependencies.language') : t('workspaceDependencies.language')}</Cell>
+					<Cell head>{$locale ? t('common.description') : t('common.description')}</Cell>
+					<Cell head>{$locale ? t('workspaceDependencies.type') : t('workspaceDependencies.type')}</Cell>
+					<Cell head>{$locale ? t('workspaceDependencies.edited') : t('workspaceDependencies.edited')}</Cell>
+					<Cell head last>{$locale ? t('workspaceDependencies.actions') : t('workspaceDependencies.actions')}</Cell>
 				</tr>
 			</Head>
 			<tbody class="divide-y">
@@ -365,8 +365,8 @@
 								class:text-gray-600={deps.name !== null}
 							>
 								{deps.name === null
-									? ($locale, t('common.default'))
-									: ($locale, t('workspaceDependencies.named'))}
+									? $locale ? t('common.default') : t('common.default')
+									: $locale ? t('workspaceDependencies.named') : t('workspaceDependencies.named')}
 							</span>
 						</Cell>
 						<Cell>
@@ -383,7 +383,7 @@
 									startIcon={{ icon: Eye }}
 									on:click={() => viewWorkspaceDependencies(deps)}
 								>
-									{$locale, t('common.view')}
+									{$locale ? t('common.view') : t('common.view')}
 								</Button>
 								<Button
 									size="xs"
@@ -392,7 +392,7 @@
 									startIcon={{ icon: Edit }}
 									on:click={() => editWorkspaceDependencies(deps)}
 								>
-									{$locale, t('common.edit')}
+									{$locale ? t('common.edit') : t('common.edit')}
 								</Button>
 								<!-- Placeholder buttons -->
 								<Button
@@ -400,27 +400,27 @@
 									variant="border"
 									color="gray"
 									on:click={() => archiveWorkspaceDependencies(deps)}
-									title={($locale, t('workspaceDependencies.archive'))}
+									title={$locale ? t('workspaceDependencies.archive') : t('workspaceDependencies.archive')}
 								>
-									{$locale, t('workspaceDependencies.archive')}
+									{$locale ? t('workspaceDependencies.archive') : t('workspaceDependencies.archive')}
 								</Button>
 								<Button
 									size="xs"
 									variant="border"
 									color="red"
 									on:click={() => deleteWorkspaceDependencies(deps)}
-									title={($locale, t('common.delete'))}
+									title={$locale ? t('common.delete') : t('common.delete')}
 								>
-									{$locale, t('common.delete')}
+									{$locale ? t('common.delete') : t('common.delete')}
 								</Button>
 								<Button
 									size="xs"
 									variant="border"
 									color="gray"
 									on:click={() => viewReferencedFrom(deps)}
-									title={($locale, t('workspaceDependencies.referencedFrom'))}
+									title={$locale ? t('workspaceDependencies.referencedFrom') : t('workspaceDependencies.referencedFrom')}
 								>
-									{$locale, t('workspaceDependencies.refs')}
+									{$locale ? t('workspaceDependencies.refs') : t('workspaceDependencies.refs')}
 								</Button>
 							</div>
 						</Cell>
@@ -434,9 +434,9 @@
 {#if $userStore?.is_admin || $userStore?.is_super_admin}
 	<div class="border-t pt-8 mt-16 pb-12 pr-4 flex items-start justify-between gap-4">
 		<div class="flex flex-col gap-0.5 min-w-0">
-			<span class="text-xs font-medium text-secondary">{$locale, t('workspaceDependencies.rebuildMap')}</span>
+			<span class="text-xs font-medium text-secondary">{$locale ? t('workspaceDependencies.rebuildMap') : t('workspaceDependencies.rebuildMap')}</span>
 			<span class="text-xs text-tertiary max-w-2xl">
-				{$locale, t('workspaceDependencies.rebuildMapDescription')}
+				{$locale ? t('workspaceDependencies.rebuildMapDescription') : t('workspaceDependencies.rebuildMapDescription')}
 			</span>
 		</div>
 		<Button
@@ -447,14 +447,14 @@
 			disabled={rebuildingDependencyMap}
 			onClick={rebuildDependencyMap}
 		>
-			{$locale, t('workspaceDependencies.rebuild')}
+			{$locale ? t('workspaceDependencies.rebuild') : t('workspaceDependencies.rebuild')}
 		</Button>
 	</div>
 {/if}
 
 <Drawer bind:this={viewDrawer} size="900px">
 	<DrawerContent
-		title={($locale, t('workspaceDependencies.viewRequirementTitle', { path: viewPath }))}
+		title={$locale ? t('workspaceDependencies.viewRequirementTitle', { path: viewPath }) : t('workspaceDependencies.viewRequirementTitle', { path: viewPath })}
 		on:close={viewDrawer?.closeDrawer}
 	>
 		{#snippet actions()}
@@ -470,7 +470,7 @@
 			{:else}
 				<div class="text-center text-secondary py-8">
 					<FileText size={48} class="mx-auto mb-4 opacity-50" />
-					<p>{$locale, t('workspaceDependencies.noContentAvailable')}</p>
+					<p>{$locale ? t('workspaceDependencies.noContentAvailable') : t('workspaceDependencies.noContentAvailable')}</p>
 				</div>
 			{/if}
 		</div>

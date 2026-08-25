@@ -412,7 +412,7 @@
 			<div class="text-center py-8">
 				<Building2 size={48} class="text-secondary mx-auto mb-3" />
 				<p class="text-sm text-secondary">
-					{searchFilter ? ($locale, t('workspace.noMatch')) : ($locale, t('workspace.noneAvailable'))}
+					{searchFilter ? $locale ? t('workspace.noMatch') : t('workspace.noMatch') : $locale ? t('workspace.noneAvailable') : t('workspace.noneAvailable')}
 				</p>
 			</div>
 		{/if}

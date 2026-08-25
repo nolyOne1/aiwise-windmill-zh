@@ -1043,4 +1043,8 @@ export const enUS = {
 	}
 } as const satisfies TranslationDictionary
 
-export type AppDictionary = typeof enUS
+type WidenTranslationLeaves<T> = T extends string
+	? string
+	: { [K in keyof T]: WidenTranslationLeaves<T[K]> }
+
+export type AppDictionary = WidenTranslationLeaves<typeof enUS>

@@ -97,13 +97,13 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.groups}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
-		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
+		<p class="font-bold">{$locale ? t('common.unauthorized') : t('common.unauthorized')}</p>
+		<p>{$locale ? t('common.pageNotAvailableForOperators') : t('common.pageNotAvailableForOperators')}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		<PageHeader
-			title={($locale, t('groups.title'))}
+			title={$locale ? t('groups.title') : t('groups.title')}
 			tooltip={t('groups.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/groups_and_folders"
 		>
@@ -117,13 +117,13 @@
 							disabled
 							title={DEMO_RESTRICTION_HINT}
 						>
-							{($locale, t('groups.newGroup'))}
+							{$locale ? t('groups.newGroup') : t('groups.newGroup')}
 						</Button>
 					{:else}
 						<Popover floatingConfig={{ strategy: 'absolute', placement: 'bottom-end' }}>
 							{#snippet trigger()}
 								<Button unifiedSize="md" variant="accent" startIcon={{ icon: Plus }} nonCaptureEvent
-									>{($locale, t('groups.newGroup'))}</Button
+									>{$locale ? t('groups.newGroup') : t('groups.newGroup')}</Button
 								>
 							{/snippet}
 							{#snippet content({ close })}
@@ -146,7 +146,7 @@
 											close()
 										}}
 									>
-										{($locale, t('common.create'))}
+										{$locale ? t('common.create') : t('common.create')}
 									</Button>
 								</div>
 							{/snippet}
@@ -160,8 +160,8 @@
 			<DataTable>
 				<Head>
 					<tr>
-						<Cell head first>{($locale, t('common.name'))}</Cell>
-						<Cell head>{($locale, t('common.members'))}</Cell>
+						<Cell head first>{$locale ? t('common.name') : t('common.name')}</Cell>
+						<Cell head>{$locale ? t('common.members') : t('common.members')}</Cell>
 						<Cell head last />
 					</tr>
 				</Head>
@@ -234,10 +234,10 @@
 
 		{#if instanceGroups && instanceGroups.length > 0}
 			<div class="flex flex-row gap-1 items-center mb-2">
-				<span class="text-emphasis text-sm font-semibold">{($locale, t('groups.instanceGroups'))}</span>
+				<span class="text-emphasis text-sm font-semibold">{$locale ? t('groups.instanceGroups') : t('groups.instanceGroups')}</span>
 				<Tooltip documentationLink="https://www.windmill.dev/docs/misc/saml_and_scim#scim">
 					{#snippet text()}
-						{($locale, t('groups.instanceGroupsHelp'))}
+						{$locale ? t('groups.instanceGroupsHelp') : t('groups.instanceGroupsHelp')}
 					{/snippet}
 				</Tooltip>
 			</div>
@@ -245,10 +245,10 @@
 				<DataTable>
 					<Head>
 						<tr>
-							<Cell head first>{($locale, t('common.name'))}</Cell>
-							<Cell head>{($locale, t('common.members'))}</Cell>
-							<Cell head>{($locale, t('groups.instanceRole'))}</Cell>
-							<Cell head last>{($locale, t('common.workspaces'))}</Cell>
+							<Cell head first>{$locale ? t('common.name') : t('common.name')}</Cell>
+							<Cell head>{$locale ? t('common.members') : t('common.members')}</Cell>
+							<Cell head>{$locale ? t('groups.instanceRole') : t('groups.instanceRole')}</Cell>
+							<Cell head last>{$locale ? t('common.workspaces') : t('common.workspaces')}</Cell>
 						</tr>
 					</Head>
 					<tbody class="divide-y">
@@ -279,7 +279,7 @@
 											({workspace.role})
 										{/each}
 									{:else}
-										<span class="text-emphasis font-semibold text-xs">{($locale, t('groups.noWorkspaces'))}</span>
+										<span class="text-emphasis font-semibold text-xs">{$locale ? t('groups.noWorkspaces') : t('groups.noWorkspaces')}</span>
 									{/if}
 								</Cell>
 							</Row>

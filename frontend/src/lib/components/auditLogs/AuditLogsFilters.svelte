@@ -37,7 +37,6 @@
 	import ToggleButton from '../common/toggleButton-v2/ToggleButton.svelte'
 	import Select from '../select/Select.svelte'
 	import { usePromise } from '$lib/svelte5Utils.svelte'
-	import { safeSelectItems } from '../select/utils.svelte'
 	import { CancelablePromiseUtils } from '$lib/cancelable-promise-utils'
 	import { sendUserToast } from '$lib/toast'
 	import { locale, t } from '$lib/i18n'
@@ -321,7 +320,7 @@
 <div class="flex flex-col gap-8 2xl:gap-2 2xl:flex-row mt-4 xl:mt-0 pr-2">
 	{#if $workspaceStore == 'admins'}
 		<div class="flex gap-1 relative">
-			<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('auditLogs.scope'))}</span>
+			<span class="text-xs absolute font-semibold text-emphasis -top-4">{$locale ? t('auditLogs.scope') : t('auditLogs.scope')}</span>
 			<ToggleButtonGroup
 				selected={scope ?? 'admins'}
 				on:selected={({ detail }) => {
@@ -352,7 +351,7 @@
 		</div>
 	{/if}
 	<div class="flex relative bg-surface-input">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.from'))}</span>
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{$locale ? t('common.from') : t('common.from')}</span>
 		<input type="text" value={after ?? t('common.from')} disabled />
 		<CalendarPicker
 			clearable
@@ -368,7 +367,7 @@
 		/>
 	</div>
 	<div class="flex relative bg-surface-input">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.to'))}</span>
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{$locale ? t('common.to') : t('common.to')}</span>
 		<input type="text" value={before ?? t('common.to')} disabled />
 		<CalendarPicker
 			clearable
@@ -385,7 +384,7 @@
 	</div>
 
 	<div class="flex relative">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.username'))}</span>
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{$locale ? t('common.username') : t('common.username')}</span>
 		<Select
 			class="w-full"
 			bind:value={username}
@@ -405,7 +404,7 @@
 		/>
 	</div>
 	<div class="flex relative">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.resource'))}</span>
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{$locale ? t('common.resource') : t('common.resource')}</span>
 
 		<Select
 			class="w-full"
@@ -422,7 +421,7 @@
 	</div>
 
 	<div class="flex relative">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.operation'))}</span>
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{$locale ? t('common.operation') : t('common.operation')}</span>
 
 		<Select
 			class="w-full"
@@ -434,7 +433,7 @@
 	</div>
 
 	<div class="flex relative">
-		<span class="text-xs absolute font-semibold text-emphasis -top-4">{($locale, t('common.action'))}</span>
+		<span class="text-xs absolute font-semibold text-emphasis -top-4">{$locale ? t('common.action') : t('common.action')}</span>
 
 		<Select
 			class="w-full"
@@ -466,7 +465,7 @@
 			}}
 			unifiedSize="md"
 		>
-			{($locale, t('common.clearFilters'))}
+			{$locale ? t('common.clearFilters') : t('common.clearFilters')}
 		</Button>
 		<Button
 			variant="subtle"
@@ -490,7 +489,7 @@
 				{:else}
 					<RefreshCcw size={14} />
 				{/if}
-				{($locale, t('common.refresh'))}
+				{$locale ? t('common.refresh') : t('common.refresh')}
 			</div>
 		</Button>
 	</div>

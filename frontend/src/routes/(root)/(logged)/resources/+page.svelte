@@ -632,8 +632,8 @@
 
 <ConfirmationModal
 	open={Boolean(deleteConfirmedCallback)}
-	title={($locale, t('resources.removeResourceTitle'))}
-	confirmationText={($locale, t('common.remove'))}
+	title={$locale ? t('resources.removeResourceTitle') : t('resources.removeResourceTitle')}
+	confirmationText={$locale ? t('common.remove') : t('common.remove')}
 	trashbin
 	on:canceled={() => {
 		deleteConfirmedCallback = undefined
@@ -646,17 +646,17 @@
 	}}
 >
 	<div class="flex flex-col w-full space-y-4">
-		<span>{($locale, t('resources.removeResourceConfirmPrefix'))} <span class="font-semibold break-all">{deletePath}</span>?</span>
+		<span>{$locale ? t('resources.removeResourceConfirmPrefix') : t('resources.removeResourceConfirmPrefix')} <span class="font-semibold break-all">{deletePath}</span>?</span>
 		{#if deleteIsLinked}
-			<Alert type="warning" title={($locale, t('resources.linkedVariableTitle'))}>
-				{($locale, t('resources.linkedVariableBody'))}
+			<Alert type="warning" title={$locale ? t('resources.linkedVariableTitle') : t('resources.linkedVariableTitle')}>
+				{$locale ? t('resources.linkedVariableBody') : t('resources.linkedVariableBody')}
 			</Alert>
 		{/if}
-		<Alert type="info" title={($locale, t('resources.bypassConfirmationTitle'))}>
+		<Alert type="info" title={$locale ? t('resources.bypassConfirmationTitle') : t('resources.bypassConfirmationTitle')}>
 			<div>
-				{($locale, t('resources.bypassConfirmationBodyPrefix'))}
+				{$locale ? t('resources.bypassConfirmationBodyPrefix') : t('resources.bypassConfirmationBodyPrefix')}
 				<Badge color="dark-gray">SHIFT</Badge>
-				{($locale, t('resources.bypassConfirmationBodySuffix'))}
+				{$locale ? t('resources.bypassConfirmationBodySuffix') : t('resources.bypassConfirmationBodySuffix')}
 			</div>
 		</Alert>
 	</div>
@@ -665,7 +665,7 @@
 <DeployWorkspaceDrawer bind:this={deploymentDrawer} />
 
 <Drawer bind:this={inferrer} size="800px">
-	<DrawerContent title={($locale, t('resources.inferTypeFromJson'))} on:close={() => inferrer?.toggleDrawer?.()}>
+	<DrawerContent title={$locale ? t('resources.inferTypeFromJson') : t('resources.inferTypeFromJson')} on:close={() => inferrer?.toggleDrawer?.()}>
 		<SimpleEditor
 			bind:code={inferrerJson}
 			lang="json"
@@ -673,7 +673,7 @@
 			fixedOverflowWidgets={false}
 		/>
 		{#snippet actions()}
-			<Button size="sm" on:click={inferJson}>{($locale, t('resources.infer'))}</Button>
+			<Button size="sm" on:click={inferJson}>{$locale ? t('resources.infer') : t('resources.infer')}</Button>
 		{/snippet}
 	</DrawerContent>
 </Drawer>
@@ -716,13 +716,13 @@
 </Drawer>
 
 <Drawer bind:this={editResourceTypeDrawer} size="800px">
-	<DrawerContent title={($locale, t('resources.editResourceTypeTitle'))} on:close={editResourceTypeDrawer.closeDrawer}>
+	<DrawerContent title={$locale ? t('resources.editResourceTypeTitle') : t('resources.editResourceTypeTitle')} on:close={editResourceTypeDrawer.closeDrawer}>
 		{#snippet actions()}
 			<Button
 				startIcon={{ icon: Save }}
 				on:click={updateResourceType}
 				unifiedSize="md"
-				variant="accent">{($locale, t('common.update'))}</Button
+				variant="accent">{$locale ? t('common.update') : t('common.update')}</Button
 			>
 		{/snippet}
 		<div class="flex flex-col gap-6">
@@ -774,14 +774,14 @@
 </Drawer>
 
 <Drawer bind:this={resourceTypeDrawer} size="1200px">
-	<DrawerContent title={($locale, t('resources.createResourceTypeTitle'))} on:close={resourceTypeDrawer.closeDrawer}>
+	<DrawerContent title={$locale ? t('resources.createResourceTypeTitle') : t('resources.createResourceTypeTitle')} on:close={resourceTypeDrawer.closeDrawer}>
 		{#snippet actions()}
 			<Button
 				unifiedSize="md"
 				variant="accent"
 				startIcon={{ icon: Save }}
 				on:click={addResourceType}
-				disabled={!isNewResourceTypeNameValid || resourceTypeNameExists}>{($locale, t('common.save'))}</Button
+				disabled={!isNewResourceTypeNameValid || resourceTypeNameExists}>{$locale ? t('common.save') : t('common.save')}</Button
 			>
 		{/snippet}
 		<div class="flex flex-col gap-6">
@@ -867,13 +867,13 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.resources}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">{($locale, t('common.unauthorized'))}</p>
-		<p>{($locale, t('common.pageNotAvailableForOperators'))}</p>
+		<p class="font-bold">{$locale ? t('common.unauthorized') : t('common.unauthorized')}</p>
+		<p>{$locale ? t('common.pageNotAvailableForOperators') : t('common.pageNotAvailableForOperators')}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		<PageHeader
-			title={($locale, t('resources.title'))}
+			title={$locale ? t('resources.title') : t('resources.title')}
 			tooltip={t('resources.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/resources_and_types"
 		>
@@ -887,7 +887,7 @@
 						aiId="resources-add-resource-type"
 						aiDescription="Add resource type"
 					>
-						{($locale, t('resources.addResourceType'))}
+						{$locale ? t('resources.addResourceType') : t('resources.addResourceType')}
 					</Button>
 					<Button
 						unifiedSize="md"
@@ -897,7 +897,7 @@
 						aiId="resources-add-resource"
 						aiDescription="Add resource"
 					>
-						{($locale, t('resources.addResource'))}
+						{$locale ? t('resources.addResource') : t('resources.addResource')}
 					</Button>
 				</div>
 			{/if}
@@ -920,8 +920,8 @@
 					}
 				}}
 			>
-				<Tab value="workspace" label={($locale, t('common.workspace'))} icon={Building} />
-				<Tab value="types" label={($locale, t('resources.resourceTypes'))}>
+				<Tab value="workspace" label={$locale ? t('common.workspace') : t('common.workspace')} icon={Building} />
+				<Tab value="types" label={$locale ? t('resources.resourceTypes') : t('resources.resourceTypes')}>
 					{#snippet extra()}
 						<Tooltip
 							documentationLink="https://www.windmill.dev/docs/core_concepts/resources_and_types"
@@ -931,7 +931,7 @@
 						</Tooltip>
 					{/snippet}
 				</Tab>
-				<Tab value="states" label={($locale, t('resources.states'))}>
+				<Tab value="states" label={$locale ? t('resources.states') : t('resources.states')}>
 					{#snippet extra()}
 						<Tooltip>
 							States are actually resources (but excluded from the Workspace tab for clarity).
@@ -940,7 +940,7 @@
 						</Tooltip>
 					{/snippet}
 				</Tab>
-				<Tab value="cache" label={($locale, t('resources.cache'))}>
+				<Tab value="cache" label={$locale ? t('resources.cache') : t('resources.cache')}>
 					{#snippet extra()}
 						<Tooltip>
 							Cached results are actually resources (but excluded from the Workspace tab for
@@ -949,7 +949,7 @@
 						</Tooltip>
 					{/snippet}
 				</Tab>
-				<Tab value="theme" label={($locale, t('resources.theme'))}>
+				<Tab value="theme" label={$locale ? t('resources.theme') : t('resources.theme')}>
 					{#snippet extra()}
 						<Tooltip>
 							Theme are actually resources (but excluded from the Workspace tab for clarity). Theme
@@ -995,9 +995,9 @@
 					{/each}
 				{:else if filteredItems?.length == 0}
 					<div class="flex flex-col items-center justify-center h-full">
-						<div class="text-xs text-emphasis font-semibold">{($locale, t('resources.noResourcesFound'))}</div>
+						<div class="text-xs text-emphasis font-semibold">{$locale ? t('resources.noResourcesFound') : t('resources.noResourcesFound')}</div>
 						<div class="text-2xs text-secondary font-normal">
-							{($locale, t('resources.noResourcesFoundHint'))}
+							{$locale ? t('resources.noResourcesFoundHint') : t('resources.noResourcesFoundHint')}
 						</div>
 					</div>
 				{:else}
@@ -1005,9 +1005,9 @@
 						<Head>
 							<Row>
 								<Cell head first />
-								<Cell head>{($locale, t('common.path'))}</Cell>
-								<Cell head>{($locale, t('resources.resourceType'))}</Cell>
-								<Cell head>{($locale, t('common.description'))}</Cell>
+								<Cell head>{$locale ? t('common.path') : t('common.path')}</Cell>
+								<Cell head>{$locale ? t('resources.resourceType') : t('resources.resourceType')}</Cell>
+								<Cell head>{$locale ? t('common.description') : t('common.description')}</Cell>
 								<Cell head />
 								<Cell head last stickyEnd />
 							</Row>
@@ -1266,9 +1266,9 @@
 				{/each}
 			{:else if filteredResourceTypes?.length == 0}
 				<div class="flex flex-col items-center justify-center h-full mt-4">
-					<div class="text-xs text-emphasis font-semibold">{($locale, t('resources.noResourceTypesFound'))}</div>
+					<div class="text-xs text-emphasis font-semibold">{$locale ? t('resources.noResourceTypesFound') : t('resources.noResourceTypesFound')}</div>
 					<div class="text-2xs text-secondary font-normal">
-						{($locale, t('resources.noResourceTypesFoundHint'))}
+						{$locale ? t('resources.noResourceTypesFoundHint') : t('resources.noResourceTypesFoundHint')}
 					</div>
 				</div>
 			{:else}
@@ -1276,8 +1276,8 @@
 					<DataTable>
 						<Head>
 							<Row>
-								<Cell head first>{($locale, t('common.name'))}</Cell>
-								<Cell head>{($locale, t('common.description'))}</Cell>
+								<Cell head first>{$locale ? t('common.name') : t('common.name')}</Cell>
+								<Cell head>{$locale ? t('common.description') : t('common.description')}</Cell>
 								<Cell head last stickyEnd />
 							</Row>
 						</Head>

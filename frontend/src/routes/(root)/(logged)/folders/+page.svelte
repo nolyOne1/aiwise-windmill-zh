@@ -88,7 +88,7 @@
 
 <Drawer bind:this={folderDrawer}>
 	<DrawerContent
-		title={($locale, t('folders.folderTitle', { name: editFolderName }))}
+		title={$locale ? t('folders.folderTitle', { name: editFolderName }) : t('folders.folderTitle', { name: editFolderName })}
 		on:close={folderDrawer.closeDrawer}
 	>
 		<FolderEditor on:update={loadFolders} name={editFolderName} />
@@ -97,7 +97,7 @@
 
 <Drawer bind:this={hubDrawer} size="1100px">
 	<DrawerContent
-		title={($locale, t('folders.publishToHubTitle', { name: publishFolderName }))}
+		title={$locale ? t('folders.publishToHubTitle', { name: publishFolderName }) : t('folders.publishToHubTitle', { name: publishFolderName })}
 		on:close={() => {
 			hubDrawer?.closeDrawer()
 			publishFolderName = ''
@@ -113,14 +113,14 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.folders}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">{$locale, t('common.unauthorized')}</p>
-		<p>{$locale, t('common.pageNotAvailableForOperators')}</p>
+		<p class="font-bold">{$locale ? t('common.unauthorized') : t('common.unauthorized')}</p>
+		<p>{$locale ? t('common.pageNotAvailableForOperators') : t('common.pageNotAvailableForOperators')}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		<PageHeader
-			title={($locale, t('folders.title'))}
-			tooltip={($locale, t('folders.tooltip'))}
+			title={$locale ? t('folders.title') : t('folders.title')}
+			tooltip={$locale ? t('folders.tooltip') : t('folders.tooltip')}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/groups_and_folders"
 		>
 			<div class="flex flex-row">
@@ -132,7 +132,7 @@
 						disabled
 						title={DEMO_RESTRICTION_HINT}
 					>
-						{$locale, t('folders.newFolder')}
+						{$locale ? t('folders.newFolder') : t('folders.newFolder')}
 					</Button>
 				{:else}
 					<Popover
@@ -141,14 +141,14 @@
 					>
 						{#snippet trigger()}
 							<Button variant="accent" unifiedSize="md" startIcon={{ icon: Plus }} nonCaptureEvent
-								>{$locale, t('folders.newFolder')}</Button
+								>{$locale ? t('folders.newFolder') : t('folders.newFolder')}</Button
 							>
 						{/snippet}
 						{#snippet content({ close })}
 							<input
 								class="mr-2"
 								onkeyup={(e) => handleKeyUp(e, () => close())}
-								placeholder={($locale, t('folders.newFolderNamePlaceholder'))}
+								placeholder={$locale ? t('folders.newFolderNamePlaceholder') : t('folders.newFolderNamePlaceholder')}
 								bind:value={newFolderName}
 							/>
 
@@ -162,7 +162,7 @@
 										close()
 									}}
 								>
-									{$locale, t('common.create')}
+									{$locale ? t('common.create') : t('common.create')}
 								</Button>
 							</div>
 						{/snippet}
@@ -175,15 +175,15 @@
 			<DataTable>
 				<Head>
 					<tr>
-						<Cell head first>{$locale, t('common.name')}</Cell>
-						<Cell head>{$locale, t('folders.labels')}</Cell>
-						<Cell head class="w-20">{$locale, t('folders.scripts')}</Cell>
-						<Cell head class="w-20">{$locale, t('folders.flows')}</Cell>
-						<Cell head class="w-20">{$locale, t('folders.apps')}</Cell>
-						<Cell head class="w-20">{$locale, t('folders.schedules')}</Cell>
-						<Cell head class="w-20">{$locale, t('folders.variables')}</Cell>
-						<Cell head class="w-20">{$locale, t('folders.resources')}</Cell>
-						<Cell head class="w-20">{$locale, t('folders.participants')}</Cell>
+						<Cell head first>{$locale ? t('common.name') : t('common.name')}</Cell>
+						<Cell head>{$locale ? t('folders.labels') : t('folders.labels')}</Cell>
+						<Cell head class="w-20">{$locale ? t('folders.scripts') : t('folders.scripts')}</Cell>
+						<Cell head class="w-20">{$locale ? t('folders.flows') : t('folders.flows')}</Cell>
+						<Cell head class="w-20">{$locale ? t('folders.apps') : t('folders.apps')}</Cell>
+						<Cell head class="w-20">{$locale ? t('folders.schedules') : t('folders.schedules')}</Cell>
+						<Cell head class="w-20">{$locale ? t('folders.variables') : t('folders.variables')}</Cell>
+						<Cell head class="w-20">{$locale ? t('folders.resources') : t('folders.resources')}</Cell>
+						<Cell head class="w-20">{$locale ? t('folders.participants') : t('folders.participants')}</Cell>
 						<Cell head last stickyEnd />
 					</tr>
 				</Head>
@@ -201,7 +201,7 @@
 							<tr>
 								<Cell colspan="10">
 									<div class="text-xs text-primary py-2 text-center">
-										{$locale, t('folders.noFoldersYet')}
+										{$locale ? t('folders.noFoldersYet') : t('folders.noFoldersYet')}
 									</div>
 								</Cell>
 							</tr>
