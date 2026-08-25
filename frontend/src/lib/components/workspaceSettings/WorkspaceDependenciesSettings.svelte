@@ -19,6 +19,7 @@
 	import { sendUserToast } from '$lib/toast'
 	import TimeAgo from '$lib/components/TimeAgo.svelte'
 	import SettingsPageHeader from '$lib/components/settings/SettingsPageHeader.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	let filter = $state('')
 	let workspaceDependencies: WorkspaceDependencies[] | undefined = $state()
@@ -67,7 +68,7 @@
 			})
 		} catch (error) {
 			console.error('Failed to load workspace dependencies:', error)
-			sendUserToast('Failed to load enforced dependencies', true)
+			sendUserToast(t('workspaceDependencies.failedToLoad'), true)
 		}
 	}
 
@@ -87,7 +88,7 @@
 			sendUserToast(status)
 		} catch (error) {
 			console.error('Error rebuilding dependency map:', error)
-			sendUserToast(`Failed to rebuild dependency map: ${error.message}`, true)
+			sendUserToast(t('workspaceDependencies.failedToRebuildMap', { error: error.message }), true)
 		} finally {
 			rebuildingDependencyMap = false
 		}
@@ -115,13 +116,13 @@
 			deps.language
 		)
 		if (!importedPath) {
-			sendUserToast('Unable to determine enforced dependencies path', true)
+			sendUserToast(t('workspaceDependencies.unableToDeterminePath'), true)
 			return
 		}
 
 		currentImportedPath = importedPath
-		warningTitle = `Archive Warning`
-		warningConfirmText = 'Archive Anyway'
+		warningTitle = t('workspaceDependencies.archiveWarning')
+		warningConfirmText = t('workspaceDependencies.archiveAnyway')
 		pendingAction = () => executeArchive(deps)
 		showDependencyWarning = true
 	}
@@ -134,12 +135,14 @@
 				name: deps.name
 			})
 			sendUserToast(
-				`Archived enforced dependencies: ${workspaceDependenciesEditor?.getDisplayName(deps)}`
+				t('workspaceDependencies.archived', {
+					name: workspaceDependenciesEditor?.getDisplayName(deps) ?? ''
+				})
 			)
 			loadWorkspaceDependencies() // Reload the list
 		} catch (error) {
 			console.error('Error archiving workspace dependencies:', error)
-			sendUserToast(`Failed to archive enforced dependencies: ${error.message}`, true)
+			sendUserToast(t('workspaceDependencies.failedToArchive', { error: error.message }), true)
 		}
 	}
 
@@ -150,13 +153,13 @@
 			deps.language
 		)
 		if (!importedPath) {
-			sendUserToast('Unable to determine enforced dependencies path', true)
+			sendUserToast(t('workspaceDependencies.unableToDeterminePath'), true)
 			return
 		}
 
 		currentImportedPath = importedPath
-		warningTitle = `Delete Warning`
-		warningConfirmText = 'Delete Anyway'
+		warningTitle = t('workspaceDependencies.deleteWarning')
+		warningConfirmText = t('workspaceDependencies.deleteAnyway')
 		pendingAction = () => executeDelete(deps)
 		showDependencyWarning = true
 	}
@@ -169,12 +172,14 @@
 				name: deps.name
 			})
 			sendUserToast(
-				`Deleted enforced dependencies: ${workspaceDependenciesEditor?.getDisplayName(deps)}`
+				t('workspaceDependencies.deleted', {
+					name: workspaceDependenciesEditor?.getDisplayName(deps) ?? ''
+				})
 			)
 			loadWorkspaceDependencies() // Reload the list
 		} catch (error) {
 			console.error('Error deleting workspace dependencies:', error)
-			sendUserToast(`Failed to delete enforced dependencies: ${error.message}`, true)
+			sendUserToast(t('workspaceDependencies.failedToDelete', { error: error.message }), true)
 		}
 	}
 
@@ -185,7 +190,7 @@
 				deps.language
 			)
 			if (!path) {
-				sendUserToast('Unable to determine enforced dependencies path', true)
+				sendUserToast(t('workspaceDependencies.unableToDeterminePath'), true)
 				return
 			}
 
@@ -195,17 +200,15 @@
 			})
 
 			if (dependents.length === 0) {
-				sendUserToast('No dependent runnables found for these enforced dependencies')
+				sendUserToast(t('workspaceDependencies.noDependentRunnables'))
 			} else {
 				// Show dependents in a modal or navigate to a detailed view
 				console.log('Dependents:', dependents)
-				sendUserToast(
-					`Found ${dependents.length} dependent runnable${dependents.length !== 1 ? 's' : ''}`
-				)
+				sendUserToast(t('workspaceDependencies.foundDependentRunnables', { count: dependents.length }))
 			}
 		} catch (error) {
 			console.error('Error fetching dependent runnables:', error)
-			sendUserToast('Failed to fetch dependent runnables', true)
+			sendUserToast(t('workspaceDependencies.failedToFetchDependents'), true)
 		}
 	}
 
@@ -252,8 +255,8 @@
 />
 
 <SettingsPageHeader
-	title="Enforced Dependencies"
-	description="Enforced Dependencies define dependency specifications for scripts by language. Unnamed dependencies serve as workspace defaults, while named dependencies can be referenced by scripts using #raw_reqs annotations."
+	title={($locale, t('workspaceDependencies.title'))}
+	description={($locale, t('workspaceDependencies.description'))}
 	link="https://www.windmill.dev/docs/core_concepts/workspace_dependencies"
 >
 	{#snippet actions()}
@@ -263,7 +266,7 @@
 			startIcon={{ icon: Plus }}
 			onClick={createNewWorkspaceDependencies}
 		>
-			New&nbsp;enforced&nbsp;dependencies
+			{$locale, t('workspaceDependencies.newButton')}
 		</Button>
 	{/snippet}
 </SettingsPageHeader>
@@ -271,11 +274,11 @@
 <div class="pt-2">
 	<div class="relative text-tertiary">
 		<input
-			placeholder="Search enforced dependencies by name, language, or content..."
+			placeholder={($locale, t('workspaceDependencies.searchPlaceholder'))}
 			bind:value={filter}
 			class="bg-surface !h-10 !px-4 !pr-10 !rounded-lg text-sm focus:outline-none w-full"
 		/>
-		<button aria-label="Search" type="submit" class="absolute right-0 top-0 mt-3 mr-4">
+		<button aria-label={($locale, t('common.search'))} type="submit" class="absolute right-0 top-0 mt-3 mr-4">
 			<Search class="h-4 w-4" />
 		</button>
 	</div>
@@ -294,24 +297,24 @@
 	{:else if filteredItems.length == 0}
 		<div class="flex flex-col items-center justify-center h-full py-12">
 			<FileText size={48} class="text-secondary mb-4" />
-			<div class="text-md font-medium">No enforced dependencies found</div>
+			<div class="text-md font-medium">{$locale, t('workspaceDependencies.noDependenciesFound')}</div>
 			<div class="text-sm text-secondary mb-4">
-				Try changing the filters or creating new enforced dependencies
+				{$locale, t('workspaceDependencies.noDependenciesFoundHint')}
 			</div>
 			<Button startIcon={{ icon: Plus }} on:click={createNewWorkspaceDependencies}>
-				Create your first enforced dependencies
+				{$locale, t('workspaceDependencies.createFirst')}
 			</Button>
 		</div>
 	{:else}
 		<DataTable size="xs">
 			<Head>
 				<tr>
-					<Cell head first>Name</Cell>
-					<Cell head>Language</Cell>
-					<Cell head>Description</Cell>
-					<Cell head>Type</Cell>
-					<Cell head>Edited</Cell>
-					<Cell head last>Actions</Cell>
+					<Cell head first>{$locale, t('common.name')}</Cell>
+					<Cell head>{$locale, t('workspaceDependencies.language')}</Cell>
+					<Cell head>{$locale, t('common.description')}</Cell>
+					<Cell head>{$locale, t('workspaceDependencies.type')}</Cell>
+					<Cell head>{$locale, t('workspaceDependencies.edited')}</Cell>
+					<Cell head last>{$locale, t('workspaceDependencies.actions')}</Cell>
 				</tr>
 			</Head>
 			<tbody class="divide-y">
@@ -361,7 +364,9 @@
 								class:bg-gray-100={deps.name !== null}
 								class:text-gray-600={deps.name !== null}
 							>
-								{deps.name === null ? 'Default' : 'Named'}
+								{deps.name === null
+									? ($locale, t('common.default'))
+									: ($locale, t('workspaceDependencies.named'))}
 							</span>
 						</Cell>
 						<Cell>
@@ -378,7 +383,7 @@
 									startIcon={{ icon: Eye }}
 									on:click={() => viewWorkspaceDependencies(deps)}
 								>
-									View
+									{$locale, t('common.view')}
 								</Button>
 								<Button
 									size="xs"
@@ -387,7 +392,7 @@
 									startIcon={{ icon: Edit }}
 									on:click={() => editWorkspaceDependencies(deps)}
 								>
-									Edit
+									{$locale, t('common.edit')}
 								</Button>
 								<!-- Placeholder buttons -->
 								<Button
@@ -395,27 +400,27 @@
 									variant="border"
 									color="gray"
 									on:click={() => archiveWorkspaceDependencies(deps)}
-									title="Archive"
+									title={($locale, t('workspaceDependencies.archive'))}
 								>
-									Archive
+									{$locale, t('workspaceDependencies.archive')}
 								</Button>
 								<Button
 									size="xs"
 									variant="border"
 									color="red"
 									on:click={() => deleteWorkspaceDependencies(deps)}
-									title="Delete"
+									title={($locale, t('common.delete'))}
 								>
-									Delete
+									{$locale, t('common.delete')}
 								</Button>
 								<Button
 									size="xs"
 									variant="border"
 									color="gray"
 									on:click={() => viewReferencedFrom(deps)}
-									title="Referenced From"
+									title={($locale, t('workspaceDependencies.referencedFrom'))}
 								>
-									Refs
+									{$locale, t('workspaceDependencies.refs')}
 								</Button>
 							</div>
 						</Cell>
@@ -429,11 +434,9 @@
 {#if $userStore?.is_admin || $userStore?.is_super_admin}
 	<div class="border-t pt-8 mt-16 pb-12 pr-4 flex items-start justify-between gap-4">
 		<div class="flex flex-col gap-0.5 min-w-0">
-			<span class="text-xs font-medium text-secondary">Rebuild dependency map</span>
+			<span class="text-xs font-medium text-secondary">{$locale, t('workspaceDependencies.rebuildMap')}</span>
 			<span class="text-xs text-tertiary max-w-2xl">
-				Rebuilds the workspace dependency map from scratch. This should almost never be needed —
-				only if dependency tracking has gotten out of sync, e.g. after orphaned references are
-				reported in the logs.
+				{$locale, t('workspaceDependencies.rebuildMapDescription')}
 			</span>
 		</div>
 		<Button
@@ -444,13 +447,16 @@
 			disabled={rebuildingDependencyMap}
 			onClick={rebuildDependencyMap}
 		>
-			Rebuild
+			{$locale, t('workspaceDependencies.rebuild')}
 		</Button>
 	</div>
 {/if}
 
 <Drawer bind:this={viewDrawer} size="900px">
-	<DrawerContent title="View Requirement - {viewPath}" on:close={viewDrawer?.closeDrawer}>
+	<DrawerContent
+		title={($locale, t('workspaceDependencies.viewRequirementTitle', { path: viewPath }))}
+		on:close={viewDrawer?.closeDrawer}
+	>
 		{#snippet actions()}
 			<div class="flex items-center gap-2">
 				<Code2 size={16} class="text-secondary" />
@@ -464,7 +470,7 @@
 			{:else}
 				<div class="text-center text-secondary py-8">
 					<FileText size={48} class="mx-auto mb-4 opacity-50" />
-					<p>No content available for this requirement</p>
+					<p>{$locale, t('workspaceDependencies.noContentAvailable')}</p>
 				</div>
 			{/if}
 		</div>

@@ -11,6 +11,7 @@
 	import { Plus, Pen, Trash } from 'lucide-svelte'
 	import { untrack } from 'svelte'
 	import { WorkspaceService, type ProtectionRuleset } from '$lib/gen'
+	import { locale, t } from '$lib/i18n'
 
 	let rules: ProtectionRuleset[] | undefined = $state<ProtectionRuleset[] | undefined>(undefined)
 	let selectedRule: ProtectionRuleset | undefined = $state(undefined)
@@ -23,7 +24,7 @@
 			rules = await WorkspaceService.listProtectionRules({ workspace: $workspaceStore })
 		} catch (error) {
 			console.error('Failed to load protection rules:', error)
-			sendUserToast('Failed to load protection rules', true)
+			sendUserToast(t('workspaceRulesets.failedToLoadProtectionRules'), true)
 			rules = []
 		}
 	}
@@ -42,10 +43,10 @@
 				ruleName: name
 			})
 			await loadRules()
-			sendUserToast('Protection rule deleted')
+			sendUserToast(t('workspaceRulesets.protectionRuleDeleted'))
 		} catch (error) {
 			console.error('Failed to delete protection rule:', error)
-			sendUserToast('Failed to delete protection rule', true)
+			sendUserToast(t('workspaceRulesets.failedToDeleteProtectionRule'), true)
 		}
 	}
 
@@ -53,9 +54,29 @@
 		const groupCount = bypassGroups.length
 		const userCount = bypassUsers.length
 		const parts: string[] = []
-		if (groupCount > 0) parts.push(`${groupCount} group${groupCount !== 1 ? 's' : ''}`)
-		if (userCount > 0) parts.push(`${userCount} user${userCount !== 1 ? 's' : ''}`)
-		return parts.length > 0 ? `${parts.join(', ')} can bypass` : 'No bypassers'
+		if (groupCount > 0) {
+			parts.push(
+				t(
+					groupCount === 1
+						? 'workspaceRulesets.groupCountOne'
+						: 'workspaceRulesets.groupCountMany',
+					{ count: groupCount }
+				)
+			)
+		}
+		if (userCount > 0) {
+			parts.push(
+				t(
+					userCount === 1
+						? 'workspaceRulesets.userCountOne'
+						: 'workspaceRulesets.userCountMany',
+					{ count: userCount }
+				)
+			)
+		}
+		return parts.length > 0
+			? `${parts.join(', ')} ${t('workspaceRulesets.canBypass')}`
+			: t('workspaceRulesets.noBypassers')
 	}
 
 	function getEnabledRulesCount(ruleConfig: ProtectionRuleset['rules']): number {
@@ -69,7 +90,11 @@
 
 <Drawer bind:this={ruleDrawer}>
 	<DrawerContent
-		title={selectedRule ? `Protection Rule: ${selectedRule.name}` : 'New Protection Rule'}
+		title={
+			selectedRule
+				? ($locale, t('workspaceRulesets.protectionRuleTitle', { name: selectedRule.name }))
+				: ($locale, t('workspaceRulesets.newProtectionRule'))
+		}
 		on:close={ruleDrawer?.closeDrawer}
 	>
 		<RulesetEditor
@@ -84,15 +109,14 @@
 </Drawer>
 
 {#if !$enterpriseLicense}
-	<Alert type="warning" title="Workspace Protection Rules is an EE feature">
-		Workspace Protection Rules is a Windmill Enterprise Edition feature. It enables granular
-		governance and security policies scoped to specific groups and users.
+	<Alert type="warning" title={($locale, t('workspaceRulesets.eeFeatureTitle'))}>
+		{$locale, t('workspaceRulesets.eeFeatureBody')}
 	</Alert>
 	<div class="pb-4"></div>
 {/if}
 
 <div class="flex flex-row justify-between items-center mb-4">
-	<div class="text-xs font-semibold text-emphasis">Protection Rules</div>
+	<div class="text-xs font-semibold text-emphasis">{$locale, t('workspaceRulesets.protectionRules')}</div>
 	<Button
 		unifiedSize="md"
 		variant="accent"
@@ -102,7 +126,7 @@
 			ruleDrawer?.openDrawer()
 		}}
 	>
-		New rule
+		{$locale, t('workspaceRulesets.newRule')}
 	</Button>
 </div>
 
@@ -110,9 +134,9 @@
 	<DataTable containerClass="bg-surface-tertiary">
 		<Head>
 			<tr>
-				<Cell head first>Name</Cell>
-				<Cell head>Bypassers</Cell>
-				<Cell head>Rules</Cell>
+				<Cell head first>{$locale, t('common.name')}</Cell>
+				<Cell head>{$locale, t('workspaceRulesets.bypassers')}</Cell>
+				<Cell head>{$locale, t('workspaceRulesets.rules')}</Cell>
 				<Cell head last />
 			</tr>
 		</Head>
@@ -129,7 +153,7 @@
 				<tr>
 					<Cell first last colspan={4}>
 						<div class="text-center py-8 text-secondary text-sm">
-							No protection rules created yet. Click "New rule" to create your first rule.
+							{$locale, t('workspaceRulesets.noProtectionRules')}
 						</div>
 					</Cell>
 				</tr>
@@ -154,14 +178,14 @@
 						</Cell>
 						<Cell>
 							<span class="text-xs text-secondary">
-								{getEnabledRulesCount(rule.rules)} enabled
+								{t('workspaceRulesets.enabledCount', { count: getEnabledRulesCount(rule.rules) })}
 							</span>
 						</Cell>
 						<Cell last>
 							<Dropdown
 								items={[
 									{
-										displayName: 'Edit rule',
+										displayName: t('workspaceRulesets.editRule'),
 										icon: Pen,
 										action: (e) => {
 											e?.stopPropagation()
@@ -170,7 +194,7 @@
 										}
 									},
 									{
-										displayName: 'Delete',
+										displayName: t('common.delete'),
 										icon: Trash,
 										type: 'delete',
 										action: async () => {

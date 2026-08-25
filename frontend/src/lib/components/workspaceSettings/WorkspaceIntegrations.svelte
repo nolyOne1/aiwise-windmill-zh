@@ -15,6 +15,7 @@
 	import Path from '$lib/components/Path.svelte'
 	import { page } from '$app/state'
 	import { goto } from '$app/navigation'
+	import { locale, t } from '$lib/i18n'
 
 	interface WorkspaceIntegration {
 		service_name: string
@@ -43,46 +44,46 @@
 		nextcloud: {
 			name: 'nextcloud',
 			displayName: 'Nextcloud',
-			description: 'Connect to Nextcloud for file operations and webhook triggers',
+			description: t('workspaceIntegrations.nextcloudDescription'),
 			icon: NextcloudIcon,
 			docsUrl: 'https://www.windmill.dev/docs/integrations/nextcloud',
 			setupInstructions: [
-				'Create an OAuth2 application in your Nextcloud instance (Administration settings → Security → OAuth 2.0 clients)',
-				'Configure the redirect URI shown below',
-				'Enter the client credentials below'
+				t('workspaceIntegrations.nextcloudSetup1'),
+				t('workspaceIntegrations.nextcloudSetup2'),
+				t('workspaceIntegrations.nextcloudSetup3')
 			]
 		},
 		google: {
 			name: 'google',
 			displayName: 'Google',
-			description: 'Connect to Google for Drive and Calendar triggers',
+			description: t('workspaceIntegrations.googleDescription'),
 			icon: GoogleIcon,
 			docsUrl: 'https://www.windmill.dev/docs/core_concepts/native_triggers#google-triggers',
 			requiresBaseUrl: false,
-			clientIdPlaceholder: 'xxxx.apps.googleusercontent.com',
-			clientSecretPlaceholder: 'Google Cloud Console client secret',
+			clientIdPlaceholder: t('workspaceIntegrations.googleClientIdPlaceholder'),
+			clientSecretPlaceholder: t('workspaceIntegrations.googleClientSecretPlaceholder'),
 			setupInstructions: [
-				'Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" class="underline">Google Cloud Console - Credentials</a>',
-				'Create an OAuth 2.0 Client ID (Web application type)',
-				'Add the redirect URI shown below to "Authorized redirect URIs"',
-				'Enable the <a href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" rel="noopener" class="underline">Google Drive API</a> and <a href="https://console.cloud.google.com/apis/library/calendar-json.googleapis.com" target="_blank" rel="noopener" class="underline">Google Calendar API</a> in your project',
-				'Enter the client credentials below'
+				t('workspaceIntegrations.googleSetup1'),
+				t('workspaceIntegrations.googleSetup2'),
+				t('workspaceIntegrations.googleSetup3'),
+				t('workspaceIntegrations.googleSetup4'),
+				t('workspaceIntegrations.googleSetup5')
 			]
 		},
 		github: {
 			name: 'github',
 			displayName: 'GitHub',
-			description: 'Connect to GitHub for repository webhook triggers',
+			description: t('workspaceIntegrations.githubDescription'),
 			icon: GithubIcon,
 			docsUrl: 'https://www.windmill.dev/docs/core_concepts/native_triggers#github-triggers',
 			requiresBaseUrl: false,
-			clientIdPlaceholder: 'GitHub OAuth App Client ID',
-			clientSecretPlaceholder: 'GitHub OAuth App Client Secret',
+			clientIdPlaceholder: t('workspaceIntegrations.githubClientIdPlaceholder'),
+			clientSecretPlaceholder: t('workspaceIntegrations.githubClientSecretPlaceholder'),
 			setupInstructions: [
-				'Go to <a href="https://github.com/settings/developers" target="_blank" rel="noopener" class="underline">GitHub Developer Settings</a>',
-				'Create a new OAuth App (not a GitHub App)',
-				'Set the "Authorization callback URL" to the redirect URI shown below',
-				'Enter the Client ID and Client Secret below'
+				t('workspaceIntegrations.githubSetup1'),
+				t('workspaceIntegrations.githubSetup2'),
+				t('workspaceIntegrations.githubSetup3'),
+				t('workspaceIntegrations.githubSetup4')
 			]
 		}
 	}
@@ -117,7 +118,7 @@
 			}))
 		} catch (err: any) {
 			console.error('Failed to load workspace integrations:', err)
-			sendUserToast(`Failed to load integrations: ${err.message}`, true)
+			sendUserToast(t('workspaceIntegrations.failedToLoad', { error: err.message }), true)
 		} finally {
 			loading = false
 		}
@@ -128,9 +129,9 @@
 
 		const displayName = supportedServices[serviceName]?.displayName ?? serviceName
 		const confirmed = await confirmationModal.ask({
-			title: `Disconnect ${displayName}?`,
-			confirmationText: 'Disconnect',
-			children: `This will delete all ${displayName} triggers associated with this integration. This action cannot be undone.`
+			title: t('workspaceIntegrations.disconnectTitle', { name: displayName }),
+			confirmationText: t('workspaceIntegrations.disconnect'),
+			children: t('workspaceIntegrations.disconnectBody', { name: displayName })
 		})
 		if (!confirmed) return
 
@@ -139,10 +140,10 @@
 				workspace: $workspaceStore,
 				serviceName: serviceName as any
 			})
-			sendUserToast(`${displayName} disconnected successfully`)
+			sendUserToast(t('workspaceIntegrations.disconnectedSuccessfully', { name: displayName }))
 			loadIntegrations()
 		} catch (err: any) {
-			sendUserToast(`Failed to disconnect ${displayName}: ${err.message}`, true)
+			sendUserToast(t('workspaceIntegrations.failedToDisconnect', { name: displayName, error: err.message }), true)
 		}
 	}
 
@@ -162,7 +163,10 @@
 			}
 		} catch (err: any) {
 			sendUserToast(
-				`Failed to connect ${supportedServices[serviceName]?.displayName}: ${err.message}`,
+				t('workspaceIntegrations.failedToConnect', {
+					name: supportedServices[serviceName]?.displayName ?? serviceName,
+					error: err.message
+				}),
 				true
 			)
 			connecting = null
@@ -179,12 +183,17 @@
 				requestBody: oauthData
 			})
 			sendUserToast(
-				`${supportedServices[serviceName]?.displayName} configuration saved successfully`
+				t('workspaceIntegrations.configurationSavedSuccessfully', {
+					name: supportedServices[serviceName]?.displayName ?? serviceName
+				})
 			)
 			loadIntegrations()
 		} catch (err: any) {
 			sendUserToast(
-				`Failed to configure ${supportedServices[serviceName]?.displayName}: ${err.message}`,
+				t('workspaceIntegrations.failedToConfigure', {
+					name: supportedServices[serviceName]?.displayName ?? serviceName,
+					error: err.message
+				}),
 				true
 			)
 		}
@@ -223,7 +232,10 @@
 			}
 		} catch (err: any) {
 			sendUserToast(
-				`Failed to connect ${supportedServices[serviceName]?.displayName}: ${err.message}`,
+				t('workspaceIntegrations.failedToConnect', {
+					name: supportedServices[serviceName]?.displayName ?? serviceName,
+					error: err.message
+				}),
 				true
 			)
 			connecting = null
@@ -289,10 +301,14 @@
 					resource_path: resourcePath
 				}
 			})
-			sendUserToast(`${supportedServices[serviceName]?.displayName} connected successfully!`)
+			sendUserToast(
+				t('workspaceIntegrations.connectedSuccessfully', {
+					name: supportedServices[serviceName]?.displayName ?? serviceName
+				})
+			)
 			await loadIntegrations()
 		} catch (err: any) {
-			sendUserToast(`Failed to complete OAuth connection: ${err.message}`, true)
+			sendUserToast(t('workspaceIntegrations.failedToCompleteOAuth', { error: err.message }), true)
 		} finally {
 			pendingCallback = null
 			resourcePath = undefined
@@ -328,8 +344,8 @@
 
 <div class="flex flex-col">
 	<SettingsPageHeader
-		title="Native Triggers"
-		description="Connect your workspace to external services for native triggers and enhanced functionality. These connections are shared across all workspace members and are required for native triggers to work."
+		title={($locale, t('workspaceIntegrations.title'))}
+		description={($locale, t('workspaceIntegrations.description'))}
 		link="https://www.windmill.dev/docs/core_concepts/native_triggers"
 	/>
 
@@ -338,11 +354,12 @@
 		{@const config = supportedServices[serviceName]}
 		<div class="border border-gray-200 dark:border-gray-700 rounded-md p-4 bg-surface-tertiary">
 			<div class="text-sm font-semibold text-emphasis mb-2">
-				Save {config?.displayName ?? serviceName} credentials as resource
+				{$locale, t('workspaceIntegrations.saveCredentialsAsResource', {
+					name: config?.displayName ?? serviceName
+				})}
 			</div>
 			<div class="text-xs text-secondary mb-3">
-				Choose where to save the OAuth resource. This resource will store the access token for the
-				integration.
+				{$locale, t('workspaceIntegrations.saveCredentialsDescription')}
 			</div>
 			<Path
 				kind="resource"
@@ -357,7 +374,7 @@
 					disabled={!resourcePath || !!pathError}
 					onclick={finalizePendingCallback}
 				>
-					Save
+					{$locale, t('common.save')}
 				</Button>
 				<Button
 					onclick={() => {
@@ -366,7 +383,7 @@
 						pathError = undefined
 					}}
 				>
-					Cancel
+					{$locale, t('common.cancel')}
 				</Button>
 			</div>
 		</div>
@@ -401,7 +418,7 @@
 							{#if isServiceConnected}
 								<div class="flex items-center gap-1 text-green-600 text-xs">
 									<Check size={16} />
-									<span class="font-semibold">Connected</span>
+									<span class="font-semibold">{$locale, t('workspaceIntegrations.connected')}</span>
 								</div>
 								<Button
 									onclick={() =>
@@ -411,14 +428,16 @@
 									disabled={isConnecting}
 									startIcon={{ icon: Plug }}
 								>
-									{isConnecting ? 'Reconnecting...' : 'Reconnect'}
+									{isConnecting
+										? ($locale, t('workspaceIntegrations.reconnecting'))
+										: ($locale, t('workspaceIntegrations.reconnect'))}
 								</Button>
 								<Button
 									destructive
 									onclick={() => deleteIntegration(serviceName)}
 									startIcon={{ icon: X }}
 								>
-									Delete
+									{$locale, t('common.delete')}
 								</Button>
 							{:else if isOAuthConfigured}
 								<Button
@@ -427,14 +446,16 @@
 									disabled={isConnecting}
 									startIcon={{ icon: Plug }}
 								>
-									{isConnecting ? 'Connecting...' : 'Connect'}
+									{isConnecting
+										? ($locale, t('workspaceIntegrations.connecting'))
+										: ($locale, t('workspaceIntegrations.connect'))}
 								</Button>
 								<Button
 									destructive
 									onclick={() => deleteIntegration(serviceName)}
 									startIcon={{ icon: X }}
 								>
-									Delete
+									{$locale, t('common.delete')}
 								</Button>
 							{:else if instanceSharingAvailable[serviceName]}
 								<Button
@@ -443,7 +464,9 @@
 									disabled={isConnecting}
 									startIcon={{ icon: Plug }}
 								>
-									{isConnecting ? 'Connecting...' : 'Connect'}
+									{isConnecting
+										? ($locale, t('workspaceIntegrations.connecting'))
+										: ($locale, t('workspaceIntegrations.connect'))}
 								</Button>
 							{:else}
 								<Button
@@ -452,13 +475,13 @@
 										(showingConfig = showingConfig === serviceName ? null : serviceName)}
 									startIcon={{ icon: Cog }}
 								>
-									Configure OAuth
+									{$locale, t('workspaceIntegrations.configureOAuth')}
 								</Button>
 							{/if}
 
 							{#if config.docsUrl}
 								<Button href={config.docsUrl} target="_blank" startIcon={{ icon: ExternalLink }}>
-									Docs
+									{$locale, t('workspaceIntegrations.docs')}
 								</Button>
 							{/if}
 						</div>
@@ -466,16 +489,15 @@
 
 					{#if instanceSharingAvailable[serviceName] && !isOAuthConfigured}
 						<div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-							<Alert type="info" title="Redirect URI required">
+							<Alert type="info" title={($locale, t('workspaceIntegrations.redirectUriRequired'))}>
 								<p class="text-sm mb-2">
-									Your instance admin has configured Google OAuth for native triggers. Before
-									connecting, ensure the following redirect URI has been added to the
+									{$locale, t('workspaceIntegrations.redirectUriDescriptionPrefix')}
 									<a
 										href="https://console.cloud.google.com/apis/credentials"
 										target="_blank"
 										rel="noopener noreferrer"
 										class="underline">Google Cloud Console</a
-									> by the instance admin:
+									>{$locale, t('workspaceIntegrations.redirectUriDescriptionSuffix')}
 								</p>
 								<ClipboardPanel content={getRedirectUri(serviceName)} size="sm" />
 							</Alert>
@@ -485,10 +507,10 @@
 					{#if isShowingConfig}
 						<div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
 							{#if serviceName === 'nextcloud'}
-								<Alert type="info" title="Requirements" class="mb-4">
-									<p>Nextcloud integration requires:</p>
+								<Alert type="info" title={($locale, t('workspaceIntegrations.requirements'))} class="mb-4">
+									<p>{$locale, t('workspaceIntegrations.nextcloudRequirementsTitle')}</p>
 									<ul class="list-disc pl-4 mt-2 space-y-1">
-										<li>Nextcloud 33 or later.</li>
+										<li>{$locale, t('workspaceIntegrations.nextcloudRequirement1')}</li>
 										<li>
 											The <a
 												href="https://apps.nextcloud.com/apps/integration_windmill"
@@ -497,7 +519,7 @@
 												class="underline hover:text-blue-600"
 											>
 												Windmill integration app
-											</a> to be installed on your Nextcloud instance.
+											</a>{$locale, t('workspaceIntegrations.nextcloudRequirement2')}
 										</li>
 										<li>
 											<a
@@ -508,7 +530,7 @@
 											>
 												Pretty URLs
 											</a>
-											to be enabled on your Nextcloud instance.
+											{$locale, t('workspaceIntegrations.nextcloudRequirement3')}
 										</li>
 									</ul>
 								</Alert>
@@ -534,8 +556,8 @@
 		</div>
 
 		{#if integrations.length === 0}
-			<Alert type="warning" title="No Integrations Connected">
-				Connect to external services above to enable native triggers for your workspace.
+			<Alert type="warning" title={($locale, t('workspaceIntegrations.noIntegrationsConnected'))}>
+				{$locale, t('workspaceIntegrations.noIntegrationsConnectedBody')}
 			</Alert>
 		{/if}
 	{/if}

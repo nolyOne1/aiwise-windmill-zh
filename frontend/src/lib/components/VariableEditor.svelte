@@ -19,6 +19,7 @@
 	import LocalDraftBanner from './LocalDraftBanner.svelte'
 	import { isEncryptedDraftValue } from '$lib/encryptedDraft'
 	import { setLocalDraftHint } from '$lib/localDraftHints.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	const dispatch = createEventDispatcher()
 
@@ -284,18 +285,26 @@
 				// it shows up immediately instead of after the 60s TTL.
 				invalidateWorkspacePaths(ws)
 			}
-			sendUserToast(edit ? `Updated variable in ${dirty.length} workspace(s)` : `Created variable`)
+			sendUserToast(
+				edit
+					? t('variableEditor.updatedVariableInWorkspaces', { count: dirty.length })
+					: t('variableEditor.createdVariable')
+			)
 			dispatch('create')
 			drawer?.closeDrawer()
-		} catch (err) {
-			sendUserToast(`Could not save variable: ${err.body}`, true)
+		} catch (err: any) {
+			sendUserToast(t('variableEditor.couldNotSaveVariable', { error: err.body }), true)
 		}
 	}
 </script>
 
 <Drawer bind:this={drawer} size="50rem">
 	<DrawerContent
-		title={edit ? `Update variable at ${initialPath}` : 'Add a variable'}
+		title={
+			edit
+				? ($locale, t('variableEditor.updateVariableAt', { path: initialPath }))
+				: ($locale, t('variableEditor.addVariable'))
+		}
 		bannerReserved={edit}
 		on:close={drawer?.closeDrawer}
 	>
@@ -316,14 +325,14 @@
 		{/snippet}
 		<div class="flex flex-col gap-8 pb-2">
 			{#if !can_write}
-				<Alert type="warning" title="Only read access">
-					You only have read access to this resource and cannot edit it
+				<Alert type="warning" title={($locale, t('variableEditor.onlyReadAccessTitle'))}>
+					{$locale, t('variableEditor.onlyReadAccessBody')}
 				</Alert>
 			{/if}
 
 			{#if otherDirty.length > 0}
-				<Alert type="warning" title="Editing multiple workspaces">
-					You are going to edit the value in: {otherDirty.join(', ')}
+				<Alert type="warning" title={($locale, t('variableEditor.editingMultipleWorkspacesTitle'))}>
+					{$locale, t('variableEditor.editingMultipleWorkspacesBody', { workspaces: otherDirty.join(', ') })}
 				</Alert>
 			{/if}
 
@@ -357,7 +366,7 @@
 				variant="accent"
 				size="sm"
 			>
-				{edit ? 'Update' : 'Save'}
+				{edit ? ($locale, t('common.update')) : ($locale, t('common.save'))}
 			</Button>
 		{/snippet}
 	</DrawerContent>

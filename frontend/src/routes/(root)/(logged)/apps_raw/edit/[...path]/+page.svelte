@@ -35,6 +35,7 @@
 		STARTER_RUNNABLE_KEY
 	} from '$lib/components/raw_apps/templates'
 	import { aiChatManager, AIMode } from '$lib/components/copilot/chat/AIChatManager.svelte'
+	import { t } from '$lib/i18n'
 
 	type RawAppDraft = {
 		files: Record<string, string>
@@ -238,7 +239,7 @@
 			const importedValue = importRaw && 'value' in importRaw ? importRaw.value : importRaw
 			// Rendering gates on `files`; only honor imports that carry them.
 			if (importedValue?.files) {
-				sendUserToast('Loaded from YAML/JSON')
+				sendUserToast(t('appsEditor.loadedFromYamlJson'))
 				const importedSummary = ('value' in importRaw ? importRaw.summary : '') ?? ''
 				const importedPolicy =
 					('value' in importRaw ? importRaw.policy : undefined) ?? defaultPolicy
@@ -452,7 +453,7 @@
 
 	async function restoreDeployed() {
 		if (!savedApp || !$workspaceStore) {
-			sendUserToast('Could not restore to deployed', true)
+			sendUserToast(t('appsEditor.couldNotRestoreToDeployed'), true)
 			return
 		}
 		diffDrawer?.closeDrawer()
@@ -470,7 +471,7 @@
 	let diffDrawer: DiffDrawer | undefined = $state(undefined)
 
 	function onRestore(restoredApp: any) {
-		sendUserToast('App restored from previous deployment')
+		sendUserToast(t('appsEditor.restoredFromPreviousDeployment'))
 		let prev = restoredApp
 		extractRawApp(prev)
 		savedApp = {

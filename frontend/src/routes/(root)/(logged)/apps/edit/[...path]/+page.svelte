@@ -21,6 +21,7 @@
 	import { stripNewDraftFlag, stripNewDraftFlagOnSave, shouldSeedNewDraft } from '$lib/newDraftFlag'
 	import { OtherUserDraftLoad } from '$lib/components/otherUserDraftLoad.svelte'
 	import { runResetToDeployed } from '$lib/userDraftToast'
+	import { t } from '$lib/i18n'
 
 	let app = $state(undefined as (AppWithLastVersion & { value: any }) | undefined)
 	let appEditor: AppEditor | undefined = $state(undefined)
@@ -115,7 +116,7 @@
 			const importRaw = $importStore
 			if (importRaw) {
 				$importStore = undefined
-				sendUserToast('Loaded from YAML/JSON')
+				sendUserToast(t('appsEditor.loadedFromYamlJson'))
 			}
 			// Seed priority: YAML/JSON import > template > template-version > hub > empty.
 			let seedSummary = ''
@@ -137,11 +138,14 @@
 					})
 					if (tok !== loadAppToken) return
 					seedValue = template.value
-					sendUserToast('App loaded from template')
+					sendUserToast(t('appsEditor.loadedFromTemplate'))
 				} catch (err: any) {
 					if (tok !== loadAppToken) return
 					console.error('Error loading template', err)
-					sendUserToast('Error loading template: ' + (err.body ?? err.message), true)
+					sendUserToast(
+						t('appsEditor.errorLoadingTemplate', { error: err.body ?? err.message }),
+						true
+					)
 				}
 			} else if (templateId) {
 				try {
@@ -151,11 +155,14 @@
 					})
 					if (tok !== loadAppToken) return
 					seedValue = template.value
-					sendUserToast('App loaded from template')
+					sendUserToast(t('appsEditor.loadedFromTemplate'))
 				} catch (err: any) {
 					if (tok !== loadAppToken) return
 					console.error('Error loading template', err)
-					sendUserToast('Error loading template: ' + (err.body ?? err.message), true)
+					sendUserToast(
+						t('appsEditor.errorLoadingTemplate', { error: err.body ?? err.message }),
+						true
+					)
 				}
 			} else if (hubId) {
 				try {
@@ -169,11 +176,14 @@
 					}
 					seedSummary = hub.app.summary
 					fromHub = true
-					sendUserToast('App loaded from Hub')
+					sendUserToast(t('appsEditor.loadedFromHub'))
 				} catch (err: any) {
 					if (tok !== loadAppToken) return
 					console.error('Error loading hub app', err)
-					sendUserToast('Error loading hub app: ' + (err.body ?? err.message), true)
+					sendUserToast(
+						t('appsEditor.errorLoadingHubApp', { error: err.body ?? err.message }),
+						true
+					)
 				}
 			}
 			app = {
@@ -383,7 +393,7 @@
 
 	async function restoreDeployed() {
 		if (!savedApp || !$workspaceStore) {
-			sendUserToast('Could not restore to deployed', true)
+			sendUserToast(t('appsEditor.couldNotRestoreToDeployed'), true)
 			return
 		}
 		diffDrawer?.closeDrawer()
@@ -398,7 +408,7 @@
 	let diffDrawer: DiffDrawer | undefined = $state()
 
 	function onRestore(restoredApp: any) {
-		sendUserToast('App restored from previous deployment')
+		sendUserToast(t('appsEditor.restoredFromPreviousDeployment'))
 		// Drop the stale pre-restore autosave. The remounted AppEditor seeds its
 		// state from `appDraftHandle.draft ?? app`, so without this it keeps showing
 		// the old draft instead of the restored version. Same reason `reloadDeployed`

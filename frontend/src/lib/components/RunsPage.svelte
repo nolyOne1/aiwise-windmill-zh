@@ -46,7 +46,7 @@
 	import { twMerge } from 'tailwind-merge'
 	import { computeJobKinds, useJobsLoader } from '$lib/components/runs/useJobsLoader.svelte'
 	import ConcurrentJobsChart from '$lib/components/ConcurrentJobsChart.svelte'
-	import { pluralize, MAX_RESOLUTION_BATCH, MAX_RESOLUTION_NOTE_LEN } from '$lib/utils'
+	import { MAX_RESOLUTION_BATCH, MAX_RESOLUTION_NOTE_LEN } from '$lib/utils'
 	import BatchReRunOptionsPane, {
 		type BatchReRunOptions
 	} from '$lib/components/runs/BatchReRunOptionsPane.svelte'
@@ -75,6 +75,7 @@
 	import ToggleButtonGroup from './common/toggleButton-v2/ToggleButtonGroup.svelte'
 	import ToggleButton from './common/toggleButton-v2/ToggleButton.svelte'
 	import ToggleButtonMore from './common/toggleButton-v2/ToggleButtonMore.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		/** Initial path from route params (e.g., /runs/u/user/script) */
@@ -323,14 +324,14 @@
 		})
 		selectedIds = []
 		jobsLoader?.loadJobs(true, true)
-		sendUserToast(`Canceled ${uuids.length} jobs`)
+		sendUserToast(t('runsPage.canceledJobs', { count: uuids.length }))
 	}
 
 	async function setJobsResolution(jobIds: string[], resolved: boolean, note?: string) {
 		// Spread-count code points so this matches the server's `chars().count()` exactly;
 		// `.length` counts UTF-16 units and would reject valid astral-plane notes.
 		if (note !== undefined && [...note].length > MAX_RESOLUTION_NOTE_LEN) {
-			sendUserToast(`Note cannot exceed ${MAX_RESOLUTION_NOTE_LEN} characters`, true)
+			sendUserToast(t('runsPage.noteCannotExceedChars', { count: MAX_RESOLUTION_NOTE_LEN }), true)
 			return
 		}
 		// The endpoint scopes rows to the path workspace, so in the admins all-workspaces
@@ -373,15 +374,17 @@
 		resolutionNote = ''
 		jobsLoader?.loadJobs(true, true)
 		sendUserToast(
-			`${resolved ? 'Resolved' : 'Unresolved'} ${affected.length} ${affected.length === 1 ? 'job' : 'jobs'}`
+			resolved
+				? t('runsPage.resolvedJobs', { count: affected.length })
+				: t('runsPage.unresolvedJobs', { count: affected.length })
 		)
 	}
 
 	async function onCancelAllJobsMatchingFilters() {
 		forceCancelInPopup = false
 		askingForConfirmation = {
-			title: 'Confirm cancelling all jobs corresponding to the selected filters',
-			confirmBtnText: 'Loading...',
+			title: t('runsPage.confirmCancelAllJobsTitle'),
+			confirmBtnText: t('common.loading'),
 			loading: true
 		}
 
@@ -393,15 +396,15 @@
 		// offer to cancel them.
 		if (selectedFilters.resolved === true) {
 			askingForConfirmation = undefined
-			sendUserToast('No queued jobs match "Resolved only" — resolution applies to completed runs')
+			sendUserToast(t('runsPage.noQueuedJobsMatchResolvedOnly'))
 			return
 		}
 		const selectedFiltersString = JSON.stringify(selectedFilters, null, 4)
 		const jobIdsToCancel = await JobService.listFilteredQueueUuids(selectedFilters)
 
 		askingForConfirmation = {
-			title: `Confirm cancelling all jobs corresponding to the selected filters (${jobIdsToCancel.length} jobs)`,
-			confirmBtnText: `Cancel ${jobIdsToCancel.length} jobs that matched the filters`,
+			title: t('runsPage.confirmCancelAllJobsTitleWithCount', { count: jobIdsToCancel.length }),
+			confirmBtnText: t('runsPage.cancelJobsMatchingFilters', { count: jobIdsToCancel.length }),
 			preContent: selectedFiltersString,
 			onConfirm: (forceCancel) => {
 				cancelJobs(jobIdsToCancel, forceCancel)
@@ -412,8 +415,8 @@
 	async function onCancelSelectedJobs(jobIdsToCancel: string[]) {
 		forceCancelInPopup = true
 		askingForConfirmation = {
-			confirmBtnText: `Cancel ${jobIdsToCancel.length} jobs`,
-			title: `Confirm cancelling ${jobIdsToCancel.length} jobs`,
+			confirmBtnText: t('runsPage.cancelSelectedJobs', { count: jobIdsToCancel.length }),
+			title: t('runsPage.confirmCancelSelectedJobsTitle', { count: jobIdsToCancel.length }),
 			onConfirm: (forceCancel) => {
 				cancelJobs(jobIdsToCancel, forceCancel)
 			}
@@ -467,11 +470,18 @@
 
 					if (done || !value) {
 						if (reRanUuids.length) {
-							sendUserToast(`Re-ran ${reRanUuids.length}/${jobIdsToReRun.length} jobs`)
+							sendUserToast(
+								t('runsPage.reranJobs', {
+									completed: reRanUuids.length,
+									total: jobIdsToReRun.length
+								})
+							)
 						}
 						if (reRanUuids.length !== jobIdsToReRun.length) {
 							sendUserToast(
-								`Failed to re-run ${jobIdsToReRun.length - reRanUuids.length} jobs. Check console for details`,
+								t('runsPage.failedRerunJobs', {
+									count: jobIdsToReRun.length - reRanUuids.length
+								}),
 								true
 							)
 							// We do not get explicit error from backend if the job script don't exist
@@ -495,10 +505,10 @@
 		const selectedFilters = getSelectedFilters()
 		selectedIds = []
 
-		const loadingToast = sendUserToast('Loading job ids', 'info')
+		const loadingToast = sendUserToast(t('runsPage.loadingJobIds'), 'info')
 
 		if (filters.val.job_kinds !== 'runs') {
-			sendUserToast('Batch re-run is only supported for scripts and flows', true)
+			sendUserToast(t('runsPage.batchRerunSupportedOnly'), true)
 			loadingToast.destroy()
 			return
 		}
@@ -518,8 +528,8 @@
 	async function onReRunSelectedJobs(batchReRunOptions: BatchReRunOptions) {
 		const jobIdsToReRun = selectedIds
 		askingForConfirmation = {
-			title: `Confirm re-running the selected jobs`,
-			confirmBtnText: `Re-run ${jobIdsToReRun.length} jobs`,
+			title: t('runsPage.confirmRerunSelectedJobsTitle'),
+			confirmBtnText: t('runsPage.rerunSelectedJobs', { count: jobIdsToReRun.length }),
 			type: 'reload',
 			onConfirm: async () => {
 				await reRunJobs(jobIdsToReRun, batchReRunOptions)
@@ -567,7 +577,7 @@
 	let forceCancelInPopup = $state(false)
 
 	const warnJobLimitMsg = $derived(
-		`The exact number of concurrent jobs at the beginning of the time range may be incorrect as only the last ${perPage.val} jobs are taken into account: a job that was started earlier than this limit will not be taken into account`
+		t('runsPage.warnJobLimitMsg', { count: perPage.val })
 	)
 
 	let manualSelectionMode: undefined | 'cancel' | 'rerun' | 'resolve' = $state()
@@ -597,18 +607,14 @@
 			color="red"
 			bind:checked={forceCancelInPopup}
 			options={{
-				right: 'Force cancel',
-				rightTooltip:
-					'Only use this for jobs that refuse to gracefully cancel. This is dangerous, only do this if you have no alternatives!'
+				right: t('runsPage.forceCancel'),
+				rightTooltip: t('runsPage.forceCancelTooltip')
 			}}
 		></Toggle>
 		{#if forceCancelInPopup}
 			<div class="mt-4 text-red-500 p-2 text-sm">
 				<p>
-					Force cancel is enabled. This is dangerous, only do this if you have no alternatives.
-					Instead of being gracefully cancelled, all jobs will be immediately sent to the completed
-					job table regardless of them being processed or not or part of running flows. You may end
-					up in an inconsistent state.
+					{$locale, t('runsPage.forceCancelWarning')}
 				</p>
 			</div>
 		{/if}
@@ -616,10 +622,10 @@
 </ConfirmationModal>
 
 <Drawer bind:this={runDrawer}>
-	<DrawerContent title="Run details" on:close={runDrawer.closeDrawer}>
+	<DrawerContent title={($locale, t('runsPage.runDetails'))} on:close={runDrawer.closeDrawer}>
 		{#if selectedIds.length === 1}
 			{#if selectedIds[0] === '-'}
-				<div class="p-4">There is no information available for this job</div>
+				<div class="p-4">{$locale, t('runsPage.noJobInformation')}</div>
 			{:else}
 				<JobRunsPreview id={selectedIds[0]} workspace={selectedWorkspace} />
 			{/if}
@@ -635,8 +641,8 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.runs}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">Unauthorized</p>
-		<p>Page not available for operators</p>
+		<p class="font-bold">{$locale, t('common.unauthorized')}</p>
+		<p>{$locale, t('common.pageNotAvailableForOperators')}</p>
 	</div>
 {:else}
 	<div class="w-full h-screen flex flex-col" bind:clientWidth={innerWidth}>
@@ -649,14 +655,13 @@
 						$userStore?.operator ? 'pl-10' : ''
 					)}
 				>
-					Runs
+					{$locale, t('runsPage.title')}
 				</h1>
 
 				<Tooltip
 					documentationLink="https://www.windmill.dev/docs/core_concepts/monitor_past_and_future_runs"
 				>
-					All past and schedule executions of scripts and flows, including previews. You only see
-					your own runs or runs of groups you belong to unless you are an admin.
+					{$locale, t('runsPage.tooltip')}
 				</Tooltip>
 
 				<!-- Queue -->
@@ -683,32 +688,31 @@
 					}
 				>
 					{#snippet children({ item })}
-						<ToggleButton value="all" label="All" {item} />
+						<ToggleButton value="all" label={($locale, t('common.all'))} {item} />
 						<ToggleButton
 							value="runs"
-							label="Runs"
-							tooltip="Runs are jobs that have no parent jobs (flows are jobs that are parent of the jobs they start), they have been triggered through the UI, a schedule or webhook"
+							label={($locale, t('common.runs'))}
+							tooltip={($locale, t('runsPage.runsTooltip'))}
 							{item}
 						/>
 						<ToggleButton
 							value="dependencies"
-							label="Deps"
-							tooltip="Deploying a script, flow or an app launch a dependency job that create and then attach the lockfile to the deployed item. This mechanism ensure that logic is always executed with the exact same direct and indirect dependencies."
+							label={($locale, t('runsPage.depsShort'))}
+							tooltip={($locale, t('runsPage.depsTooltip'))}
 							{item}
 						/>
 						<ToggleButtonMore
 							hideSelectedOption={innerWidth < smallScreenWidth}
 							togglableItems={[
 								{
-									label: 'Previews',
+									label: ($locale, t('runsPage.previews')),
 									value: 'previews',
-									tooltip: "Previews are jobs that have been started in the editor as 'Tests'"
+									tooltip: ($locale, t('runsPage.previewsTooltip'))
 								},
 								{
-									label: 'Sync',
+									label: ($locale, t('runsPage.sync')),
 									value: 'deploymentcallbacks',
-									tooltip:
-										'Sync jobs that are triggered on every script deployment to sync the workspace with the Git repository configured in the the workspace settings'
+									tooltip: ($locale, t('runsPage.syncTooltip'))
 								}
 							]}
 							{item}
@@ -724,10 +728,10 @@
 					id="status"
 				>
 					{#snippet children({ item })}
-						<ToggleButton value={'all'} label="All" {item} />
+						<ToggleButton value={'all'} label={($locale, t('common.all'))} {item} />
 						<ToggleButton
 							value={'running'}
-							tooltip="Running"
+							tooltip={($locale, t('runsPage.statusRunning'))}
 							class="whitespace-nowrap"
 							icon={CirclePlay}
 							iconProps={{
@@ -738,7 +742,7 @@
 						/>
 						<ToggleButton
 							value={'success'}
-							tooltip="Success"
+							tooltip={($locale, t('runsPage.statusSuccess'))}
 							class="whitespace-nowrap"
 							icon={CircleCheck}
 							iconProps={{
@@ -749,7 +753,7 @@
 						/>
 						<ToggleButton
 							value={'failure'}
-							tooltip="Failure"
+							tooltip={($locale, t('runsPage.statusFailure'))}
 							class="whitespace-nowrap"
 							icon={CircleAlert}
 							iconProps={{
@@ -759,7 +763,7 @@
 						/>
 						<ToggleButton
 							value={'canceled'}
-							tooltip="Canceled"
+							tooltip={($locale, t('runsPage.statusCanceled'))}
 							class="whitespace-nowrap"
 							icon={Hourglass}
 							selectedColor="gray"
@@ -768,7 +772,7 @@
 						{#if filters.val.status == 'waiting'}
 							<ToggleButton
 								value={'waiting'}
-								tooltip="Waiting"
+								tooltip={($locale, t('runsPage.statusWaiting'))}
 								class="whitespace-nowrap"
 								icon={Hourglass}
 								selectedColor="blue"
@@ -777,7 +781,7 @@
 						{:else if filters.val.status == 'suspended'}
 							<ToggleButton
 								value={'suspended'}
-								tooltip="Suspended"
+								tooltip={($locale, t('runsPage.statusSuspended'))}
 								class="whitespace-nowrap"
 								icon={Hourglass}
 								selectedColor="purple"
@@ -790,7 +794,7 @@
 
 			<div class="hidden xl:flex gap-2 items-center min-h-8 ml-2">
 				{#if !filters.val.job_trigger_kind || filters.val.job_trigger_kind === '!schedule'}
-					<div class="flex items-center gap-1" title="Show schedules">
+					<div class="flex items-center gap-1" title={($locale, t('runsPage.showSchedules'))}>
 						<Toggle
 							size="xs"
 							color="nord"
@@ -806,7 +810,7 @@
 						<Calendar size={14} />
 					</div>
 				{/if}
-				<div class="flex items-center gap-1" title="Show future jobs">
+				<div class="flex items-center gap-1" title={($locale, t('runsPage.showFutureJobs'))}>
 					<Toggle
 						size="xs"
 						color="nord"
@@ -842,7 +846,7 @@
 					isAdminsWorkspace: $workspaceStore === 'admins'
 				})}
 				bind:value={filters.val}
-				placeholder="Filter runs..."
+				placeholder={($locale, t('runsPage.filterPlaceholder'))}
 				autofocus
 			/>
 		</div>
@@ -851,8 +855,12 @@
 		<div id="runs-chart" class="p-2 px-4 bg-surface-tertiary mx-4 border rounded-md">
 			<div class="relative z-10 mb-2 flex gap-2">
 				<Tabs bind:selected={graph}>
-					<Tab value="RunChart" label="Duration" id="runs-chart-duration-tab" />
-					<Tab value="ConcurrencyChart" label="Concurrency" id="runs-chart-concurrency-tab">
+					<Tab value="RunChart" label={($locale, t('runsPage.duration'))} id="runs-chart-duration-tab" />
+					<Tab
+						value="ConcurrencyChart"
+						label={($locale, t('runsPage.concurrency'))}
+						id="runs-chart-concurrency-tab"
+					>
 						{#snippet extra()}
 							{#if warnJobLimit}
 								<Tooltip Icon={TriangleAlertIcon}>{warnJobLimitMsg}</Tooltip>
@@ -866,13 +874,13 @@
 						class="ml-2"
 						bind:value={lookback}
 						items={[
-							{ label: 'None', value: 0 },
-							{ label: '1 day', value: 1 },
-							{ label: '3 days', value: 3 },
-							{ label: '7 days', value: 7 }
+							{ label: ($locale, t('runsPage.none')), value: 0 },
+							{ label: ($locale, t('runsPage.dayCount', { count: 1 })), value: 1 },
+							{ label: ($locale, t('runsPage.dayCount', { count: 3 })), value: 3 },
+							{ label: ($locale, t('runsPage.dayCount', { count: 7 })), value: 7 }
 						]}
-						transformInputSelectedText={(_, v) => `${pluralize(v, 'day')} lookback`}
-						tooltip={'How far behind the min datetime to start considering jobs for the concurrency graph. Change this value to include jobs started before the set time window for the computation of the graph'}
+						transformInputSelectedText={(_, v) => t('runsPage.lookbackValue', { count: v })}
+						tooltip={($locale, t('runsPage.lookbackTooltip'))}
 					/>
 				{:else if !lastFetchWentToEnd && (jobs?.length ?? 0) >= (perPage.val ?? 1000)}
 					<Button
@@ -881,8 +889,8 @@
 						loading={jobsLoader.loadingExtra}
 						onClick={() => jobsLoader.loadExtraJobs()}
 					>
-						Load more
-						<Tooltip>There are more jobs to load</Tooltip>
+						{$locale, t('runsPage.loadMore')}
+						<Tooltip>{$locale, t('runsPage.moreJobsToLoad')}</Tooltip>
 					</Button>
 				{/if}
 			</div>
@@ -922,7 +930,12 @@
 						<div class="flex flex-col flex-1 m-4 mt-2 mr-2">
 							{#if batchProgress}
 								<div class="flex items-center gap-3 px-1 pb-2 text-xs text-secondary">
-									<span>Loading jobs: {batchProgress.loaded} of {batchProgress.total}...</span>
+									<span>
+										{$locale, t('runsPage.loadingJobsProgress', {
+											loaded: batchProgress.loaded,
+											total: batchProgress.total
+										})}
+									</span>
 									<div class="flex-1 bg-surface-hover rounded-full h-1.5">
 										<div
 											class="bg-blue-500 h-1.5 rounded-full transition-all duration-300"
@@ -932,7 +945,7 @@
 										></div>
 									</div>
 									{#if currentBatchSize != null}
-										<span class="whitespace-nowrap shrink-0">Batch size:</span>
+										<span class="whitespace-nowrap shrink-0">{$locale, t('runsPage.batchSize')}</span>
 										<input
 											type="number"
 											min="1"
@@ -948,7 +961,7 @@
 										/>
 									{/if}
 									<Button size="xs" destructive onClick={() => jobsLoader.stopBatchLoading()}>
-										Stop
+										{$locale, t('common.stop')}
 									</Button>
 								</div>
 							{/if}
@@ -994,15 +1007,15 @@
 							>
 								{#if !manualSelectionMode}
 									<DropdownV2
-										btnText="Batch actions"
+										btnText={($locale, t('runsPage.batchActions'))}
 										size="xs"
 										items={[
 											{
-												displayName: 'Cancel jobs',
+												displayName: ($locale, t('runsPage.cancelJobs')),
 												action: () => ((manualSelectionMode = 'cancel'), (selectedIds = []))
 											},
 											{
-												displayName: 'Re-run jobs',
+												displayName: ($locale, t('runsPage.rerunJobs')),
 												action: () => {
 													manualSelectionMode = 'rerun'
 													selectedIds = []
@@ -1013,7 +1026,7 @@
 												? [
 														{
 															// Operators are rejected by the endpoint, so offering it would only 403.
-															displayName: 'Resolve failed jobs',
+															displayName: ($locale, t('runsPage.resolveFailedJobs')),
 															action: () => (
 																(manualSelectionMode = 'resolve'),
 																(selectedIds = []),
@@ -1023,11 +1036,11 @@
 													]
 												: []),
 											{
-												displayName: 'Cancel all jobs matching filters',
+												displayName: ($locale, t('runsPage.cancelAllMatchingFilters')),
 												action: () => onCancelAllJobsMatchingFilters()
 											},
 											{
-												displayName: 'Re-run all jobs matching filters',
+												displayName: ($locale, t('runsPage.rerunAllMatchingFilters')),
 												action: () => onRerunAllJobsMatchingFilters()
 											}
 										]}
@@ -1041,7 +1054,7 @@
 											batchRerunOptionsIsOpen = false
 										}}
 									>
-										Exit selection mode
+										{$locale, t('runsPage.exitSelectionMode')}
 									</Button>
 								{/if}
 								<div class="flex-1"></div>
@@ -1049,7 +1062,7 @@
 									size="xs"
 									color="nord"
 									bind:checked={autoRefresh.val}
-									options={{ right: 'Auto-refresh' }}
+									options={{ right: t('runsPage.autoRefresh') }}
 									textClass="whitespace-nowrap"
 								/>
 								<Select
@@ -1068,7 +1081,7 @@
 										{ value: 1000, label: '1000' },
 										{ value: 10000, label: '10000' }
 									]}
-									transformInputSelectedText={(_, v) => `${v} / page`}
+									transformInputSelectedText={(_, v) => t('runsPage.perPageValue', { count: v })}
 								/>
 							</div>
 						</div>
@@ -1099,14 +1112,14 @@
 								class="rounded-md bg-surface-tertiary border absolute inset-0 mb-4 flex flex-col items-center justify-center gap-3 p-4"
 							>
 								<p class="text-xs text-secondary text-center max-w-xs">
-									Resolving keeps the run a failure but stops it showing as one in the runs list.
+									{$locale, t('runsPage.resolvingDescription')}
 								</p>
 								<TextInput
 									bind:value={resolutionNote}
 									inputProps={{
 										placeholder: $enterpriseLicense
-											? 'Why is this handled? (optional)'
-											: 'Notes and attribution require ee',
+											? t('runsPage.handledReasonPlaceholder')
+											: t('runsPage.notesRequireEe'),
 										disabled: !$enterpriseLicense
 									}}
 									size="sm"
@@ -1117,14 +1130,14 @@
 										disabled={!selectedIds.length}
 										onClick={() => setJobsResolution(selectedIds, true, resolutionNote)}
 									>
-										Mark {selectedIds.length} resolved
+										{$locale, t('runsPage.markResolved', { count: selectedIds.length })}
 									</Button>
 									<Button
 										variant="default"
 										disabled={!selectedIds.length}
 										onClick={() => setJobsResolution(selectedIds, false)}
 									>
-										Unresolve {selectedIds.length}
+										{$locale, t('runsPage.unresolve', { count: selectedIds.length })}
 									</Button>
 								</div>
 							</div>
@@ -1141,7 +1154,7 @@
 							/>
 						{:else if selectedIds.length === 1}
 							{#if selectedIds[0] === '-'}
-								<div class="p-4">There is no information available for this job</div>
+								<div class="p-4">{$locale, t('runsPage.noJobInformation')}</div>
 							{:else}
 								<JobRunsPreview
 									id={selectedIds[0]}
@@ -1155,7 +1168,9 @@
 							<div
 								class="rounded-md bg-surface-tertiary border absolute inset-0 mb-4 flex items-center justify-center"
 							>
-								<div class="text-xs m-4"> {selectedIds.length} jobs selected</div>
+								<div class="text-xs m-4">
+									{$locale, t('runsPage.jobsSelected', { count: selectedIds.length })}
+								</div>
 							</div>
 						{/if}
 					</div>

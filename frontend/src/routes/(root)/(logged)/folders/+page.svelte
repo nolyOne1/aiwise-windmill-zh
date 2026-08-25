@@ -21,6 +21,7 @@
 	import Badge from '$lib/components/common/badge/Badge.svelte'
 	import { untrack } from 'svelte'
 	import { DEMO_RESTRICTION_HINT, isDemoWorkspaceRestricted } from '$lib/cloud'
+	import { locale, t } from '$lib/i18n'
 
 	type FolderW = Folder & { canWrite: boolean }
 
@@ -86,14 +87,17 @@
 </script>
 
 <Drawer bind:this={folderDrawer}>
-	<DrawerContent title="Folder {editFolderName}" on:close={folderDrawer.closeDrawer}>
+	<DrawerContent
+		title={($locale, t('folders.folderTitle', { name: editFolderName }))}
+		on:close={folderDrawer.closeDrawer}
+	>
 		<FolderEditor on:update={loadFolders} name={editFolderName} />
 	</DrawerContent>
 </Drawer>
 
 <Drawer bind:this={hubDrawer} size="1100px">
 	<DrawerContent
-		title="Publish {publishFolderName} to Hub"
+		title={($locale, t('folders.publishToHubTitle', { name: publishFolderName }))}
 		on:close={() => {
 			hubDrawer?.closeDrawer()
 			publishFolderName = ''
@@ -109,14 +113,14 @@
 
 {#if $userStore?.operator && $workspaceStore && !$userWorkspaces.find((_) => _.id === $workspaceStore)?.operator_settings?.folders}
 	<div class="bg-red-100 border-l-4 border-red-600 text-orange-700 p-4 m-4 mt-12" role="alert">
-		<p class="font-bold">Unauthorized</p>
-		<p>Page not available for operators</p>
+		<p class="font-bold">{$locale, t('common.unauthorized')}</p>
+		<p>{$locale, t('common.pageNotAvailableForOperators')}</p>
 	</div>
 {:else}
 	<CenteredPage>
 		<PageHeader
-			title="Folders"
-			tooltip="Folders allow to group items such as scripts/flows/resources/schedule together and to grant homogenous RBAC permissions to groups and individual users towards them."
+			title={($locale, t('folders.title'))}
+			tooltip={($locale, t('folders.tooltip'))}
 			documentationLink="https://www.windmill.dev/docs/core_concepts/groups_and_folders"
 		>
 			<div class="flex flex-row">
@@ -128,7 +132,7 @@
 						disabled
 						title={DEMO_RESTRICTION_HINT}
 					>
-						New folder
+						{$locale, t('folders.newFolder')}
 					</Button>
 				{:else}
 					<Popover
@@ -137,14 +141,14 @@
 					>
 						{#snippet trigger()}
 							<Button variant="accent" unifiedSize="md" startIcon={{ icon: Plus }} nonCaptureEvent
-								>New folder</Button
+								>{$locale, t('folders.newFolder')}</Button
 							>
 						{/snippet}
 						{#snippet content({ close })}
 							<input
 								class="mr-2"
 								onkeyup={(e) => handleKeyUp(e, () => close())}
-								placeholder="New folder name"
+								placeholder={($locale, t('folders.newFolderNamePlaceholder'))}
 								bind:value={newFolderName}
 							/>
 
@@ -158,7 +162,7 @@
 										close()
 									}}
 								>
-									Create
+									{$locale, t('common.create')}
 								</Button>
 							</div>
 						{/snippet}
@@ -171,15 +175,15 @@
 			<DataTable>
 				<Head>
 					<tr>
-						<Cell head first>Name</Cell>
-						<Cell head>Labels</Cell>
-						<Cell head class="w-20">Scripts</Cell>
-						<Cell head class="w-20">Flows</Cell>
-						<Cell head class="w-20">Apps</Cell>
-						<Cell head class="w-20">Schedules</Cell>
-						<Cell head class="w-20">Variables</Cell>
-						<Cell head class="w-20">Resources</Cell>
-						<Cell head class="w-20">Participants</Cell>
+						<Cell head first>{$locale, t('common.name')}</Cell>
+						<Cell head>{$locale, t('folders.labels')}</Cell>
+						<Cell head class="w-20">{$locale, t('folders.scripts')}</Cell>
+						<Cell head class="w-20">{$locale, t('folders.flows')}</Cell>
+						<Cell head class="w-20">{$locale, t('folders.apps')}</Cell>
+						<Cell head class="w-20">{$locale, t('folders.schedules')}</Cell>
+						<Cell head class="w-20">{$locale, t('folders.variables')}</Cell>
+						<Cell head class="w-20">{$locale, t('folders.resources')}</Cell>
+						<Cell head class="w-20">{$locale, t('folders.participants')}</Cell>
 						<Cell head last stickyEnd />
 					</tr>
 				</Head>
@@ -197,7 +201,7 @@
 							<tr>
 								<Cell colspan="10">
 									<div class="text-xs text-primary py-2 text-center">
-										No folders yet, create one
+										{$locale, t('folders.noFoldersYet')}
 									</div>
 								</Cell>
 							</tr>
@@ -222,7 +226,11 @@
 									{#if labels?.length}
 										<div class="flex items-center gap-0.5">
 											{#each labels.slice(0, 3) as label}
-												<Badge color="blue" small class="px-1" title="Label: {label}">{label}</Badge
+												<Badge
+													color="blue"
+													small
+													class="px-1"
+													title={t('folders.labelTitle', { label })}>{label}</Badge
 												>
 											{/each}
 											{#if labels.length > 3}
@@ -232,7 +240,7 @@
 													class="px-1"
 													title={labels
 														.slice(3)
-														.map((l) => 'Label: ' + l)
+														.map((l) => t('folders.labelTitle', { label: l }))
 														.join('\n')}>+{labels.length - 3}</Badge
 												>
 											{/if}
@@ -246,7 +254,7 @@
 									<Dropdown
 										items={[
 											{
-												displayName: 'Manage folder',
+												displayName: t('folders.manageFolder'),
 												icon: Pen,
 												disabled: !canWrite,
 												action: () => {
@@ -255,7 +263,7 @@
 												}
 											},
 											{
-												displayName: 'Publish to Hub',
+												displayName: t('folders.publishToHub'),
 												icon: UploadCloud,
 												disabled: !($userStore?.is_admin || $userStore?.is_super_admin),
 												action: () => {
@@ -264,7 +272,9 @@
 												}
 											},
 											{
-												displayName: `Delete${canWrite ? '' : ' (require owner permissions)'}`,
+												displayName: canWrite
+													? t('common.delete')
+													: t('folders.deleteRequireOwnerPermissions'),
 												icon: Trash,
 												type: 'delete',
 												disabled: !canWrite,
