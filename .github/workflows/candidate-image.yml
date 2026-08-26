@@ -39,8 +39,9 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Verify candidate guards
         run: |
-          node --test deploy/candidate/check-features.test.mjs
+          node --test deploy/candidate/*.test.mjs
           sh deploy/candidate/test-entrypoint.sh
+          bash deploy/candidate/test-smoke-cleanup.sh
           bash -n deploy/candidate/run-smoke.sh
       - name: Verify translation source
         working-directory: frontend
@@ -52,15 +53,25 @@ jobs:
           npx vitest run src/lib/i18n/index.test.ts src/lib/components/i18n/LanguageSelector.test.ts
           npx svelte-kit sync
           npx svelte-check --tsconfig ./tsconfig.json --threshold error
+      - uses: docker/setup-buildx-action@v4
       - name: Build public-source authenticated candidate
-        run: |
-          docker build --target zh-authenticated \
-            --build-arg features=oss_core,all_languages,jemalloc,dind \
-            --build-arg REQUIRE_AUTH=true \
-            --build-arg WM_BUILD_VERSION="auth-candidate-${GITHUB_SHA}" \
-            --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
-            --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
-            --tag "$CANDIDATE_IMAGE" .
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: zh-authenticated
+          platforms: linux/amd64
+          load: true
+          push: false
+          tags: ${{ env.CANDIDATE_IMAGE }}
+          build-args: |
+            features=oss_core,all_languages,jemalloc,dind
+            REQUIRE_AUTH=true
+            WM_BUILD_VERSION=auth-candidate-${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=zh-auth-candidate
+          cache-to: type=gha,scope=zh-auth-candidate,mode=max,ignore-error=true
       - name: Prove authentication in an isolated disposable instance
         timeout-minutes: 15
         run: bash deploy/candidate/run-smoke.sh

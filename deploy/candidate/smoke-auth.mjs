@@ -10,18 +10,21 @@ const request = (path, options = {}) =>
     signal: AbortSignal.timeout(5000),
   });
 let ready = false;
+let lastProbe = "not attempted";
 for (let attempt = 0; attempt < 90; attempt++) {
   try {
-    if ((await request("/api/version")).status === 200) {
+    const response = await request("/api/version");
+    lastProbe = `HTTP ${response.status}`;
+    if (response.status === 200) {
       ready = true;
       break;
     }
-  } catch {
-    /* Isolated database migration may still be running. */
+  } catch (error) {
+    lastProbe = error.cause?.code || error.name;
   }
   await delay(2000);
 }
-assert.ok(ready, "Candidate failed to start");
+assert.ok(ready, `Candidate failed to start; last version probe: ${lastProbe}`);
 assert.equal((await request("/")).status, 200, "Embedded frontend missing");
 for (const headers of [
   {},
