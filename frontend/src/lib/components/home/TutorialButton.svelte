@@ -50,7 +50,7 @@
 	})
 
 	function handleAction(e: MouseEvent | KeyboardEvent) {
-		const button = actionButton()
+		const button = actionButton
 		if (!button) return
 		e.stopPropagation()
 		e.preventDefault()
@@ -95,8 +95,8 @@
 		onmouseenter={() => (isHovered = true)}
 		onmouseleave={() => (isHovered = false)}
 	>
-		{#if actionButton()}
-			{@const button = actionButton()!}
+		{#if actionButton}
+			{@const button = actionButton}
 			{@const ActionIcon = button.icon}
 			<div
 				role="button"
