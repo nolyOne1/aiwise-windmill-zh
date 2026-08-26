@@ -66,6 +66,24 @@ async function closeUserSettings(page) {
   await expect(overlay).toBeHidden();
 }
 
+async function openUserSettings(
+  page,
+  labels: { settings: string; account: string },
+) {
+  const settings = page.getByRole("button", {
+    name: labels.settings,
+    exact: true,
+  });
+  await settings.scrollIntoViewIfNeeded();
+  await settings.click();
+  await page
+    .getByRole("button", { name: "admin@windmill.dev", exact: true })
+    .click();
+  await page
+    .getByRole("menuitem", { name: labels.account, exact: true })
+    .click();
+}
+
 test("authenticated Chinese UI can switch languages and retain synthetic paths", async ({
   page,
 }) => {
@@ -78,7 +96,7 @@ test("authenticated Chinese UI can switch languages and retain synthetic paths",
   await page.getByRole("button", { name: "登录" }).click();
   await page.waitForURL(/\/user\/(first-time|workspaces)/);
   if (page.url().includes("/user/first-time")) {
-    await page.getByRole("button", { name: "Skip" }).click();
+    await page.getByRole("button", { name: "跳过" }).click();
   }
   await page.waitForURL("**/user/workspaces");
   await page.getByText("Admins", { exact: true }).click();
@@ -92,8 +110,7 @@ test("authenticated Chinese UI can switch languages and retain synthetic paths",
     settings: "设置",
   });
 
-  await page.getByRole("button", { name: /User \(admin\)/i }).click();
-  await page.getByRole("menuitem", { name: "Account settings" }).click();
+  await openUserSettings(page, { settings: "设置", account: "账户设置" });
   await expect(page.getByText("语言", { exact: true })).toBeVisible();
   await page.getByRole("radio", { name: "English" }).click();
   await expectNavigation(page, {
@@ -113,8 +130,10 @@ test("authenticated Chinese UI can switch languages and retain synthetic paths",
   });
   await closeUserSettings(page);
 
-  await page.getByRole("button", { name: /User \(admin\)/i }).click();
-  await page.getByRole("menuitem", { name: "Account settings" }).click();
+  await openUserSettings(page, {
+    settings: "Settings",
+    account: "Account settings",
+  });
   await page.getByRole("radio", { name: "简体中文" }).click();
   await page.reload();
   await expectNavigation(page, {

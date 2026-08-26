@@ -78,6 +78,7 @@
 	import AzureIcon from '../icons/AzureIcon.svelte'
 	import { leaveCurrentWorkspace } from './leaveWorkspace'
 	import { markChangelogsOpened, readRecentChangelogs } from './changelogs'
+	import { locale, t } from '$lib/i18n'
 
 	const { recent: recentChangelogs, hasNew } = readRecentChangelogs()
 	let hasNewChangelogs = $state(hasNew)
@@ -126,54 +127,58 @@
 		hasNewChangelogs = false
 	}
 
-	const thirdMenuLinks = [
-		{
-			label: 'Help',
-			icon: HelpCircle,
-			subItems: [
-				{
-					label: 'Tutorials',
-					href: `${base}/tutorials`,
-					icon: GraduationCap,
-					aiId: 'sidebar-menu-link-tutorials',
-					aiDescription: 'Button to navigate to tutorials',
-					external: false
-				},
-				{
-					label: 'Docs',
-					href: 'https://www.windmill.dev/docs/intro/',
-					icon: BookOpen,
-					aiId: 'sidebar-menu-link-docs',
-					aiDescription: 'Button to navigate to docs',
-					external: true
-				},
-				{
-					label: 'Feedbacks',
-					href: 'https://discord.gg/V7PM2YHsPB',
-					icon: DiscordIcon,
-					aiId: 'sidebar-menu-link-feedbacks',
-					aiDescription: 'Button to navigate to feedbacks',
-					external: true
-				},
-				{
-					label: 'Issues',
-					href: 'https://github.com/windmill-labs/windmill/issues/new',
-					icon: Github,
-					aiId: 'sidebar-menu-link-issues',
-					aiDescription: 'Button to navigate to issues',
-					external: true
-				},
-				{
-					label: 'Changelog',
-					href: 'https://www.windmill.dev/changelog/',
-					icon: Newspaper,
-					aiId: 'sidebar-menu-link-changelog',
-					aiDescription: 'Button to navigate to changelog',
-					external: true
-				}
-			]
-		}
-	]
+	const thirdMenuLinks = $derived.by(() => {
+		$locale
+		return [
+			{
+				id: 'help',
+				label: t('app.help'),
+				icon: HelpCircle,
+				subItems: [
+					{
+						label: t('app.tutorials'),
+						href: `${base}/tutorials`,
+						icon: GraduationCap,
+						aiId: 'sidebar-menu-link-tutorials',
+						aiDescription: 'Button to navigate to tutorials',
+						external: false
+					},
+					{
+						label: t('app.docs'),
+						href: 'https://www.windmill.dev/docs/intro/',
+						icon: BookOpen,
+						aiId: 'sidebar-menu-link-docs',
+						aiDescription: 'Button to navigate to docs',
+						external: true
+					},
+					{
+						label: t('app.feedback'),
+						href: 'https://discord.gg/V7PM2YHsPB',
+						icon: DiscordIcon,
+						aiId: 'sidebar-menu-link-feedbacks',
+						aiDescription: 'Button to navigate to feedbacks',
+						external: true
+					},
+					{
+						label: t('app.issues'),
+						href: 'https://github.com/windmill-labs/windmill/issues/new',
+						icon: Github,
+						aiId: 'sidebar-menu-link-issues',
+						aiDescription: 'Button to navigate to issues',
+						external: true
+					},
+					{
+						label: t('app.changelog'),
+						href: 'https://www.windmill.dev/changelog/',
+						icon: Newspaper,
+						aiId: 'sidebar-menu-link-changelog',
+						aiDescription: 'Button to navigate to changelog',
+						external: true
+					}
+				]
+			}
+		]
+	})
 
 	interface Props {
 		numUnacknowledgedCriticalAlerts?: number
@@ -185,7 +190,7 @@
 		showSecondary?: boolean
 		// Main-menu labels to omit here because the host renders them elsewhere
 		// (e.g. the session-mode rail lifts Home/Runs up next to Favorites/Search).
-		excludeMainLabels?: string[]
+		excludeMainIds?: string[]
 	}
 
 	let {
@@ -193,7 +198,7 @@
 		isCollapsed = false,
 		showMain = true,
 		showSecondary = true,
-		excludeMainLabels = []
+		excludeMainIds = []
 	}: Props = $props()
 
 	let leaveWorkspaceModal = $state(false)
@@ -209,10 +214,12 @@
 	const itemClass = twMerge(
 		'text-secondary font-normal w-full block px-4 py-2 text-2xs data-[highlighted]:bg-surface-hover data-[highlighted]:text-primary'
 	)
-	let mainMenuLinks = $derived(
-		[
+	let mainMenuLinks = $derived.by(() => {
+		$locale
+		return [
 			{
-				label: 'Home',
+				id: 'home',
+				label: t('app.home'),
 				href: `${base}/`,
 				icon: Home,
 				aiId: 'sidebar-menu-link-home',
@@ -220,7 +227,8 @@
 					"Button to navigate to home which contains all the user's scripts, flows and apps"
 			},
 			{
-				label: 'Runs',
+				id: 'runs',
+				label: t('app.runs'),
 				href: `${base}/runs`,
 				icon: Play,
 				aiId: 'sidebar-menu-link-runs',
@@ -232,7 +240,8 @@
 				}
 			},
 			{
-				label: 'Variables',
+				id: 'variables',
+				label: t('variables.title'),
 				href: `${base}/variables`,
 				icon: DollarSign,
 				disabled: $userStore?.operator,
@@ -240,7 +249,8 @@
 				aiDescription: 'Button to navigate to variables'
 			},
 			{
-				label: 'Resources',
+				id: 'resources',
+				label: t('resources.title'),
 				href: `${base}/resources`,
 				icon: Boxes,
 				disabled: $userStore?.operator,
@@ -248,14 +258,16 @@
 				aiDescription: 'Button to navigate to resources'
 			},
 			{
-				label: 'Assets',
+				id: 'assets',
+				label: t('assets.title'),
 				href: `${base}/assets`,
 				icon: Pyramid,
 				aiId: 'sidebar-menu-link-assets',
 				aiDescription: 'Button to navigate to assets'
 			},
 			{
-				label: 'Folders',
+				id: 'folders',
+				label: t('folders.title'),
 				href: `${base}/folders`,
 				icon: FolderOpen,
 				disabled: $userStore?.operator,
@@ -263,7 +275,8 @@
 				aiDescription: 'Button to navigate to folders'
 			},
 			{
-				label: 'Groups',
+				id: 'groups',
+				label: t('groups.title'),
 				href: `${base}/groups`,
 				icon: Users,
 				disabled: $userStore?.operator,
@@ -274,7 +287,8 @@
 			...($tutorialsToDo.length > 0 && !$skippedAll
 				? [
 						{
-							label: 'Tutorials',
+							id: 'tutorials',
+							label: t('app.tutorials'),
 							href: `${base}/tutorials`,
 							icon: GraduationCap,
 							aiId: 'sidebar-menu-link-tutorials-main',
@@ -282,8 +296,8 @@
 						}
 					]
 				: [])
-		].filter((l) => !excludeMainLabels.includes(l.label))
-	)
+		].filter((l) => !excludeMainIds.includes(l.id))
+	})
 	let defaultExtraTriggerLinks = $derived([
 		{
 			label: 'HTTP',
@@ -699,7 +713,7 @@
 											<button
 												class="relative w-full"
 												onclick={() => {
-													if (menuLink.label === 'Help') {
+													if (menuLink.id === 'help') {
 														openChangelogs()
 													}
 												}}
@@ -711,7 +725,7 @@
 													showChevron
 													{trigger}
 												/>
-												{#if menuLink.label === 'Help' && hasNewChangelogs}
+												{#if menuLink.id === 'help' && hasNewChangelogs}
 													<span
 														class={twMerge(
 															'flex h-2 w-2 absolute',

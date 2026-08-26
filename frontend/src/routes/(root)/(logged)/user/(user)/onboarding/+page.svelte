@@ -16,10 +16,11 @@
 		Building2,
 		Twitter,
 		Youtube,
-		Bot, 
+		Bot,
 		MessageCircleCode
 	} from 'lucide-svelte'
 	import { sendUserToast } from '$lib/toast'
+	import { locale, t } from '$lib/i18n'
 
 	// Define step names as constants for better maintainability
 	const STEP_SOURCE = 'source'
@@ -35,20 +36,23 @@
 	let otherPopoverOpen = $state(false)
 	let otherInputRef: HTMLInputElement | undefined = $state()
 
-	const sources = [
-		{ id: 'ai_search', label: 'AI search', icon: Bot },
-		{ id: 'search_engine', label: 'Search engine', icon: Search },
-		{ id: 'reddit', label: 'Reddit', icon: MessageCircleCode },
-		{ id: 'youtube', label: 'Youtube', icon: Youtube },
-		{ id: 'github', label: 'GitHub', icon: Github },
-		{ id: 'in_my_company', label: 'Current/Previous company', icon: Building2 },
-		{ id: 'word_of_mouth', label: 'Word of mouth', icon: Users },
-		{ id: 'blog', label: 'Blog/Article', icon: FileText },
-		{ id: 'linkedin', label: 'LinkedIn', icon: Linkedin },
-		{ id: 'twitter', label: 'X/Twitter', icon: Twitter },
-		{ id: 'event', label: 'Event', icon: Calendar },
-		{ id: 'other', label: 'Other', icon: HelpCircle }
-	]
+	const sources = $derived.by(() => {
+		$locale
+		return [
+			{ id: 'ai_search', label: t('onboarding.sourceAiSearch'), icon: Bot },
+			{ id: 'search_engine', label: t('onboarding.sourceSearchEngine'), icon: Search },
+			{ id: 'reddit', label: 'Reddit', icon: MessageCircleCode },
+			{ id: 'youtube', label: 'Youtube', icon: Youtube },
+			{ id: 'github', label: 'GitHub', icon: Github },
+			{ id: 'in_my_company', label: t('onboarding.sourceCurrentCompany'), icon: Building2 },
+			{ id: 'word_of_mouth', label: t('onboarding.sourceWordOfMouth'), icon: Users },
+			{ id: 'blog', label: t('onboarding.sourceBlog'), icon: FileText },
+			{ id: 'linkedin', label: 'LinkedIn', icon: Linkedin },
+			{ id: 'twitter', label: 'X/Twitter', icon: Twitter },
+			{ id: 'event', label: t('onboarding.sourceEvent'), icon: Calendar },
+			{ id: 'other', label: t('onboarding.sourceOther'), icon: HelpCircle }
+		]
+	})
 
 	// Focus the "Other" input when the popover opens
 	$effect(() => {
@@ -90,10 +94,13 @@
 				}
 			})
 
-			sendUserToast('Information saved successfully')
+			sendUserToast(t('onboarding.infoSaved'))
 		} catch (error) {
 			console.error('Error submitting onboarding data:', error)
-			sendUserToast('Failed to save information: ' + (error?.body || error?.message || error), true)
+			sendUserToast(
+				t('onboarding.infoSaveFailed', { error: error?.body || error?.message || error }),
+				true
+			)
 		} finally {
 			// do not block users from accessing windmill even if there is an error
 			goto('/user/workspaces')
@@ -116,7 +123,7 @@
 </script>
 
 {#if currentStep === STEP_SOURCE}
-	<CenteredModal title="How did you hear about Windmill?">
+	<CenteredModal title={t('onboarding.hearAboutTitle')}>
 		<div class="w-full max-w-lg mx-auto">
 			<div class="grid grid-cols-1 gap-2 mt-6 mb-6">
 				{#each sources as source (source.id)}
@@ -139,11 +146,11 @@
 										type="text"
 										bind:this={otherInputRef}
 										bind:value={otherSourceText}
-										placeholder="Type your answer..."
+										placeholder={t('onboarding.typeAnswer')}
 										class="input"
 									/>
 									<Button variant="accent" unifiedSize="md" on:click={validateOtherSource}>
-										Validate
+										{$locale ? t('onboarding.validate') : t('onboarding.validate')}
 									</Button>
 								</div>
 							{/snippet}
@@ -165,7 +172,7 @@
 
 			<div class="flex flex-row justify-end items-center pt-4">
 				<Button color="light" variant="border" size="xs" on:click={skip} loading={isSubmitting}
-					>Skip</Button
+					>{$locale ? t('onboarding.skip') : t('onboarding.skip')}</Button
 				>
 			</div>
 
@@ -178,12 +185,12 @@
 		</div>
 	</CenteredModal>
 {:else if currentStep === STEP_USE_CASE}
-	<CenteredModal title="What is your primary use case for Windmill?">
+	<CenteredModal title={t('onboarding.useCaseTitle')}>
 		<div class="w-full max-w-lg mx-auto">
 			<div class="mb-6">
 				<textarea
 					bind:value={useCaseText}
-					placeholder="E.g., Building AI agents, automating data pipelines, creating internal tools..."
+					placeholder={t('onboarding.useCasePlaceholder')}
 					class="input mt-1"
 					rows="8"
 					maxlength="1000"

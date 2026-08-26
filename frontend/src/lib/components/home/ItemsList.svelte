@@ -54,6 +54,7 @@
 	import TextInput from '../text_input/TextInput.svelte'
 	import { NetworkIcon } from 'lucide-svelte'
 	import { base } from '$lib/base'
+	import { locale, t } from '$lib/i18n'
 	interface Props {
 		filter?: string
 		subtab?: 'flow' | 'script' | 'app'
@@ -533,14 +534,21 @@
 	const SORT_SETTING_NAME = 'homeSort'
 	// `short` labels the trigger button next to the sort icon (the button is icon-only
 	// only while searching, when sorting is disabled — see below).
-	const sortOptions: { value: SortOrder; label: string; short: string }[] = [
-		{ value: 'updated_desc', label: 'Recently updated', short: 'Recent' },
-		{ value: 'updated_asc', label: 'Oldest updated', short: 'Oldest' },
-		{ value: 'name_asc', label: 'Name (A-Z)', short: 'A-Z' },
-		{ value: 'name_desc', label: 'Name (Z-A)', short: 'Z-A' }
-	]
+	const sortOptions = $derived.by<{ value: SortOrder; label: string; short: string }[]>(() => {
+		$locale
+		return [
+			{ value: 'updated_desc', label: t('home.sortRecent'), short: t('home.recent') },
+			{ value: 'updated_asc', label: t('home.sortOldest'), short: t('home.oldest') },
+			{ value: 'name_asc', label: t('home.sortNameAsc'), short: 'A-Z' },
+			{ value: 'name_desc', label: t('home.sortNameDesc'), short: 'Z-A' }
+		]
+	})
 	let sortOrder = $state<SortOrder>(
-		sortOptions.find((o) => o.value === getLocalSetting(SORT_SETTING_NAME))?.value ?? 'updated_desc'
+		untrack(
+			() =>
+				sortOptions.find((o) => o.value === getLocalSetting(SORT_SETTING_NAME))?.value ??
+				'updated_desc'
+		)
 	)
 	$effect(() => {
 		storeLocalSetting(SORT_SETTING_NAME, sortOrder === 'updated_desc' ? undefined : sortOrder)
@@ -1365,12 +1373,23 @@
 				}}
 			>
 				{#snippet children({ item })}
-					<ToggleButton value="all" label="All" size="md" {item} />
-					<ToggleButton value="script" icon={Code2} label="Scripts" size="md" {item} />
+					<ToggleButton
+						value="all"
+						label={$locale ? t('home.all') : t('home.all')}
+						size="md"
+						{item}
+					/>
+					<ToggleButton
+						value="script"
+						icon={Code2}
+						label={$locale ? t('home.scripts') : t('home.scripts')}
+						size="md"
+						{item}
+					/>
 					{#if HOME_SEARCH_SHOW_FLOW}
 						<ToggleButton
 							value="flow"
-							label="Flows"
+							label={$locale ? t('home.flows') : t('home.flows')}
 							icon={FlowIcon}
 							selectedColor="#14b8a6"
 							size="md"
@@ -1379,7 +1398,7 @@
 					{/if}
 					<ToggleButton
 						value="app"
-						label="Apps"
+						label={$locale ? t('home.apps') : t('home.apps')}
 						icon={LayoutDashboard}
 						selectedColor="#fb923c"
 						size="md"
@@ -1401,7 +1420,11 @@
 				bind:value={filter}
 				class="!pr-10"
 			/>
-			<button aria-label="Search" type="submit" class="absolute right-0 top-0 mt-2 mr-4">
+			<button
+				aria-label={t('common.search')}
+				type="submit"
+				class="absolute right-0 top-0 mt-2 mr-4"
+			>
 				<svg
 					class="h-4 w-4 fill-current"
 					xmlns="http://www.w3.org/2000/svg"
@@ -1430,7 +1453,7 @@
 				icon: SearchCode
 			}}
 		>
-			Content
+			{$locale ? t('home.content') : t('home.content')}
 		</Button>
 	</div>
 	<div class="relative">
@@ -1449,7 +1472,7 @@
 						small
 						clickable
 						selected={label === labelFilter}
-						title="Label: {label}"
+						title={t('home.label', { label })}
 						onclick={() => {
 							labelFilter = labelFilter === label ? undefined : label
 						}}
@@ -1481,14 +1504,20 @@
 					{/snippet}
 					{#snippet content()}
 						<div class="p-4">
-							<span class="text-sm font-semibold text-emphasis">Filters</span>
+							<span class="text-sm font-semibold text-emphasis"
+								>{$locale ? t('home.filters') : t('home.filters')}</span
+							>
 							<div class="flex flex-col gap-2 mt-2">
-								<Toggle size="xs" bind:checked={archived} options={{ right: 'Only archived' }} />
+								<Toggle
+									size="xs"
+									bind:checked={archived}
+									options={{ right: t('home.onlyArchived') }}
+								/>
 								{#if $userStore && !$userStore.operator}
 									<Toggle
 										size="xs"
 										bind:checked={includeWithoutMain}
-										options={{ right: 'Include library scripts' }}
+										options={{ right: t('home.includeLibraryScripts') }}
 									/>
 								{/if}
 							</div>
@@ -1504,7 +1533,7 @@
 						options={{ right: `Only u/${$userStore?.username} and f/*` }}
 					/>
 				{/if}
-				<Toggle size="xs" bind:checked={treeView} options={{ right: 'Tree view' }} />
+				<Toggle size="xs" bind:checked={treeView} options={{ right: t('home.treeView') }} />
 				<DropdownV2
 					items={sortItems}
 					disabled={filter !== ''}
@@ -1524,8 +1553,8 @@
 							spacingSize="xs2"
 							startIcon={{ icon: ArrowDownUp }}
 							title={filter !== ''
-								? 'Sorting is disabled while searching (results are ranked by relevance)'
-								: `Sort: ${active?.label ?? ''}`}
+								? t('home.sortingDisabledWhileSearching')
+								: t('home.sort', { label: active?.label ?? '' })}
 						>
 							{#if short !== ''}{short}{/if}
 						</Button>
@@ -1541,9 +1570,9 @@
 						}}
 					>
 						{#if collapseAll}
-							Expand all
+							{$locale ? t('home.expandAll') : t('home.expandAll')}
 						{:else}
-							Collapse all
+							{$locale ? t('home.collapseAll') : t('home.collapseAll')}
 						{/if}
 					</Button>
 				{/if}
@@ -1567,7 +1596,7 @@
 				     has more: keep paging reachable so matches on later pages aren't lost. -->
 				<div class="text-center text-xs text-secondary mt-2">
 					<button class="text-primary hover:text-emphasis underline" onclick={fetchMoreServer}
-						>Load more to search further</button
+						>{$locale ? t('home.loadMoreToSearch') : t('home.loadMoreToSearch')}</button
 					>
 				</div>
 			{/if}
@@ -1632,16 +1661,17 @@
 			</div>
 			{#if items && hasMore}
 				<span class="text-xs font-normal text-secondary"
-					>{Math.min(nbDisplayed, items.length)} items{hasMoreServer && !searching
-						? ''
-						: ` out of ${items.length}`}
+					>{t('home.itemsShown', {
+						shown: Math.min(nbDisplayed, items.length),
+						total: hasMoreServer && !searching ? '' : ` out of ${items.length}`
+					})}
 					<button
 						bind:this={loadMoreEl}
 						class="ml-4 text-xs font-normal text-primary hover:text-emphasis rounded px-1 {selectedIndex ===
 						loadMoreIndex
 							? 'bg-gray-200 dark:bg-gray-700 underline'
 							: ''}"
-						onclick={loadMore}>load 30 more</button
+						onclick={loadMore}>{$locale ? t('home.loadMore') : t('home.loadMore')}</button
 					></span
 				>
 			{/if}

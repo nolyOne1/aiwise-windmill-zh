@@ -26,6 +26,8 @@
 	import { conditionalMelt, getLocalSetting, storeLocalSetting } from '$lib/utils'
 	import { createDropdownMenu, melt } from '@melt-ui/svelte'
 	import YAML from 'yaml'
+	import { untrack } from 'svelte'
+	import { locale, t } from '$lib/i18n'
 
 	type Variant = {
 		label: string
@@ -64,125 +66,136 @@
 	const badgeLegacy = 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
 	const badgeAlpha = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
 
-	const allOptions: Option[] = [
-		{
-			key: 'script',
-			label: 'Script',
-			icon: Code2,
-			accent: 'blue',
-			tagline: 'A single standalone script',
-			description:
-				'Author a script in Python, TypeScript, Go, Bash, SQL, Rust, PHP and more. Windmill auto-generates an input UI, deploys it instantly and exposes it as an API.',
-			bullets: [
-				'20+ languages',
-				'Auto-generated UI from parameters',
-				'Instant deploy & versioning'
-			],
-			onSelect: () => goto(`${base}/scripts/add`)
-		},
-		...(HOME_SHOW_CREATE_FLOW
-			? ([
-					{
-						key: 'flow',
-						label: 'Flow',
-						icon: BarsStaggered,
-						accent: 'teal',
-						tagline: 'Compose scripts into a workflow',
-						description:
-							'Visual builder for chaining scripts together with branches, loops, error handlers, approvals and retries. Each step can be reused from the workspace or the Hub.',
-						bullets: [
-							'Drag-and-drop steps',
-							'Branches, loops & error handling',
-							'Suspend / approval steps'
-						],
-						onSelect: () => goto(`${base}/flows/add`),
-						extras: [{ label: 'Import flow', onSelect: () => openImport('flow') }]
-					}
-				] as Option[])
-			: []),
-		...(HOME_SHOW_CREATE_APP
-			? ([
-					{
-						key: 'app-fullcode',
-						label: 'App (full-code)',
-						icon: LayoutDashboard,
-						accent: 'orange',
-						tagline: 'Build with React or Svelte',
-						description:
-							'Full control over the UI with React or Svelte and a powerful AI agent. Best for complex apps that need full flexibility.',
-						bullets: ['React or Svelte', 'Full flexibility & control', 'AI-assisted authoring'],
-						onSelect: () => goto(`${base}/apps_raw/add`),
-						extras: [{ label: 'Import full-code app', onSelect: () => openImport('app-fullcode') }]
-					}
-				] as Option[])
-			: []),
-		...(HOME_SHOW_CREATE_FLOW
-			? ([
-					{
-						key: 'wac',
-						label: 'Workflow-as-Code',
-						icon: Code2,
-						accent: 'purple',
-						tagline: 'Express a workflow purely in code',
-						description:
-							'Write the whole workflow as a single Python or TypeScript script using the Windmill SDK — parallelism, branching and step orchestration expressed as plain code.',
-						bullets: [
-							'Python or TypeScript',
-							'Full control via the SDK',
-							'Versioned as a regular script'
-						],
-						onSelect: () => goto(`${base}/scripts/add?wac=typescript`),
-						badge: { label: 'Advanced', class: badgeAdvanced },
-						variants: [
-							{
-								label: 'TypeScript',
-								icon: TypeScriptIcon,
-								onSelect: () => goto(`${base}/scripts/add?wac=typescript`)
-							},
-							{
-								label: 'Python',
-								icon: PythonIcon,
-								onSelect: () => goto(`${base}/scripts/add?wac=python`)
-							}
-						],
-						extras: [{ label: 'Import Workflow-as-Code', onSelect: () => openImport('wac') }]
-					},
-					{
-						key: 'pipeline',
-						label: 'Data pipelines',
-						icon: Workflow,
-						accent: 'indigo',
-						tagline: 'Compose data ingestion & transforms',
-						description:
-							'Visual editor for data pipelines — chain ingestion, transformation and materialization steps with partitions and incremental processing.',
-						bullets: [
-							'Ingest, transform & materialize',
-							'Partitioned & incremental',
-							'Asset-aware lineage'
-						],
-						onSelect: () => goto(`${base}/pipeline`),
-						badge: { label: 'Alpha', class: badgeAlpha }
-					}
-				] as Option[])
-			: []),
-		...(HOME_SHOW_CREATE_APP
-			? ([
-					{
-						key: 'app-lowcode',
-						label: 'App (low-code)',
-						icon: LayoutDashboard,
-						accent: 'gray',
-						tagline: 'Drag-and-drop UI builder',
-						description:
-							'Assemble an internal UI from 60+ components wired to your scripts and flows. Best for simple apps or apps that need minimal customization.',
-						bullets: ['60+ ready-made components', 'No code required', 'Backed by scripts & flows'],
-						onSelect: () => goto(`${base}/apps/add`),
-						badge: { label: 'Legacy', class: badgeLegacy },
-						extras: [{ label: 'Import low-code app', onSelect: () => openImport('app-lowcode') }]
-					}
-				] as Option[])
-			: [])
-	]
+	const allOptions = $derived.by<Option[]>(() => {
+		$locale
+		return [
+			{
+				key: 'script',
+				label: t('home.createScript'),
+				icon: Code2,
+				accent: 'blue',
+				tagline: 'A single standalone script',
+				description:
+					'Author a script in Python, TypeScript, Go, Bash, SQL, Rust, PHP and more. Windmill auto-generates an input UI, deploys it instantly and exposes it as an API.',
+				bullets: [
+					'20+ languages',
+					'Auto-generated UI from parameters',
+					'Instant deploy & versioning'
+				],
+				onSelect: () => goto(`${base}/scripts/add`)
+			},
+			...(HOME_SHOW_CREATE_FLOW
+				? ([
+						{
+							key: 'flow',
+							label: t('home.createFlow'),
+							icon: BarsStaggered,
+							accent: 'teal',
+							tagline: 'Compose scripts into a workflow',
+							description:
+								'Visual builder for chaining scripts together with branches, loops, error handlers, approvals and retries. Each step can be reused from the workspace or the Hub.',
+							bullets: [
+								'Drag-and-drop steps',
+								'Branches, loops & error handling',
+								'Suspend / approval steps'
+							],
+							onSelect: () => goto(`${base}/flows/add`),
+							extras: [{ label: t('home.importFlow'), onSelect: () => openImport('flow') }]
+						}
+					] as Option[])
+				: []),
+			...(HOME_SHOW_CREATE_APP
+				? ([
+						{
+							key: 'app-fullcode',
+							label: t('home.createFullCodeApp'),
+							icon: LayoutDashboard,
+							accent: 'orange',
+							tagline: 'Build with React or Svelte',
+							description:
+								'Full control over the UI with React or Svelte and a powerful AI agent. Best for complex apps that need full flexibility.',
+							bullets: ['React or Svelte', 'Full flexibility & control', 'AI-assisted authoring'],
+							onSelect: () => goto(`${base}/apps_raw/add`),
+							extras: [
+								{ label: t('home.importFullCodeApp'), onSelect: () => openImport('app-fullcode') }
+							]
+						}
+					] as Option[])
+				: []),
+			...(HOME_SHOW_CREATE_FLOW
+				? ([
+						{
+							key: 'wac',
+							label: t('home.createWorkflowAsCode'),
+							icon: Code2,
+							accent: 'purple',
+							tagline: 'Express a workflow purely in code',
+							description:
+								'Write the whole workflow as a single Python or TypeScript script using the Windmill SDK — parallelism, branching and step orchestration expressed as plain code.',
+							bullets: [
+								'Python or TypeScript',
+								'Full control via the SDK',
+								'Versioned as a regular script'
+							],
+							onSelect: () => goto(`${base}/scripts/add?wac=typescript`),
+							badge: { label: t('home.advanced'), class: badgeAdvanced },
+							variants: [
+								{
+									label: 'TypeScript',
+									icon: TypeScriptIcon,
+									onSelect: () => goto(`${base}/scripts/add?wac=typescript`)
+								},
+								{
+									label: 'Python',
+									icon: PythonIcon,
+									onSelect: () => goto(`${base}/scripts/add?wac=python`)
+								}
+							],
+							extras: [{ label: t('home.importWorkflowAsCode'), onSelect: () => openImport('wac') }]
+						},
+						{
+							key: 'pipeline',
+							label: t('home.createDataPipelines'),
+							icon: Workflow,
+							accent: 'indigo',
+							tagline: 'Compose data ingestion & transforms',
+							description:
+								'Visual editor for data pipelines — chain ingestion, transformation and materialization steps with partitions and incremental processing.',
+							bullets: [
+								'Ingest, transform & materialize',
+								'Partitioned & incremental',
+								'Asset-aware lineage'
+							],
+							onSelect: () => goto(`${base}/pipeline`),
+							badge: { label: 'Alpha', class: badgeAlpha }
+						}
+					] as Option[])
+				: []),
+			...(HOME_SHOW_CREATE_APP
+				? ([
+						{
+							key: 'app-lowcode',
+							label: t('home.createLowCodeApp'),
+							icon: LayoutDashboard,
+							accent: 'gray',
+							tagline: 'Drag-and-drop UI builder',
+							description:
+								'Assemble an internal UI from 60+ components wired to your scripts and flows. Best for simple apps or apps that need minimal customization.',
+							bullets: [
+								'60+ ready-made components',
+								'No code required',
+								'Backed by scripts & flows'
+							],
+							onSelect: () => goto(`${base}/apps/add`),
+							badge: { label: t('home.legacy'), class: badgeLegacy },
+							extras: [
+								{ label: t('home.importLowCodeApp'), onSelect: () => openImport('app-lowcode') }
+							]
+						}
+					] as Option[])
+				: [])
+		]
+	})
 
 	// tailwind needs the full class names statically — map accent token -> classes
 	const accentClasses: Record<
@@ -227,9 +240,9 @@
 		}
 	}
 
-	let activeKey = $state(allOptions[0]?.key)
+	let activeKey = $state(untrack(() => allOptions[0]?.key))
 	// every option's import action, surfaced together under the bottom "Import" submenu
-	const importActions: Extra[] = allOptions.flatMap((o) => o.extras ?? [])
+	const importActions = $derived<Extra[]>(allOptions.flatMap((o) => o.extras ?? []))
 
 	// melt dropdown menu: arrow-key nav, typeahead, focus management and outside/escape
 	// close all come for free; we only drive the doc panel off the highlighted item.

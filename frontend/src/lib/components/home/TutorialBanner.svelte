@@ -14,6 +14,7 @@
 	import { TUTORIALS_CONFIG } from '$lib/tutorials/config'
 	import { hasRoleAccess } from '$lib/tutorials/roleUtils'
 	import { onMount } from 'svelte'
+	import { locale, t } from '$lib/i18n'
 
 	let isDismissed = $state(false)
 	let hasCompletedAny = $state(false)
@@ -99,19 +100,13 @@
 
 		const actions: ToastAction[] = [
 			{
-				label: 'Skip tutorials',
+				label: t('home.skipTutorials'),
 				callback: handleSkipAllTutorials,
 				buttonType: 'default'
 			}
 		]
 
-		sendUserToast(
-			'You can still access tutorials from the Tutorials page in the main menu or in the Help submenu.',
-			false,
-			actions,
-			undefined,
-			8000
-		)
+		sendUserToast(t('home.tutorialStart'), false, actions, undefined, 8000)
 	}
 
 	function goToTutorials() {
@@ -128,16 +123,16 @@
 			<div class="flex-1 min-w-0">
 				<div class="text-emphasis flex-wrap text-left text-xs font-semibold">
 					{#if hasCompletedAny}
-						New tutorial available!
+						{$locale ? t('home.tutorialAvailable') : t('home.tutorialAvailable')}
 					{:else}
-						Learn with interactive tutorials
+						{$locale ? t('home.learnTutorials') : t('home.learnTutorials')}
 					{/if}
 				</div>
 				<div class="text-hint text-3xs truncate text-left font-normal">
 					{#if hasCompletedAny}
-						Continue your learning journey and master new Windmill skills.
+						{$locale ? t('home.tutorialContinue') : t('home.tutorialContinue')}
 					{:else}
-						Get started quickly with step-by-step guides on building flows, scripts, and more.
+						{$locale ? t('home.tutorialStart') : t('home.tutorialStart')}
 					{/if}
 				</div>
 			</div>
@@ -149,12 +144,12 @@
 				onclick={goToTutorials}
 				startIcon={{ icon: GraduationCap }}
 			>
-				View tutorials
+				{$locale ? t('home.viewTutorials') : t('home.viewTutorials')}
 			</Button>
 			<button
 				onclick={dismissBanner}
 				class="p-1.5 rounded hover:bg-surface-hover text-secondary hover:text-primary transition-colors"
-				aria-label="Dismiss tutorial banner"
+				aria-label={t('home.dismissTutorialBanner')}
 			>
 				<X size={16} />
 			</button>

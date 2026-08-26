@@ -67,6 +67,86 @@ export const zhCN = {
 	jobs: {
 		count: '{count} 个作业'
 	},
+	home: {
+		title: '首页',
+		all: '全部',
+		scripts: '脚本',
+		flows: '流程',
+		apps: '应用',
+		content: '内容',
+		filters: '筛选',
+		onlyArchived: '仅已归档',
+		includeLibraryScripts: '包含库脚本',
+		treeView: '树形视图',
+		expandAll: '全部展开',
+		collapseAll: '全部收起',
+		sortRecent: '最近更新',
+		sortOldest: '最早更新',
+		sortNameAsc: '名称（A-Z）',
+		sortNameDesc: '名称（Z-A）',
+		recent: '最近',
+		oldest: '最早',
+		sortingDisabledWhileSearching: '搜索时不能排序（结果按相关性排列）',
+		sort: '排序：{label}',
+		label: '标签：{label}',
+		loadMoreToSearch: '加载更多以继续搜索',
+		itemsShown: '已显示 {shown} 项{total}',
+		loadMore: '再加载 30 项',
+		noItemsMatch: '没有项目符合当前筛选条件',
+		activeFilters: '当前筛选：{filters}',
+		clearOrWidenFilters: '清除或放宽筛选条件以查看更多内容。',
+		tryChangingFilters: '请尝试更改搜索或筛选条件',
+		welcome: '欢迎使用 Windmill',
+		getStarted: '创建第一个脚本、流程或应用即可开始使用',
+		showFewer: '显示更少',
+		showLess: '收起',
+		showMore: '再显示 {count} 项',
+		reset: '重置',
+		markCompleted: '标记为已完成',
+		completed: '已完成',
+		notStarted: '未开始',
+		comingSoon: '即将推出',
+		skipTutorials: '跳过教程',
+		tutorialAvailable: '有新教程可用！',
+		learnTutorials: '通过交互式教程学习',
+		tutorialContinue: '继续你的学习之旅，掌握更多 Windmill 技能。',
+		tutorialStart: '按照分步指南快速上手，创建流程、脚本等内容。',
+		viewTutorials: '查看教程',
+		dismissTutorialBanner: '关闭教程横幅',
+		createScript: '脚本',
+		createFlow: '流程',
+		createFullCodeApp: '应用（全代码）',
+		createWorkflowAsCode: '代码即工作流',
+		createDataPipelines: '数据管道',
+		createLowCodeApp: '应用（低代码）',
+		importFlow: '导入流程',
+		importFullCodeApp: '导入全代码应用',
+		importWorkflowAsCode: '导入代码即工作流',
+		importLowCodeApp: '导入低代码应用',
+		advanced: '高级',
+		legacy: '旧版'
+	},
+	onboarding: {
+		welcomeTitle: '欢迎使用 Windmill',
+		welcomeBody: '请先配置实例设置。你可以使用快速设置完成必要配置，或使用高级设置获得完整控制。',
+		skip: '跳过',
+		advancedSetup: '高级设置',
+		quickSetup: '快速设置',
+		hearAboutTitle: '你是如何了解到 Windmill 的？',
+		useCaseTitle: '你使用 Windmill 的主要场景是什么？',
+		typeAnswer: '请输入你的回答...',
+		validate: '确认',
+		useCasePlaceholder: '例如：构建 AI 代理、自动化数据管道、创建内部工具...',
+		infoSaved: '信息已保存',
+		infoSaveFailed: '保存信息失败：{error}',
+		sourceAiSearch: 'AI 搜索',
+		sourceSearchEngine: '搜索引擎',
+		sourceCurrentCompany: '当前/之前的公司',
+		sourceWordOfMouth: '口碑推荐',
+		sourceBlog: '博客/文章',
+		sourceEvent: '活动',
+		sourceOther: '其他'
+	},
 	app: {
 		pageNotFoundRedirectLogin: '页面不存在，正在跳转到登录页',
 		loadingUser: '正在加载用户信息...',
@@ -155,7 +235,8 @@ export const zhCN = {
 		signingIn: '正在为你登录…',
 		signInWithoutThirdParty: '不使用第三方登录',
 		welcomePrefill: '欢迎使用！已为你预填默认凭据 admin@windmill.dev / changeme。',
-		cloudCredentials: '如果不使用上面的 OAuth 登录方式，请发送邮件到 contact@windmill.dev 获取凭据。',
+		cloudCredentials:
+			'如果不使用上面的 OAuth 登录方式，请发送邮件到 contact@windmill.dev 获取凭据。',
 		forgotPassword: '忘记密码？',
 		signIn: '登录',
 		sso: '单点登录',
@@ -178,7 +259,8 @@ export const zhCN = {
 	ai: {
 		userSettingsTitle: 'AI 用户设置',
 		windmillAi: 'Windmill AI',
-		windmillAiHelp: '为当前设备上的此账户启用 Windmill AI。关闭后会隐藏 AI 聊天、代码补全、元数据补全和流程步骤输入补全。',
+		windmillAiHelp:
+			'为当前设备上的此账户启用 Windmill AI。关闭后会隐藏 AI 聊天、代码补全、元数据补全和流程步骤输入补全。',
 		codeCompletion: '代码补全',
 		codeCompletionHelp: '在代码编辑器中启用 AI 补全',
 		metadataCompletion: '元数据补全',
@@ -223,7 +305,8 @@ export const zhCN = {
 		linkedResourcePopover: '这个资源和同路径变量已关联，删除或重命名时会一起处理。',
 		oauthTokenBackgroundRefresh: 'Windmill 会在后台使用刷新令牌自动更新这个 OAuth 令牌。',
 		refreshTokenFailed: '最近一次刷新令牌失败，错误信息：{error}',
-		accessTokenExpired: '当前 access token 已过期。下次读取变量时会自动续期，你也可以在右侧下拉菜单中手动刷新。',
+		accessTokenExpired:
+			'当前 access token 已过期。下次读取变量时会自动续期，你也可以在右侧下拉菜单中手动刷新。',
 		oauthTokenHealthy: '这个资源通过 OAuth 连接，当前令牌仍然有效。',
 		resourceTypePrefixHint: '资源类型会定期与 Hub 官方类型同步。使用 c_ 前缀可以避免重名冲突。',
 		disableCustomPrefix: '禁用 c_ 前缀（仅管理员）',
@@ -307,14 +390,17 @@ export const zhCN = {
 		newGroupConfig: '新建分组配置',
 		workerGroupConfigTooltip: '工作节点分组配置会下发到这个分组中的所有工作节点。',
 		criticalWorkersBelowMinVersionTitle: '严重：存在低于最低版本要求的工作节点',
-		criticalWorkersBelowMinVersionBody: '一个或多个工作节点低于最低支持版本，可能导致集群不稳定，请尽快升级。',
+		criticalWorkersBelowMinVersionBody:
+			'一个或多个工作节点低于最低支持版本，可能导致集群不稳定，请尽快升级。',
 		workersSignificantlyBehindTitle: '工作节点版本明显落后',
-		workersSignificantlyBehindBody: '一个或多个工作节点比服务端版本 {serverVersion} 落后超过 50 个次版本，建议尽快升级。',
+		workersSignificantlyBehindBody:
+			'一个或多个工作节点比服务端版本 {serverVersion} 落后超过 50 个次版本，建议尽快升级。',
 		workersAheadOfServerTitle: '工作节点版本高于服务端',
-		workersAheadOfServerBody: '一个或多个工作节点版本高于服务端 {serverVersion}，这可能带来不确定行为。',
+		workersAheadOfServerBody:
+			'一个或多个工作节点版本高于服务端 {serverVersion}，这可能带来不确定行为。',
 		noWorkersAvailable: '暂时没有可用的工作节点',
 		activeWorkers: '活跃工作节点',
-		searchWorkersInGroup: "在分组“{group}”中搜索工作节点",
+		searchWorkersInGroup: '在分组“{group}”中搜索工作节点',
 		workerTags: '工作节点标签',
 		workerTagsHelp: '如果配置了标签，工作节点只会拉取带有对应标签的作业。',
 		workerStart: '启动时间',
@@ -346,7 +432,8 @@ export const zhCN = {
 		instance: '实例',
 		scopeAdminsTooltip: '只显示 admins 工作区中的事件。',
 		scopeAllTooltip: '显示所有工作区中的事件。',
-		scopeInstanceTooltip: '显示实例级事件，例如用户登录、注册、实例用户与用户组管理，以及工作节点配置变更。',
+		scopeInstanceTooltip:
+			'显示实例级事件，例如用户登录、注册、实例用户与用户组管理，以及工作节点配置变更。',
 		noLogsForSelectedFilters: '当前筛选条件下没有日志。',
 		perPage: '每页条数：',
 		loadingTakingLonger: '加载审计日志的时间比预期更长...',
@@ -367,8 +454,10 @@ export const zhCN = {
 		editingOtherDraft: '你当前正在编辑 {owner} 的草稿。自动保存已暂停，不会覆盖你自己的草稿。',
 		anotherUser: '另一位用户',
 		resetToDraft: '恢复到草稿',
-		allChangesSavedAsDraft: '所有改动都会作为草稿保存在服务器上。草稿按用户隔离，不会影响队友的编辑器。',
-		autoSaveOffDescription: '自动保存已关闭，只有按下 Ctrl/Cmd+S 才会保存。草稿按用户隔离，不会影响队友的编辑器。',
+		allChangesSavedAsDraft:
+			'所有改动都会作为草稿保存在服务器上。草稿按用户隔离，不会影响队友的编辑器。',
+		autoSaveOffDescription:
+			'自动保存已关闭，只有按下 Ctrl/Cmd+S 才会保存。草稿按用户隔离，不会影响队友的编辑器。',
 		enableAutoSave: '启用自动保存'
 	},
 	instanceSetup: {
@@ -411,12 +500,14 @@ export const zhCN = {
 		skipSetup: '跳过设置',
 		licenseKeyRequired: '需要许可证密钥',
 		continueWithoutLicenseKey: '无许可证继续',
-		licenseKeyWarningBody: '你当前运行的是企业版镜像，但还没有填写许可证密钥。使用企业版功能必须提供有效许可证，确定要继续吗？',
+		licenseKeyWarningBody:
+			'你当前运行的是企业版镜像，但还没有填写许可证密钥。使用企业版功能必须提供有效许可证，确定要继续吗？',
 		notAvailableInOpenSource: '开源版不支持',
 		continueWithDefaultCredentials: '继续使用默认凭据',
 		setupCompleteLoginWithDefaultCredentials: '设置完成，请使用默认凭据登录。',
 		backendError: '后端错误',
-		continueWithDefaultCredentialsHelp: '点击继续即可完成设置，并使用默认凭据 admin@windmill.dev / changeme 登录。'
+		continueWithDefaultCredentialsHelp:
+			'点击继续即可完成设置，并使用默认凭据 admin@windmill.dev / changeme 登录。'
 	},
 	variables: {
 		title: '变量',
@@ -433,7 +524,8 @@ export const zhCN = {
 		linkedResourcePopover: '这个变量与同路径资源已关联，删除或重命名时会一起处理。',
 		oauthBackgroundRefresh: 'Windmill 会在后台使用刷新令牌自动维护这个 OAuth 令牌。',
 		refreshTokenFailed: '最近一次刷新令牌失败，错误信息：{error}',
-		accessTokenExpired: '当前 access token 已过期。下次读取该变量时会自动续期，你也可以在右侧下拉菜单中手动刷新。',
+		accessTokenExpired:
+			'当前 access token 已过期。下次读取该变量时会自动续期，你也可以在右侧下拉菜单中手动刷新。',
 		oauthHealthy: '该变量通过 OAuth 连接，当前令牌仍然有效。',
 		refreshToken: '刷新令牌',
 		tokenRefreshed: '令牌已刷新',
@@ -571,7 +663,8 @@ export const zhCN = {
 		gitSync: 'Git 同步',
 		deploymentUi: '部署界面',
 		devWorkspace: '开发工作区',
-		devWorkspaceDescription: '将当前工作区与开发工作区配对：代码相同、环境不同。编辑在开发工作区完成，再提升到生产环境。',
+		devWorkspaceDescription:
+			'将当前工作区与开发工作区配对：代码相同、环境不同。编辑在开发工作区完成，再提升到生产环境。',
 		rulesets: '规则集',
 		integrations: '集成',
 		slackTeams: 'Slack / Teams',
@@ -592,7 +685,8 @@ export const zhCN = {
 		trashbin: '回收站',
 		members: '成员',
 		linkWorkspaceTitle: '将这个工作区连接到另一个预发 / 生产工作区',
-		linkWorkspaceDescription: '把当前工作区连接到另一个预发/生产工作区后，就可以通过网页界面直接部署到那个工作区。',
+		linkWorkspaceDescription:
+			'把当前工作区连接到另一个预发/生产工作区后，就可以通过网页界面直接部署到那个工作区。',
 		enterpriseLicenseRequired: '需要企业版许可证',
 		enterpriseLicenseRequiredBody: '通过网页界面部署到预发/生产环境仅在企业版许可证下可用',
 		exportWorkspace: '导出工作区',
@@ -603,7 +697,8 @@ export const zhCN = {
 		archiveWorkspace: '归档工作区',
 		deleteWorkspaceSuperadmin: '删除工作区（超级管理员）',
 		archiveAction: '归档',
-		archiveWorkspaceBody: '归档这个工作区也会一并归档它的 AI 会话{count}。取消归档工作区后，这些会话也会恢复。',
+		archiveWorkspaceBody:
+			'归档这个工作区也会一并归档它的 AI 会话{count}。取消归档工作区后，这些会话也会恢复。',
 		deleteWorkspaceBody: '永久删除这个工作区也会永久删除它的 AI 会话{count}。此操作无法撤销。',
 		notAdminTitle: '不是管理员',
 		notAdminBody: '只有工作区管理员可以访问工作区设置'
@@ -619,11 +714,13 @@ export const zhCN = {
 	},
 	superadmin: {
 		automaticUsernameCreation: '自动创建用户名',
-		automaticUsernameCreationDescription: '根据新用户的邮箱自动生成用户名，并在所有工作区之间共享。',
+		automaticUsernameCreationDescription:
+			'根据新用户的邮箱自动生成用户名，并在所有工作区之间共享。',
 		automaticUsernameCreationEnabled: '已启用自动创建用户名',
 		enableRecommended: '启用（推荐）',
 		enable: '启用',
-		automaticUsernameCreationConfirm: '此功能一旦启用，将无法关闭。如果现有用户在不同工作区中使用了不同的用户名，你需要逐个手动确认这些用户名。',
+		automaticUsernameCreationConfirm:
+			'此功能一旦启用，将无法关闭。如果现有用户在不同工作区中使用了不同的用户名，你需要逐个手动确认这些用户名。',
 		externalJwts: '外部 JWT',
 		failedToLoadExternalJwtTokens: '加载外部 JWT 令牌失败：{error}',
 		instanceUsersTitle: '实例用户（{count}）',
@@ -646,11 +743,14 @@ export const zhCN = {
 		cannotDemoteYourself: '你不能降低自己的权限',
 		userUpdated: '用户已更新',
 		user: '用户',
-		instanceGroupRoleTooltip: '该角色来自实例级用户组。若要降级为“用户”，请先将该用户移出对应用户组。',
+		instanceGroupRoleTooltip:
+			'该角色来自实例级用户组。若要降级为“用户”，请先将该用户移出对应用户组。',
 		devops: '运维管理员',
-		devopsTooltip: '运维管理员拥有接近超级管理员的可见性，但并不具备全部权限。例如他们可以查看服务日志和关键告警。你可以把它理解为“只读型超级管理员”。',
+		devopsTooltip:
+			'运维管理员拥有接近超级管理员的可见性，但并不具备全部权限。例如他们可以查看服务日志和关键告警。你可以把它理解为“只读型超级管理员”。',
 		superadmin: '超级管理员',
-		instanceGroupRoleTitle: '该角色由实例级用户组设置。你可以手动提升到更高角色，但若要降级为“用户”，必须先把他从用户组中移除。',
+		instanceGroupRoleTitle:
+			'该角色由实例级用户组设置。你可以手动提升到更高角色，但若要降级为“用户”，必须先把他从用户组中移除。',
 		setByInstanceGroup: '由实例级用户组设置',
 		manageInWorkspace: '在工作区中管理',
 		userDisabled: '用户已禁用',
@@ -660,7 +760,8 @@ export const zhCN = {
 		reassign: '重分配',
 		disableUser: '禁用用户',
 		disable: '禁用',
-		disableUserConfirm: '确定要禁用 {email} 吗？该用户的所有活跃会话和令牌都会立即失效。在重新启用前，他们将无法登录。但其工作区成员关系和内容会被保留。',
+		disableUserConfirm:
+			'确定要禁用 {email} 吗？该用户的所有活跃会话和令牌都会立即失效。在重新启用前，他们将无法登录。但其工作区成员关系和内容会被保留。',
 		errorUpdatingUser: '更新用户失败',
 		adminsWorkspace: '管理员工作区'
 	},
@@ -705,7 +806,8 @@ export const zhCN = {
 		protectionRuleTitle: '保护规则：{name}',
 		newProtectionRule: '新建保护规则',
 		eeFeatureTitle: '工作区保护规则是 EE 功能',
-		eeFeatureBody: '工作区保护规则是 Windmill 企业版功能，可针对特定用户和用户组设置细粒度治理与安全策略。',
+		eeFeatureBody:
+			'工作区保护规则是 Windmill 企业版功能，可针对特定用户和用户组设置细粒度治理与安全策略。',
 		protectionRules: '保护规则',
 		newRule: '新建规则',
 		bypassers: '可绕过者',
@@ -718,7 +820,8 @@ export const zhCN = {
 		folderTitle: '目录 {name}',
 		publishToHubTitle: '将 {name} 发布到 Hub',
 		title: '目录',
-		tooltip: '目录可以把脚本、流程、资源、定时任务等项目归组，并为用户组和单个用户统一授予 RBAC 权限。',
+		tooltip:
+			'目录可以把脚本、流程、资源、定时任务等项目归组，并为用户组和单个用户统一授予 RBAC 权限。',
 		newFolder: '新建目录',
 		newFolderNamePlaceholder: '新目录名称',
 		labels: '标签',
@@ -737,7 +840,8 @@ export const zhCN = {
 	},
 	runsPage: {
 		title: '运行记录',
-		tooltip: '这里会展示脚本和流程过去与未来的调度执行记录，也包括预览运行。除非你是管理员，否则只能看到你自己的运行或你所属用户组的运行。',
+		tooltip:
+			'这里会展示脚本和流程过去与未来的调度执行记录，也包括预览运行。除非你是管理员，否则只能看到你自己的运行或你所属用户组的运行。',
 		canceledJobs: '已取消 {count} 个作业',
 		noteCannotExceedChars: '备注不能超过 {count} 个字符',
 		resolvedJobs: '已标记 {count} 个作业为已处理',
@@ -747,26 +851,32 @@ export const zhCN = {
 		cancelJobsMatchingFilters: '取消 {count} 个符合筛选条件的作业',
 		confirmCancelSelectedJobsTitle: '确认取消这 {count} 个作业',
 		cancelSelectedJobs: '取消 {count} 个作业',
-		noQueuedJobsMatchResolvedOnly: '没有排队中的作业符合“仅已处理”筛选——已处理状态只适用于已完成运行',
+		noQueuedJobsMatchResolvedOnly:
+			'没有排队中的作业符合“仅已处理”筛选——已处理状态只适用于已完成运行',
 		reranJobs: '已重新运行 {completed}/{total} 个作业',
 		failedRerunJobs: '有 {count} 个作业重新运行失败，请查看控制台详情',
 		loadingJobIds: '正在加载作业 ID',
 		batchRerunSupportedOnly: '批量重新运行仅支持脚本和流程',
 		confirmRerunSelectedJobsTitle: '确认重新运行已选作业',
 		rerunSelectedJobs: '重新运行 {count} 个作业',
-		warnJobLimitMsg: '时间范围起点处的并发作业精确数量可能不准确，因为当前只统计最近 {count} 个作业：更早启动的作业不会被计入。',
+		warnJobLimitMsg:
+			'时间范围起点处的并发作业精确数量可能不准确，因为当前只统计最近 {count} 个作业：更早启动的作业不会被计入。',
 		forceCancel: '强制取消',
 		forceCancelTooltip: '仅在作业无法正常优雅取消时使用。这很危险，只有在别无选择时才建议这样做！',
-		forceCancelWarning: '当前已启用强制取消。这是一个危险操作，只有在别无选择时才应使用。作业不会被优雅地取消，而是会立刻被写入已完成作业表，无论它是否仍在处理中或是否属于正在运行的流程。这可能导致系统状态不一致。',
+		forceCancelWarning:
+			'当前已启用强制取消。这是一个危险操作，只有在别无选择时才应使用。作业不会被优雅地取消，而是会立刻被写入已完成作业表，无论它是否仍在处理中或是否属于正在运行的流程。这可能导致系统状态不一致。',
 		runDetails: '运行详情',
 		noJobInformation: '这个作业暂无可用信息',
-		runsTooltip: 'Runs 指没有父作业的顶层作业（流程则是启动其他作业的父作业），它们可能来自界面触发、定时任务或 webhook。',
+		runsTooltip:
+			'Runs 指没有父作业的顶层作业（流程则是启动其他作业的父作业），它们可能来自界面触发、定时任务或 webhook。',
 		depsShort: '依赖',
-		depsTooltip: '部署脚本、流程或应用时会触发依赖作业，用来生成并附加 lockfile 到已部署项，从而确保逻辑始终使用完全一致的直接和间接依赖。',
+		depsTooltip:
+			'部署脚本、流程或应用时会触发依赖作业，用来生成并附加 lockfile 到已部署项，从而确保逻辑始终使用完全一致的直接和间接依赖。',
 		previews: '预览',
 		previewsTooltip: '预览作业是在编辑器中通过“Tests”启动的作业',
 		sync: '同步',
-		syncTooltip: '同步作业会在每次脚本部署时触发，用于把工作区与工作区设置中配置的 Git 仓库保持同步',
+		syncTooltip:
+			'同步作业会在每次脚本部署时触发，用于把工作区与工作区设置中配置的 Git 仓库保持同步',
 		statusRunning: '运行中',
 		statusSuccess: '成功',
 		statusFailure: '失败',
@@ -781,7 +891,8 @@ export const zhCN = {
 		none: '无',
 		dayCount: '{count} 天',
 		lookbackValue: '向前回看 {count} 天',
-		lookbackTooltip: '决定并发图表在最小时间点之前还要往前追溯多远。调整这个值可以把时间窗口之前启动的作业也纳入图表计算。',
+		lookbackTooltip:
+			'决定并发图表在最小时间点之前还要往前追溯多远。调整这个值可以把时间窗口之前启动的作业也纳入图表计算。',
 		loadMore: '加载更多',
 		moreJobsToLoad: '还有更多作业可加载',
 		loadingJobsProgress: '正在加载作业：{loaded}/{total}...',
@@ -795,7 +906,8 @@ export const zhCN = {
 		exitSelectionMode: '退出选择模式',
 		autoRefresh: '自动刷新',
 		perPageValue: '{count} / 页',
-		resolvingDescription: '标记为已处理后，这次运行仍然是失败状态，但不会再在运行列表里作为失败项显示。',
+		resolvingDescription:
+			'标记为已处理后，这次运行仍然是失败状态，但不会再在运行列表里作为失败项显示。',
 		handledReasonPlaceholder: '为什么这个问题已处理？（可选）',
 		notesRequireEe: '备注和归因需要 EE 版本',
 		markResolved: '将 {count} 个标记为已处理',
@@ -883,7 +995,8 @@ export const zhCN = {
 		foundDependentRunnables: '找到 {count} 个依赖的可运行项',
 		failedToFetchDependents: '获取依赖项失败',
 		title: '强制依赖',
-		description: '强制依赖按语言为脚本定义依赖规范。未命名的依赖会作为工作区默认值，命名依赖则可以通过 #raw_reqs 注解被脚本引用。',
+		description:
+			'强制依赖按语言为脚本定义依赖规范。未命名的依赖会作为工作区默认值，命名依赖则可以通过 #raw_reqs 注解被脚本引用。',
 		newButton: '新建强制依赖',
 		searchPlaceholder: '按名称、语言或内容搜索强制依赖...',
 		noDependenciesFound: '未找到强制依赖',
@@ -898,7 +1011,8 @@ export const zhCN = {
 		referencedFrom: '被引用位置',
 		refs: '引用',
 		rebuildMap: '重建依赖映射',
-		rebuildMapDescription: '从头重新构建工作区依赖映射。通常几乎不需要这样做——只有在依赖跟踪出现不同步，例如日志中报告了孤立引用时，才需要执行。',
+		rebuildMapDescription:
+			'从头重新构建工作区依赖映射。通常几乎不需要这样做——只有在依赖跟踪出现不同步，例如日志中报告了孤立引用时，才需要执行。',
 		rebuild: '重建',
 		viewRequirementTitle: '查看依赖声明 - {path}',
 		noContentAvailable: '这条依赖声明没有可用内容'
@@ -916,7 +1030,8 @@ export const zhCN = {
 		connectedSuccessfully: '{name} 连接成功！',
 		failedToCompleteOAuth: '完成 OAuth 连接失败：{error}',
 		title: '原生触发器',
-		description: '把工作区连接到外部服务，以启用原生触发器和增强功能。这些连接会在工作区所有成员之间共享，也是原生触发器正常工作的前提。',
+		description:
+			'把工作区连接到外部服务，以启用原生触发器和增强功能。这些连接会在工作区所有成员之间共享，也是原生触发器正常工作的前提。',
 		saveCredentialsAsResource: '将 {name} 凭据保存为资源',
 		saveCredentialsDescription: '选择 OAuth 资源的保存位置。这个资源会存储该集成的访问令牌。',
 		connected: '已连接',
@@ -927,7 +1042,8 @@ export const zhCN = {
 		configureOAuth: '配置 OAuth',
 		docs: '文档',
 		redirectUriRequired: '需要配置重定向 URI',
-		redirectUriDescriptionPrefix: '你的实例管理员已经为原生触发器配置了 Google OAuth。连接前，请确保以下重定向 URI 已由实例管理员添加到 ',
+		redirectUriDescriptionPrefix:
+			'你的实例管理员已经为原生触发器配置了 Google OAuth。连接前，请确保以下重定向 URI 已由实例管理员添加到 ',
 		redirectUriDescriptionSuffix: '：',
 		requirements: '要求',
 		nextcloudRequirementsTitle: 'Nextcloud 集成需要：',
@@ -937,21 +1053,25 @@ export const zhCN = {
 		noIntegrationsConnected: '还没有已连接的集成',
 		noIntegrationsConnectedBody: '请先连接上方的外部服务，才能为工作区启用原生触发器。',
 		nextcloudDescription: '连接 Nextcloud，用于文件操作和 webhook 触发器',
-		nextcloudSetup1: '在你的 Nextcloud 实例中创建一个 OAuth2 应用（管理设置 → 安全 → OAuth 2.0 客户端）',
+		nextcloudSetup1:
+			'在你的 Nextcloud 实例中创建一个 OAuth2 应用（管理设置 → 安全 → OAuth 2.0 客户端）',
 		nextcloudSetup2: '配置下方显示的重定向 URI',
 		nextcloudSetup3: '在下方填写客户端凭据',
 		googleDescription: '连接 Google，用于 Drive 和 Calendar 触发器',
 		googleClientIdPlaceholder: 'xxxx.apps.googleusercontent.com',
 		googleClientSecretPlaceholder: 'Google Cloud Console 客户端密钥',
-		googleSetup1: '前往 <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" class="underline">Google Cloud Console - Credentials</a>',
+		googleSetup1:
+			'前往 <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" class="underline">Google Cloud Console - Credentials</a>',
 		googleSetup2: '创建 OAuth 2.0 Client ID（Web application 类型）',
 		googleSetup3: '把下方显示的重定向 URI 添加到 “Authorized redirect URIs”',
-		googleSetup4: '在你的项目中启用 <a href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" rel="noopener" class="underline">Google Drive API</a> 和 <a href="https://console.cloud.google.com/apis/library/calendar-json.googleapis.com" target="_blank" rel="noopener" class="underline">Google Calendar API</a>',
+		googleSetup4:
+			'在你的项目中启用 <a href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" rel="noopener" class="underline">Google Drive API</a> 和 <a href="https://console.cloud.google.com/apis/library/calendar-json.googleapis.com" target="_blank" rel="noopener" class="underline">Google Calendar API</a>',
 		googleSetup5: '在下方填写客户端凭据',
 		githubDescription: '连接 GitHub，用于仓库 webhook 触发器',
 		githubClientIdPlaceholder: 'GitHub OAuth App Client ID',
 		githubClientSecretPlaceholder: 'GitHub OAuth App Client Secret',
-		githubSetup1: '前往 <a href="https://github.com/settings/developers" target="_blank" rel="noopener" class="underline">GitHub Developer Settings</a>',
+		githubSetup1:
+			'前往 <a href="https://github.com/settings/developers" target="_blank" rel="noopener" class="underline">GitHub Developer Settings</a>',
 		githubSetup2: '创建一个新的 OAuth App（不是 GitHub App）',
 		githubSetup3: '把“Authorization callback URL”设置为下方显示的重定向 URI',
 		githubSetup4: '在下方填写 Client ID 和 Client Secret'

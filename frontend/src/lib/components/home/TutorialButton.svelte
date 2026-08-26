@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { CheckCircle2, Circle, RefreshCw, CheckCheck } from 'lucide-svelte'
 	import type { ComponentType } from 'svelte'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		icon: ComponentType
@@ -29,18 +30,19 @@
 	let isHovered = $state(false)
 
 	// Determine which action button to show
-	const actionButton = $derived(() => {
+	const actionButton = $derived.by(() => {
+		$locale
 		if (isCompleted && isHovered && onReset) {
 			return {
 				icon: RefreshCw,
-				label: 'Reset',
+				label: t('home.reset'),
 				onClick: onReset
 			}
 		}
 		if (!isCompleted && isHovered && onComplete) {
 			return {
 				icon: CheckCheck,
-				label: 'Mark as completed',
+				label: t('home.markCompleted'),
 				onClick: onComplete
 			}
 		}
@@ -59,7 +61,8 @@
 <button
 	onclick={disabled || comingSoon ? undefined : onclick}
 	disabled={disabled || comingSoon}
-	class="group relative flex items-center gap-4 w-full px-4 py-3 first-of-type:!border-t-0 first-of-type:rounded-t-md last-of-type:rounded-b-md [*:not(:last-child)]:border-b border-b border-light transition-colors text-left last:border-b-0 {disabled || comingSoon
+	class="group relative flex items-center gap-4 w-full px-4 py-3 first-of-type:!border-t-0 first-of-type:rounded-t-md last-of-type:rounded-b-md [*:not(:last-child)]:border-b border-b border-light transition-colors text-left last:border-b-0 {disabled ||
+	comingSoon
 		? 'opacity-50 cursor-not-allowed'
 		: 'hover:bg-surface-hover'}"
 >
@@ -68,12 +71,16 @@
 
 	<!-- Content -->
 	<div class="flex-1 min-w-0">
-		<div class="text-emphasis flex-wrap text-left text-xs font-semibold {!disabled && !comingSoon
-			? 'group-hover:text-accent-primary'
-			: ''} transition-colors">
+		<div
+			class="text-emphasis flex-wrap text-left text-xs font-semibold {!disabled && !comingSoon
+				? 'group-hover:text-accent-primary'
+				: ''} transition-colors"
+		>
 			{title}
 			{#if comingSoon}
-				<span class="ml-2 text-3xs text-secondary">(Coming soon)</span>
+				<span class="ml-2 text-3xs text-secondary"
+					>({$locale ? t('home.comingSoon') : t('home.comingSoon')})</span
+				>
 			{/if}
 		</div>
 		<div class="text-hint text-3xs truncate text-left font-normal">
@@ -106,12 +113,14 @@
 				{button.label}
 			</div>
 		{:else}
-			<span
-				class="text-xs font-normal {isCompleted
-					? 'text-green-500'
-					: 'text-blue-300'}"
-			>
-				{isCompleted ? 'Completed' : 'Not started'}
+			<span class="text-xs font-normal {isCompleted ? 'text-green-500' : 'text-blue-300'}">
+				{$locale
+					? isCompleted
+						? t('home.completed')
+						: t('home.notStarted')
+					: isCompleted
+						? t('home.completed')
+						: t('home.notStarted')}
 			</span>
 			{#if isCompleted}
 				<CheckCircle2 size={14} class="text-green-500 flex-shrink-0" />
@@ -121,4 +130,3 @@
 		{/if}
 	</div>
 </button>
-

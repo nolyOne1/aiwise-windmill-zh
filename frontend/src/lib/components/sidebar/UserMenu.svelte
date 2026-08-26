@@ -16,6 +16,7 @@
 	import MenuButton from './MenuButton.svelte'
 	import { Menu, MenuItem } from '$lib/components/meltComponents'
 	import { type MenubarBuilders } from '@melt-ui/svelte'
+	import { locale, t } from '$lib/i18n'
 
 	let darkMode: boolean = $state(false)
 
@@ -39,7 +40,9 @@
 		<MenuButton
 			class="!text-xs"
 			icon={User}
-			label={`User (${$userStore?.username ?? $userStore?.email})`}
+			label={$locale
+				? `${t('account.userFallback')} (${$userStore?.username ?? $userStore?.email})`
+				: `${t('account.userFallback')} (${$userStore?.username ?? $userStore?.email})`}
 			{isCollapsed}
 			{lightMode}
 			showChevron
@@ -73,7 +76,7 @@
 		<div class="py-1">
 			<MenuItem href={USER_SETTINGS_HASH} class={itemClass} {item}>
 				<Settings size={16} />
-				Account settings
+				{$locale ? t('account.accountSettings') : t('account.accountSettings')}
 			</MenuItem>
 
 			<MenuItem
@@ -94,12 +97,12 @@
 				{:else}
 					<Moon size={16} />
 				{/if}
-				Switch theme
+				{$locale ? t('account.switchTheme') : t('account.switchTheme')}
 			</MenuItem>
 
 			<MenuItem onClick={() => logout()} class={itemClass} {item}>
 				<LogOut size={16} />
-				Sign out
+				{$locale ? t('account.logout') : t('account.logout')}
 			</MenuItem>
 		</div>
 

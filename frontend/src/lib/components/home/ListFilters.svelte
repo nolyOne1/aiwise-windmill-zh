@@ -3,6 +3,7 @@
 	import { Badge } from '../common'
 	import { APP_TO_ICON_COMPONENT } from '../icons'
 	import { onDestroy, onMount } from 'svelte'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		filters: string[]
@@ -129,10 +130,10 @@
 					class="inline-flex items-center gap-1 align-middle"
 					color={'transparent'}
 					clickable
-					title={expanded ? 'Show fewer' : `Show ${hiddenCount} more`}
+					title={expanded ? t('home.showFewer') : t('home.showMore', { count: hiddenCount })}
 					onclick={() => (expanded = !expanded)}
 				>
-					{expanded ? 'Show less' : '…'}
+					{$locale ? (expanded ? t('home.showLess') : '…') : expanded ? t('home.showLess') : '…'}
 				</Badge>
 			</div>
 		{/if}

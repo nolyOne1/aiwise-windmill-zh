@@ -5,6 +5,7 @@ on:
     branches: [v1.775.1-zh-cn]
     paths:
       - Dockerfile
+      - frontend/**
       - deploy/candidate/**
       - .github/workflows/candidate-image.yml
   workflow_dispatch:

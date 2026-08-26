@@ -42,6 +42,7 @@
 	import NoDirectDeployAlert from '$lib/components/NoDirectDeployAlert.svelte'
 	import { useSearchParams } from '$lib/svelte5UtilsKit.svelte'
 	import { z } from 'zod'
+	import { locale, t } from '$lib/i18n'
 
 	type Tab = 'hub' | 'workspace'
 
@@ -283,7 +284,7 @@
 		{/if}
 		<div class="flex flex-row flex-wrap justify-between items-center gap-3 pb-2 my-4 mr-2 min-h-16">
 			<h1 class="text-2xl font-semibold text-emphasis whitespace-nowrap leading-6 tracking-tight">
-				Home
+				{$locale ? t('home.title') : t('home.title')}
 			</h1>
 			<div class="ml-auto flex flex-row gap-2 items-center">
 				{#if !$userStore?.operator && HOME_SHOW_HUB}

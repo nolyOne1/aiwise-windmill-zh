@@ -810,7 +810,7 @@
 
 <!-- Home + Runs lifted to the top of the workspace nav, sitting with Favorites
      and Search as the primary quick-access cluster. Excluded from SidebarContent
-     (via excludeMainLabels) so they aren't rendered twice. -->
+     (via excludeMainIds) so they aren't rendered twice. -->
 {#snippet quickLinks(collapsed: boolean)}
 	<MenuLink
 		class="!text-xs"
@@ -866,7 +866,10 @@
 <UserSettings bind:this={userSettings} showMcpMode={true} />
 <DraftMigrationErrorModal />
 {#if page.status == 404}
-	<CenteredModal title={$locale ? t('app.pageNotFoundRedirectLogin') : t('app.pageNotFoundRedirectLogin')} loading={true}></CenteredModal>
+	<CenteredModal
+		title={$locale ? t('app.pageNotFoundRedirectLogin') : t('app.pageNotFoundRedirectLogin')}
+		loading={true}
+	></CenteredModal>
 {:else if $userStore}
 	<GlobalSearchModal bind:this={globalSearchModal} />
 	{#if $superadmin}
@@ -1021,7 +1024,7 @@
 											<SidebarContent
 												isCollapsed={false}
 												showSecondary={false}
-												excludeMainLabels={['Home', 'Runs']}
+												excludeMainIds={['home', 'runs']}
 												numUnacknowledgedCriticalAlerts={isCriticalAlertsUiMuted
 													? 0
 													: numUnacknowledgedCriticalAlerts}
@@ -1154,7 +1157,7 @@
 									<SidebarContent
 										{isCollapsed}
 										showSecondary={false}
-										excludeMainLabels={['Home', 'Runs']}
+										excludeMainIds={['home', 'runs']}
 										numUnacknowledgedCriticalAlerts={isCriticalAlertsUiMuted
 											? 0
 											: numUnacknowledgedCriticalAlerts}
@@ -1300,7 +1303,8 @@
 					class="bg-yellow-100 dark:bg-yellow-900/50 border-b border-yellow-300 dark:border-yellow-700 px-4 py-2 text-sm text-yellow-800 dark:text-yellow-200 flex items-center justify-center gap-4 shrink-0"
 				>
 					<span>
-						{$locale ? t('app.impersonationPrefix') : t('app.impersonationPrefix')} <strong>{$userStore.username}</strong>
+						{$locale ? t('app.impersonationPrefix') : t('app.impersonationPrefix')}
+						<strong>{$userStore.username}</strong>
 						<span class="text-yellow-600 dark:text-yellow-400"
 							>{t('app.impersonatedBy', { email: $userStore.impersonating_email })}</span
 						>
@@ -1346,7 +1350,8 @@
 		</div>
 	</div>
 {:else}
-	<CenteredModal title={$locale ? t('app.loadingUser') : t('app.loadingUser')} loading={true}></CenteredModal>
+	<CenteredModal title={$locale ? t('app.loadingUser') : t('app.loadingUser')} loading={true}
+	></CenteredModal>
 {/if}
 
 {#if $workspaceStore && globalDbManagerDrawer.val}
