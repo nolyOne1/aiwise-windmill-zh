@@ -3,15 +3,47 @@ import { mkdir } from "node:fs/promises";
 
 const screenshotDir = "deploy/acceptance/results/screenshots";
 
+async function expectNavigation(
+  page,
+  labels: {
+    scripts: string;
+    flows: string;
+    schedules: string;
+    runs: string;
+    settings: string;
+  },
+) {
+  await expect(
+    page.getByText(labels.scripts, { exact: true }).first(),
+  ).toBeVisible();
+  await expect(
+    page.getByText(labels.flows, { exact: true }).first(),
+  ).toBeVisible();
+  await expect(
+    page.getByText(labels.schedules, { exact: true }).first(),
+  ).toBeVisible();
+  await expect(
+    page.getByText(labels.runs, { exact: true }).first(),
+  ).toBeVisible();
+  await expect(
+    page.getByText(labels.settings, { exact: true }).first(),
+  ).toBeVisible();
+}
+
+async function closeUserSettings(page) {
+  const overlay = page.locator(".windmill-drawer.open .overlay");
+  await expect(overlay).toBeVisible();
+  await overlay.click({ position: { x: 5, y: 5 } });
+  await expect(overlay).toBeHidden();
+}
+
 test("authenticated Chinese UI can switch languages and retain synthetic paths", async ({
   page,
 }) => {
   await mkdir(screenshotDir, { recursive: true });
   await page.goto("/user/login");
   await expect(page.locator('input#email[type="email"]')).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: /登录|Sign in/ }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "登录" })).toBeVisible();
   await page.screenshot({
     path: `${screenshotDir}/01-login-zh.png`,
     fullPage: true,
@@ -19,20 +51,22 @@ test("authenticated Chinese UI can switch languages and retain synthetic paths",
 
   await page.locator('input#email[type="email"]').fill("admin@windmill.dev");
   await page.locator('input#password[type="password"]').fill("changeme");
-  await page.getByRole("button", { name: /登录|Sign in/ }).click();
+  await page.getByRole("button", { name: "登录" }).click();
   await page.waitForURL(/\/user\/(first-time|workspaces)/);
   if (page.url().includes("/user/first-time")) {
-    await page.getByRole("button", { name: /跳过|Skip/ }).click();
+    await page.getByRole("button", { name: "跳过" }).click();
   }
   await page.waitForURL("**/user/workspaces");
   await page.getByText("Admins", { exact: true }).click();
   await page.waitForURL("**/");
 
-  await expect(page.getByText(/脚本|Scripts/).first()).toBeVisible();
-  await expect(page.getByText(/流程|Flows/).first()).toBeVisible();
-  await expect(page.getByText(/定时|Schedules/).first()).toBeVisible();
-  await expect(page.getByText(/运行|Runs/).first()).toBeVisible();
-  await expect(page.getByText(/设置|Settings/).first()).toBeVisible();
+  await expectNavigation(page, {
+    scripts: "脚本",
+    flows: "流程",
+    schedules: "定时任务",
+    runs: "运行记录",
+    settings: "设置",
+  });
   await page.screenshot({
     path: `${screenshotDir}/02-admins-zh.png`,
     fullPage: true,
@@ -40,11 +74,24 @@ test("authenticated Chinese UI can switch languages and retain synthetic paths",
 
   await page.getByRole("button", { name: /User \(admin\)/i }).click();
   await page.getByRole("menuitem", { name: "Account settings" }).click();
-  await expect(page.getByText(/语言|Language/)).toBeVisible();
-  await page.getByRole("tab", { name: "English" }).click();
-  await expect(page.getByText("Scripts").first()).toBeVisible();
+  await expect(page.getByText("语言", { exact: true })).toBeVisible();
+  await page.getByRole("radio", { name: "English" }).click();
+  await expectNavigation(page, {
+    scripts: "Scripts",
+    flows: "Flows",
+    schedules: "Schedules",
+    runs: "Runs",
+    settings: "Settings",
+  });
   await page.reload();
-  await expect(page.getByText("Scripts").first()).toBeVisible();
+  await expectNavigation(page, {
+    scripts: "Scripts",
+    flows: "Flows",
+    schedules: "Schedules",
+    runs: "Runs",
+    settings: "Settings",
+  });
+  await closeUserSettings(page);
   await page.screenshot({
     path: `${screenshotDir}/03-admins-en.png`,
     fullPage: true,
@@ -52,20 +99,28 @@ test("authenticated Chinese UI can switch languages and retain synthetic paths",
 
   await page.getByRole("button", { name: /User \(admin\)/i }).click();
   await page.getByRole("menuitem", { name: "Account settings" }).click();
-  await page.getByRole("tab", { name: "简体中文" }).click();
+  await page.getByRole("radio", { name: "简体中文" }).click();
   await page.reload();
-  await expect(page.getByText(/脚本/).first()).toBeVisible();
+  await expectNavigation(page, {
+    scripts: "脚本",
+    flows: "流程",
+    schedules: "定时任务",
+    runs: "运行记录",
+    settings: "设置",
+  });
+  await closeUserSettings(page);
 
-  for (const route of ["/scripts", "/schedules", "/runs"]) {
-    await page.goto(route);
-    await expect(page.locator("body")).toContainText(/./);
-  }
   await page.goto("/scripts/get/u/admin/acceptance_inventory");
   await expect(page.locator("body")).toContainText(
     "u/admin/acceptance_inventory",
   );
+  await expect(page.locator("#run-form-run-button")).toBeVisible();
   await page.screenshot({
     path: `${screenshotDir}/04-synthetic-script.png`,
     fullPage: true,
   });
+  await page.goto("/schedules");
+  await expect(page.getByRole("heading", { name: "定时任务" })).toBeVisible();
+  await page.goto("/runs/");
+  await expect(page.getByRole("heading", { name: "运行记录" })).toBeVisible();
 });
