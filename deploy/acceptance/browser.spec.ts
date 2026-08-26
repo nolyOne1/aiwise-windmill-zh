@@ -54,7 +54,7 @@ test("authenticated Chinese UI can switch languages and retain synthetic paths",
   await page.getByRole("button", { name: "登录" }).click();
   await page.waitForURL(/\/user\/(first-time|workspaces)/);
   if (page.url().includes("/user/first-time")) {
-    await page.getByRole("button", { name: "跳过" }).click();
+    await page.getByRole("button", { name: "Skip" }).click();
   }
   await page.waitForURL("**/user/workspaces");
   await page.getByText("Admins", { exact: true }).click();
