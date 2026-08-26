@@ -41,4 +41,5 @@ docker run --rm "$CANDIDATE_IMAGE" windmill --no-auth --help >/dev/null 2>&1 || 
 test "$code" -eq 64
 
 "${compose[@]}" up --detach
-node deploy/candidate/smoke-auth.mjs
+"${compose[@]}" exec -T --env CANDIDATE_SMOKE_TEST=1 server \
+    node --input-type=module < deploy/candidate/smoke-auth.mjs

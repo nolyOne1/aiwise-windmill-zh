@@ -1,8 +1,13 @@
 import assert from "node:assert/strict";
 import { setTimeout as delay } from "node:timers/promises";
 
-// This fixed endpoint is exclusively for compose.test.yml's disposable database.
-const base = "http://127.0.0.1:18090";
+// Accidental-use guard; the runner injects this only into the isolated exec process.
+assert.equal(
+  process.env.CANDIDATE_SMOKE_TEST,
+  "1",
+  "Run this check only through run-smoke.sh inside the isolated test container",
+);
+const base = "http://127.0.0.1:8000";
 const request = (path, options = {}) =>
   fetch(`${base}${path}`, {
     ...options,
@@ -24,7 +29,10 @@ for (let attempt = 0; attempt < 90; attempt++) {
   }
   await delay(2000);
 }
-assert.ok(ready, `Candidate failed to start; last version probe: ${lastProbe}`);
+assert.ok(
+  ready,
+  `Candidate readiness check failed; last version probe: ${lastProbe}`,
+);
 assert.equal((await request("/")).status, 200, "Embedded frontend missing");
 for (const headers of [
   {},

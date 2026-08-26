@@ -16,10 +16,8 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:${CANDIDATE_DB_PASSWORD:?}@db:5432/windmill
       MODE: server
-      BASE_URL: http://127.0.0.1:18090
+      BASE_URL: http://127.0.0.1:8000
       NO_AUTH: "false"
-    ports:
-      - "127.0.0.1:18090:8000"
     depends_on:
       db:
         condition: service_healthy

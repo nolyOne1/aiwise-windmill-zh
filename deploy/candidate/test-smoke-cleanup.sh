@@ -13,6 +13,7 @@ docker() {
             echo "password=$CANDIDATE_DB_PASSWORD"
             ;;
         *'exec -T server curl'*) echo 'HTTP 000'; return 7 ;;
+        *'exec -T --env CANDIDATE_SMOKE_TEST=1 server node --input-type=module'*) return 23 ;;
         *'down --remove-orphans'*) echo 'cleanup called' >&2 ;;
         *'up --detach'*) return 0 ;;
         *) return 99 ;;
@@ -20,7 +21,7 @@ docker() {
 }
 node() {
     if [[ $1 == deploy/candidate/smoke-auth.mjs ]]; then
-        return 23
+        return 99
     fi
     command node "$@"
 }
