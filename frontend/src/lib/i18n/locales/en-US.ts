@@ -168,7 +168,9 @@ export const enUS = {
 		createLowCodeAppBulletNoCode: 'No code required',
 		createLowCodeAppBulletBackedBy: 'Backed by scripts & flows',
 		removeItemConfirm: 'Are you sure you want to remove it?',
-		bypassConfirmation: 'Bypass confirmation'
+		bypassConfirmation: 'Bypass confirmation',
+		bypassConfirmationPrefix: 'You can press',
+		bypassConfirmationSuffix: 'while removing to bypass confirmation.'
 	},
 	onboarding: {
 		welcomeTitle: 'Welcome to Windmill',

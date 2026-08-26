@@ -440,7 +440,7 @@
 
 					<button
 						class="mt-auto self-start inline-flex items-center gap-1 pt-2 text-[10px] text-tertiary hover:text-secondary transition-colors"
-						title={t('home.hideDescriptions')}
+						title={$locale ? t('home.hideDescriptions') : t('home.hideDescriptions')}
 						tabindex={-1}
 						onclick={() => setShowDoc(false)}
 					>
@@ -554,7 +554,7 @@
 				{#if !showDoc}
 					<button
 						class="mt-1 px-2 py-1 text-left text-[10px] text-tertiary/70 hover:text-tertiary hover:underline transition-colors"
-						title={t('home.showDescriptions')}
+						title={$locale ? t('home.showDescriptions') : t('home.showDescriptions')}
 						tabindex={-1}
 						onclick={() => setShowDoc(true)}
 					>

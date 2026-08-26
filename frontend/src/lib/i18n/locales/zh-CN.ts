@@ -166,7 +166,9 @@ export const zhCN = {
 		createLowCodeAppBulletNoCode: '无需编写代码',
 		createLowCodeAppBulletBackedBy: '由脚本和流程提供支持',
 		removeItemConfirm: '确定要移除它吗？',
-		bypassConfirmation: '跳过确认'
+		bypassConfirmation: '跳过确认',
+		bypassConfirmationPrefix: '你可以按住',
+		bypassConfirmationSuffix: '以跳过确认。'
 	},
 	onboarding: {
 		welcomeTitle: '欢迎使用 Windmill',

@@ -103,8 +103,8 @@
 {#if menuOpen}
 	<ConfirmationModal
 		open={Boolean(deleteConfirmedCallback)}
-		title={t('common.remove')}
-		confirmationText={t('common.remove')}
+		title={$locale ? t('common.remove') : t('common.remove')}
+		confirmationText={$locale ? t('common.remove') : t('common.remove')}
 		trashbin
 		on:canceled={() => {
 			deleteConfirmedCallback = undefined
@@ -118,19 +118,18 @@
 	>
 		<div class="flex flex-col w-full space-y-4">
 			<span>{$locale ? t('home.removeItemConfirm') : t('home.removeItemConfirm')}</span>
-			<Alert type="info" title={t('home.bypassConfirmation')}>
+			<Alert
+				type="info"
+				title={$locale ? t('home.bypassConfirmation') : t('home.bypassConfirmation')}
+			>
 				<div>
-					{$locale
-						? t('resources.bypassConfirmationBodyPrefix')
-						: t('resources.bypassConfirmationBodyPrefix')}
+					{$locale ? t('home.bypassConfirmationPrefix') : t('home.bypassConfirmationPrefix')}
 					<span
 						class="inline-flex border rounded-md p-1 bg-blue-100 border-blue-200 dark:bg-blue-800 dark:border-blue-900 text-xs"
 					>
 						<ArrowBigUp size={18} />
 					</span>
-					{$locale
-						? t('resources.bypassConfirmationBodySuffix')
-						: t('resources.bypassConfirmationBodySuffix')}
+					{$locale ? t('home.bypassConfirmationSuffix') : t('home.bypassConfirmationSuffix')}
 				</div>
 			</Alert>
 		</div>
