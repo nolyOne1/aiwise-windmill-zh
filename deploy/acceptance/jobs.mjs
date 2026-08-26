@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { setTimeout as delay } from "node:timers/promises";
+import { isRunnableScriptVersion } from "./readiness.mjs";
 
 assert.equal(
   process.env.CANDIDATE_ACCEPTANCE,
@@ -52,7 +53,7 @@ async function login() {
 }
 
 async function createScript(path, content) {
-  await request(`/api/w/${workspace}/scripts/create`, {
+  const hash = await request(`/api/w/${workspace}/scripts/create`, {
     method: "POST",
     body: JSON.stringify({
       path,
@@ -66,6 +67,38 @@ async function createScript(path, content) {
       },
     }),
   });
+  const returnedHash = hash.trim();
+  assert.ok(returnedHash, `script ${path} creation returned no hash`);
+  return returnedHash;
+}
+
+async function awaitRunnable(path, expectedHash, timeoutMs = 90_000) {
+  const deadline = Date.now() + timeoutMs;
+  let last = "no response";
+  while (Date.now() < deadline) {
+    const response = await fetch(
+      `${base}/api/w/${workspace}/scripts/get/p/${path}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: AbortSignal.timeout(10_000),
+      },
+    );
+    if (response.ok) {
+      const script = await response.json();
+      if (isRunnableScriptVersion(script, expectedHash)) return;
+      last = `hash=${script.hash}, lock=${
+        script.lock === null ? "null" : "present"
+      }, lock_error_logs=${
+        script.lock_error_logs == null ? "null" : "present"
+      }`;
+    } else {
+      last = `GET returned ${response.status}`;
+    }
+    await delay(1_000);
+  }
+  throw new Error(
+    `script ${path} with returned hash ${expectedHash} did not become runnable within ${timeoutMs}ms; last observed: ${last}`,
+  );
 }
 
 async function run(path) {
@@ -121,14 +154,19 @@ async function scheduledRun() {
 
 await login();
 {
-  await createScript(
+  const inventoryHash = await createScript(
     paths.inventory,
     `#py: 3.11.0\ndef main():\n    quantity = 3 + 4\n    print(f"RAW_LOG inventory sku=DEMO-001 qty={quantity}")\n    return {"sku": "DEMO-001", "qty": quantity}\n`,
   );
-  await createScript(
+  const failureHash = await createScript(
     paths.failure,
     `#py: 3.11.0\ndef main():\n    raise RuntimeError("intentional acceptance failure")\n`,
   );
+
+  await Promise.all([
+    awaitRunnable(paths.inventory, inventoryHash),
+    awaitRunnable(paths.failure, failureHash),
+  ]);
 
   const manualId = await run(paths.inventory);
   const manual = await completed(manualId);

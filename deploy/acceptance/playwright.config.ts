@@ -16,9 +16,10 @@ export default defineConfig({
   forbidOnly: true,
   timeout: 90_000,
   retries: 0,
-  outputDir: "deploy/acceptance/results/test-results",
+  outputDir: "results/test-results",
   use: {
     baseURL: "http://server:8000",
+    screenshot: "off",
     trace: "off",
     video: "off",
   },

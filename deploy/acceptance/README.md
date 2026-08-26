@@ -19,9 +19,16 @@ entire Compose project after the browser check, which cleans every fixture.
 
 The browser test starts with empty state and uses the rendered user settings
 language control; it does not modify local storage or inject translations. It
-keeps only deterministic screenshots in `results/screenshots/`; traces, video,
-HAR files, authentication storage, credentials, and browser recordings are not
-artifacts.
+keeps a masked failure screenshot and a bounded status/path text report in
+`results/test-results/`; successful runs have no browser screenshots. Traces,
+video, HAR files, authentication storage, credentials, and browser recordings
+are not artifacts.
+
+The unprivileged worker requests PID-namespace isolation with
+`FAVOR_UNSHARE_PID=true`. If `unshare` is unavailable, Windmill logs that jobs
+run without inner job isolation; the internal Compose network and temporary
+database remain test infrastructure isolation, not a replacement process
+sandbox.
 
 ## Local static checks
 

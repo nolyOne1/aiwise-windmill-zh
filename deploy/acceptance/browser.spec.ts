@@ -1,7 +1,36 @@
 import { expect, test } from "../../frontend/node_modules/@playwright/test";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
+import { dirname } from "node:path";
 
-const screenshotDir = "deploy/acceptance/results/screenshots";
+test.afterEach(async ({ page }, testInfo) => {
+  if (testInfo.status === testInfo.expectedStatus) return;
+
+  const reportPath = testInfo.outputPath("failure-summary.txt");
+  await mkdir(dirname(reportPath), { recursive: true });
+  await writeFile(
+    reportPath,
+    [
+      `status=${testInfo.status}`,
+      `expected_status=${testInfo.expectedStatus}`,
+      `path=${new URL(page.url()).pathname}`,
+    ].join("\n"),
+  );
+  if (page.isClosed()) return;
+
+  const masks = [];
+  for (const locator of [
+    page.locator("#email"),
+    page.locator("#password"),
+    page.getByText(/欢迎使用！已为你预填默认凭据|Welcome! Default credentials/),
+  ]) {
+    if ((await locator.count()) > 0) masks.push(locator.first());
+  }
+  await page.screenshot({
+    path: testInfo.outputPath("failure.png"),
+    fullPage: true,
+    mask: masks,
+  });
+});
 
 async function expectNavigation(
   page,
@@ -40,14 +69,9 @@ async function closeUserSettings(page) {
 test("authenticated Chinese UI can switch languages and retain synthetic paths", async ({
   page,
 }) => {
-  await mkdir(screenshotDir, { recursive: true });
   await page.goto("/user/login");
   await expect(page.locator('input#email[type="email"]')).toBeVisible();
   await expect(page.getByRole("button", { name: "登录" })).toBeVisible();
-  await page.screenshot({
-    path: `${screenshotDir}/01-login-zh.png`,
-    fullPage: true,
-  });
 
   await page.locator('input#email[type="email"]').fill("admin@windmill.dev");
   await page.locator('input#password[type="password"]').fill("changeme");
@@ -66,10 +90,6 @@ test("authenticated Chinese UI can switch languages and retain synthetic paths",
     schedules: "定时任务",
     runs: "运行记录",
     settings: "设置",
-  });
-  await page.screenshot({
-    path: `${screenshotDir}/02-admins-zh.png`,
-    fullPage: true,
   });
 
   await page.getByRole("button", { name: /User \(admin\)/i }).click();
@@ -92,10 +112,6 @@ test("authenticated Chinese UI can switch languages and retain synthetic paths",
     settings: "Settings",
   });
   await closeUserSettings(page);
-  await page.screenshot({
-    path: `${screenshotDir}/03-admins-en.png`,
-    fullPage: true,
-  });
 
   await page.getByRole("button", { name: /User \(admin\)/i }).click();
   await page.getByRole("menuitem", { name: "Account settings" }).click();
@@ -115,10 +131,6 @@ test("authenticated Chinese UI can switch languages and retain synthetic paths",
     "u/admin/acceptance_inventory",
   );
   await expect(page.locator("#run-form-run-button")).toBeVisible();
-  await page.screenshot({
-    path: `${screenshotDir}/04-synthetic-script.png`,
-    fullPage: true,
-  });
   await page.goto("/schedules");
   await expect(page.getByRole("heading", { name: "定时任务" })).toBeVisible();
   await page.goto("/runs/");
