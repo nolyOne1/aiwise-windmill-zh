@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: windmill
+      POSTGRES_PASSWORD: ${CANDIDATE_DB_PASSWORD:?isolated test password required}
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d windmill"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+  server:
+    image: ${CANDIDATE_IMAGE:?local candidate image required}
+    environment:
+      DATABASE_URL: postgres://postgres:${CANDIDATE_DB_PASSWORD:?}@db:5432/windmill
+      MODE: server
+      BASE_URL: http://127.0.0.1:18090
+      NO_AUTH: "false"
+    ports:
+      - "127.0.0.1:18090:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+networks:
+  default:
+    internal: true

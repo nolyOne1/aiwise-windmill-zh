@@ -97,6 +97,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 
 FROM rust_base AS builder
 ARG features=""
+ARG REQUIRE_AUTH=false
 
 COPY --from=planner /windmill/recipe.json recipe.json
 
@@ -116,6 +117,12 @@ RUN mkdir -p /frontend
 COPY --from=frontend /frontend/build /frontend/build
 COPY --from=frontend /backend/windmill-api/openapi-deref.yaml ./windmill-api/openapi-deref.yaml
 COPY .git/ .git/
+COPY deploy/candidate/check-features.mjs /check-features.mjs
+
+# Candidate builds must reject transitive auth bypasses and private features.
+RUN if [ "$REQUIRE_AUTH" = "true" ]; then \
+    cargo metadata --locked --format-version 1 --filter-platform x86_64-unknown-linux-gnu --features "$features" > /tmp/candidate-features.json && \
+    node /check-features.mjs /tmp/candidate-features.json; fi
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=$SCCACHE_DIR,sharing=locked \
@@ -133,7 +140,7 @@ RUN objcopy --only-keep-debug /windmill/target/release/windmill /windmill/target
 FROM scratch AS debuginfo
 COPY --from=builder /windmill/target/release/windmill.debug /windmill.debug
 
-FROM ${DEBIAN_IMAGE}
+FROM ${DEBIAN_IMAGE} AS runtime
 
 ARG TARGETPLATFORM
 ARG POWERSHELL_VERSION=7.5.0
@@ -345,3 +352,11 @@ RUN find ${APP} /tmp/windmill -type d -exec chmod 777 {} +
 EXPOSE 8000
 
 CMD ["windmill"]
+
+FROM runtime AS zh-authenticated
+COPY --chmod=755 deploy/candidate/auth-entrypoint.sh /usr/local/bin/auth-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/auth-entrypoint.sh"]
+CMD ["windmill"]
+
+# Keep the upstream default target unchanged.
+FROM runtime AS default

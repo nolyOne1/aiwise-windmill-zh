@@ -1,0 +1,77 @@
+name: Chinese authenticated candidate
+
+on:
+  push:
+    branches: [v1.775.1-zh-cn]
+    paths:
+      - Dockerfile
+      - deploy/candidate/**
+      - .github/workflows/candidate-image.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zh-auth-candidate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  candidate:
+    if: github.repository == 'nolyOne1/aiwise-windmill-zh' && github.ref == 'refs/heads/v1.775.1-zh-cn'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      packages: write
+    env:
+      CANDIDATE_IMAGE: windmill-zh-auth:candidate
+      NODE_OPTIONS: --max-old-space-size=8192
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Verify candidate guards
+        run: |
+          node --test deploy/candidate/check-features.test.mjs
+          sh deploy/candidate/test-entrypoint.sh
+          bash -n deploy/candidate/run-smoke.sh
+      - name: Verify translation source
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run generate-backend-client
+          node scripts/check-i18n.mjs
+          node --test scripts/check-i18n.test.mjs
+          npx vitest run src/lib/i18n/index.test.ts src/lib/components/i18n/LanguageSelector.test.ts
+          npx svelte-kit sync
+          npx svelte-check --tsconfig ./tsconfig.json --threshold error
+      - name: Build public-source authenticated candidate
+        run: |
+          docker build --target zh-authenticated \
+            --build-arg features=oss_core,all_languages,jemalloc,dind \
+            --build-arg REQUIRE_AUTH=true \
+            --build-arg WM_BUILD_VERSION="auth-candidate-${GITHUB_SHA}" \
+            --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
+            --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
+            --tag "$CANDIDATE_IMAGE" .
+      - name: Prove authentication in an isolated disposable instance
+        timeout-minutes: 15
+        run: bash deploy/candidate/run-smoke.sh
+      - name: Publish candidate only after authentication checks
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY,,}:auth-candidate-${GITHUB_SHA}"
+          printf '%s' "$GH_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          trap 'docker logout ghcr.io >/dev/null' EXIT
+          docker tag "$CANDIDATE_IMAGE" "$image"
+          docker push "$image"
+          digest="$(docker inspect --format '{{index .RepoDigests 0}}' "$image")"
+          printf '## Authenticated test candidate\n\n`%s`\n\nNot a production release. Full Chinese UI and worker/schedule acceptance are still pending.\n' "$digest" >> "$GITHUB_STEP_SUMMARY"
