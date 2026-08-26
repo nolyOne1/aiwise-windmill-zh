@@ -126,7 +126,49 @@ export const enUS = {
 		importWorkflowAsCode: 'Import Workflow-as-Code',
 		importLowCodeApp: 'Import low-code app',
 		advanced: 'Advanced',
-		legacy: 'Legacy'
+		legacy: 'Legacy',
+		alpha: 'Alpha',
+		new: 'New',
+		hideDescriptions: 'Hide descriptions',
+		showDescriptions: 'Show descriptions',
+		createScriptTagline: 'A single standalone script',
+		createScriptDescription:
+			'Author a script in Python, TypeScript, Go, Bash, SQL, Rust, PHP and more. Windmill auto-generates an input UI, deploys it instantly and exposes it as an API.',
+		createScriptBulletLanguages: '20+ languages',
+		createScriptBulletUi: 'Auto-generated UI from parameters',
+		createScriptBulletDeploy: 'Instant deploy & versioning',
+		createFlowTagline: 'Compose scripts into a workflow',
+		createFlowDescription:
+			'Visual builder for chaining scripts together with branches, loops, error handlers, approvals and retries. Each step can be reused from the workspace or the Hub.',
+		createFlowBulletDragDrop: 'Drag-and-drop steps',
+		createFlowBulletControl: 'Branches, loops & error handling',
+		createFlowBulletApproval: 'Suspend / approval steps',
+		createFullCodeAppTagline: 'Build with React or Svelte',
+		createFullCodeAppDescription:
+			'Full control over the UI with React or Svelte and a powerful AI agent. Best for complex apps that need full flexibility.',
+		createFullCodeAppBulletFramework: 'React or Svelte',
+		createFullCodeAppBulletControl: 'Full flexibility & control',
+		createFullCodeAppBulletAi: 'AI-assisted authoring',
+		createWorkflowAsCodeTagline: 'Express a workflow purely in code',
+		createWorkflowAsCodeDescription:
+			'Write the whole workflow as a single Python or TypeScript script using the Windmill SDK — parallelism, branching and step orchestration expressed as plain code.',
+		createWorkflowAsCodeBulletLanguages: 'Python or TypeScript',
+		createWorkflowAsCodeBulletControl: 'Full control via the SDK',
+		createWorkflowAsCodeBulletVersioning: 'Versioned as a regular script',
+		createDataPipelinesTagline: 'Compose data ingestion & transforms',
+		createDataPipelinesDescription:
+			'Visual editor for data pipelines — chain ingestion, transformation and materialization steps with partitions and incremental processing.',
+		createDataPipelinesBulletTransform: 'Ingest, transform & materialize',
+		createDataPipelinesBulletIncremental: 'Partitioned & incremental',
+		createDataPipelinesBulletLineage: 'Asset-aware lineage',
+		createLowCodeAppTagline: 'Drag-and-drop UI builder',
+		createLowCodeAppDescription:
+			'Assemble an internal UI from 60+ components wired to your scripts and flows. Best for simple apps or apps that need minimal customization.',
+		createLowCodeAppBulletComponents: '60+ ready-made components',
+		createLowCodeAppBulletNoCode: 'No code required',
+		createLowCodeAppBulletBackedBy: 'Backed by scripts & flows',
+		removeItemConfirm: 'Are you sure you want to remove it?',
+		bypassConfirmation: 'Bypass confirmation'
 	},
 	onboarding: {
 		welcomeTitle: 'Welcome to Windmill',
@@ -149,7 +191,8 @@ export const enUS = {
 		sourceWordOfMouth: 'Word of mouth',
 		sourceBlog: 'Blog/Article',
 		sourceEvent: 'Event',
-		sourceOther: 'Other'
+		sourceOther: 'Other',
+		previous: 'Previous'
 	},
 	app: {
 		pageNotFoundRedirectLogin: 'Page not found, redirecting you to login',

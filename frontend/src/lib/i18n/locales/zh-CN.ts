@@ -124,7 +124,49 @@ export const zhCN = {
 		importWorkflowAsCode: '导入代码即工作流',
 		importLowCodeApp: '导入低代码应用',
 		advanced: '高级',
-		legacy: '旧版'
+		legacy: '旧版',
+		alpha: '测试版',
+		new: '新建',
+		hideDescriptions: '隐藏说明',
+		showDescriptions: '显示说明',
+		createScriptTagline: '独立脚本',
+		createScriptDescription:
+			'使用 Python、TypeScript、Go、Bash、SQL、Rust、PHP 等语言编写脚本。Windmill 会自动生成输入界面、立即部署并将其公开为 API。',
+		createScriptBulletLanguages: '20 多种语言',
+		createScriptBulletUi: '根据参数自动生成界面',
+		createScriptBulletDeploy: '即时部署与版本控制',
+		createFlowTagline: '将脚本组合为工作流',
+		createFlowDescription:
+			'使用可视化构建器串联脚本，并加入分支、循环、错误处理、审批与重试。每个步骤都可复用工作区或 Hub 中的内容。',
+		createFlowBulletDragDrop: '拖放式步骤',
+		createFlowBulletControl: '分支、循环与错误处理',
+		createFlowBulletApproval: '暂停/审批步骤',
+		createFullCodeAppTagline: '使用 React 或 Svelte 构建',
+		createFullCodeAppDescription:
+			'使用 React 或 Svelte 以及强大的 AI 代理完全掌控 UI。适合需要充分灵活性的复杂应用。',
+		createFullCodeAppBulletFramework: 'React 或 Svelte',
+		createFullCodeAppBulletControl: '完全灵活且可控',
+		createFullCodeAppBulletAi: 'AI 辅助创作',
+		createWorkflowAsCodeTagline: '完全使用代码表达工作流',
+		createWorkflowAsCodeDescription:
+			'使用 Windmill SDK 将完整工作流写成单个 Python 或 TypeScript 脚本，以纯代码表达并行、分支和步骤编排。',
+		createWorkflowAsCodeBulletLanguages: 'Python 或 TypeScript',
+		createWorkflowAsCodeBulletControl: '通过 SDK 完全控制',
+		createWorkflowAsCodeBulletVersioning: '按常规脚本进行版本控制',
+		createDataPipelinesTagline: '组合数据摄取与转换',
+		createDataPipelinesDescription:
+			'数据管道可视化编辑器：通过分区和增量处理串联摄取、转换与物化步骤。',
+		createDataPipelinesBulletTransform: '摄取、转换与物化',
+		createDataPipelinesBulletIncremental: '支持分区与增量',
+		createDataPipelinesBulletLineage: '感知资产的血缘关系',
+		createLowCodeAppTagline: '拖放式 UI 构建器',
+		createLowCodeAppDescription:
+			'使用 60 多个已连接脚本和流程的组件组装内部 UI。适合简单应用或只需少量自定义的应用。',
+		createLowCodeAppBulletComponents: '60 多个现成组件',
+		createLowCodeAppBulletNoCode: '无需编写代码',
+		createLowCodeAppBulletBackedBy: '由脚本和流程提供支持',
+		removeItemConfirm: '确定要移除它吗？',
+		bypassConfirmation: '跳过确认'
 	},
 	onboarding: {
 		welcomeTitle: '欢迎使用 Windmill',
@@ -145,7 +187,8 @@ export const zhCN = {
 		sourceWordOfMouth: '口碑推荐',
 		sourceBlog: '博客/文章',
 		sourceEvent: '活动',
-		sourceOther: '其他'
+		sourceOther: '其他',
+		previous: '上一步'
 	},
 	app: {
 		pageNotFoundRedirectLogin: '页面不存在，正在跳转到登录页',

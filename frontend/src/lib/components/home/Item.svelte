@@ -10,6 +10,7 @@
 	import ShareModal from '../ShareModal.svelte'
 	import { createEventDispatcher } from 'svelte'
 	import { ArrowBigUp } from 'lucide-svelte'
+	import { locale, t } from '$lib/i18n'
 
 	const dispatch = createEventDispatcher()
 
@@ -102,8 +103,8 @@
 {#if menuOpen}
 	<ConfirmationModal
 		open={Boolean(deleteConfirmedCallback)}
-		title="Remove"
-		confirmationText="Remove"
+		title={t('common.remove')}
+		confirmationText={t('common.remove')}
 		trashbin
 		on:canceled={() => {
 			deleteConfirmedCallback = undefined
@@ -116,16 +117,20 @@
 		}}
 	>
 		<div class="flex flex-col w-full space-y-4">
-			<span>Are you sure you want to remove it?</span>
-			<Alert type="info" title="Bypass confirmation">
+			<span>{$locale ? t('home.removeItemConfirm') : t('home.removeItemConfirm')}</span>
+			<Alert type="info" title={t('home.bypassConfirmation')}>
 				<div>
-					You can press
+					{$locale
+						? t('resources.bypassConfirmationBodyPrefix')
+						: t('resources.bypassConfirmationBodyPrefix')}
 					<span
 						class="inline-flex border rounded-md p-1 bg-blue-100 border-blue-200 dark:bg-blue-800 dark:border-blue-900 text-xs"
 					>
 						<ArrowBigUp size={18} />
 					</span>
-					while removing to bypass confirmation.
+					{$locale
+						? t('resources.bypassConfirmationBodySuffix')
+						: t('resources.bypassConfirmationBodySuffix')}
 				</div>
 			</Alert>
 		</div>

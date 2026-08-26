@@ -48,6 +48,7 @@
 	import { getDeployUiSettings } from '$lib/components/home/deploy_ui'
 	import { buildForkEditUrl, editInForkAllowed, editInForkLabel } from '$lib/utils/editInFork'
 	import { isCloudHosted } from '$lib/cloud'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		script: Script & {
@@ -243,7 +244,7 @@
 								startIcon={{ icon: Pen }}
 								href="{base}/scripts/edit/{script.path}"
 							>
-								Edit
+								{$locale ? t('common.edit') : t('common.edit')}
 							</Button>
 						</div>
 					{/if}

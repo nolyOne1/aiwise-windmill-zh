@@ -74,13 +74,12 @@
 				label: t('home.createScript'),
 				icon: Code2,
 				accent: 'blue',
-				tagline: 'A single standalone script',
-				description:
-					'Author a script in Python, TypeScript, Go, Bash, SQL, Rust, PHP and more. Windmill auto-generates an input UI, deploys it instantly and exposes it as an API.',
+				tagline: t('home.createScriptTagline'),
+				description: t('home.createScriptDescription'),
 				bullets: [
-					'20+ languages',
-					'Auto-generated UI from parameters',
-					'Instant deploy & versioning'
+					t('home.createScriptBulletLanguages'),
+					t('home.createScriptBulletUi'),
+					t('home.createScriptBulletDeploy')
 				],
 				onSelect: () => goto(`${base}/scripts/add`)
 			},
@@ -91,13 +90,12 @@
 							label: t('home.createFlow'),
 							icon: BarsStaggered,
 							accent: 'teal',
-							tagline: 'Compose scripts into a workflow',
-							description:
-								'Visual builder for chaining scripts together with branches, loops, error handlers, approvals and retries. Each step can be reused from the workspace or the Hub.',
+							tagline: t('home.createFlowTagline'),
+							description: t('home.createFlowDescription'),
 							bullets: [
-								'Drag-and-drop steps',
-								'Branches, loops & error handling',
-								'Suspend / approval steps'
+								t('home.createFlowBulletDragDrop'),
+								t('home.createFlowBulletControl'),
+								t('home.createFlowBulletApproval')
 							],
 							onSelect: () => goto(`${base}/flows/add`),
 							extras: [{ label: t('home.importFlow'), onSelect: () => openImport('flow') }]
@@ -111,10 +109,13 @@
 							label: t('home.createFullCodeApp'),
 							icon: LayoutDashboard,
 							accent: 'orange',
-							tagline: 'Build with React or Svelte',
-							description:
-								'Full control over the UI with React or Svelte and a powerful AI agent. Best for complex apps that need full flexibility.',
-							bullets: ['React or Svelte', 'Full flexibility & control', 'AI-assisted authoring'],
+							tagline: t('home.createFullCodeAppTagline'),
+							description: t('home.createFullCodeAppDescription'),
+							bullets: [
+								t('home.createFullCodeAppBulletFramework'),
+								t('home.createFullCodeAppBulletControl'),
+								t('home.createFullCodeAppBulletAi')
+							],
 							onSelect: () => goto(`${base}/apps_raw/add`),
 							extras: [
 								{ label: t('home.importFullCodeApp'), onSelect: () => openImport('app-fullcode') }
@@ -129,13 +130,12 @@
 							label: t('home.createWorkflowAsCode'),
 							icon: Code2,
 							accent: 'purple',
-							tagline: 'Express a workflow purely in code',
-							description:
-								'Write the whole workflow as a single Python or TypeScript script using the Windmill SDK — parallelism, branching and step orchestration expressed as plain code.',
+							tagline: t('home.createWorkflowAsCodeTagline'),
+							description: t('home.createWorkflowAsCodeDescription'),
 							bullets: [
-								'Python or TypeScript',
-								'Full control via the SDK',
-								'Versioned as a regular script'
+								t('home.createWorkflowAsCodeBulletLanguages'),
+								t('home.createWorkflowAsCodeBulletControl'),
+								t('home.createWorkflowAsCodeBulletVersioning')
 							],
 							onSelect: () => goto(`${base}/scripts/add?wac=typescript`),
 							badge: { label: t('home.advanced'), class: badgeAdvanced },
@@ -158,16 +158,15 @@
 							label: t('home.createDataPipelines'),
 							icon: Workflow,
 							accent: 'indigo',
-							tagline: 'Compose data ingestion & transforms',
-							description:
-								'Visual editor for data pipelines — chain ingestion, transformation and materialization steps with partitions and incremental processing.',
+							tagline: t('home.createDataPipelinesTagline'),
+							description: t('home.createDataPipelinesDescription'),
 							bullets: [
-								'Ingest, transform & materialize',
-								'Partitioned & incremental',
-								'Asset-aware lineage'
+								t('home.createDataPipelinesBulletTransform'),
+								t('home.createDataPipelinesBulletIncremental'),
+								t('home.createDataPipelinesBulletLineage')
 							],
 							onSelect: () => goto(`${base}/pipeline`),
-							badge: { label: 'Alpha', class: badgeAlpha }
+							badge: { label: t('home.alpha'), class: badgeAlpha }
 						}
 					] as Option[])
 				: []),
@@ -178,13 +177,12 @@
 							label: t('home.createLowCodeApp'),
 							icon: LayoutDashboard,
 							accent: 'gray',
-							tagline: 'Drag-and-drop UI builder',
-							description:
-								'Assemble an internal UI from 60+ components wired to your scripts and flows. Best for simple apps or apps that need minimal customization.',
+							tagline: t('home.createLowCodeAppTagline'),
+							description: t('home.createLowCodeAppDescription'),
 							bullets: [
-								'60+ ready-made components',
-								'No code required',
-								'Backed by scripts & flows'
+								t('home.createLowCodeAppBulletComponents'),
+								t('home.createLowCodeAppBulletNoCode'),
+								t('home.createLowCodeAppBulletBackedBy')
 							],
 							onSelect: () => goto(`${base}/apps/add`),
 							badge: { label: t('home.legacy'), class: badgeLegacy },
@@ -343,12 +341,15 @@
 	let importType: 'yaml' | 'json' = $state('yaml')
 	let importRaw: string = $state('')
 
-	const importTitles: Record<ImportKind, string> = {
-		flow: 'Import flow',
-		wac: 'Import Workflow-as-Code',
-		'app-lowcode': 'Import low-code app',
-		'app-fullcode': 'Import full-code app'
-	}
+	const importTitles = $derived.by<Record<ImportKind, string>>(() => {
+		$locale
+		return {
+			flow: t('home.importFlow'),
+			wac: t('home.importWorkflowAsCode'),
+			'app-lowcode': t('home.importLowCodeApp'),
+			'app-fullcode': t('home.importFullCodeApp')
+		}
+	})
 
 	function openImport(kind: ImportKind) {
 		importKind = kind
@@ -391,7 +392,7 @@
 		endIcon={{ icon: ChevronDown }}
 		bind:element={triggerEl}
 	>
-		New
+		{$locale ? t('home.new') : t('home.new')}
 	</Button>
 
 	{#if $open && active}
@@ -439,12 +440,12 @@
 
 					<button
 						class="mt-auto self-start inline-flex items-center gap-1 pt-2 text-[10px] text-tertiary hover:text-secondary transition-colors"
-						title="Hide descriptions"
+						title={t('home.hideDescriptions')}
 						tabindex={-1}
 						onclick={() => setShowDoc(false)}
 					>
 						<PanelLeftClose size={12} />
-						Hide descriptions
+						{$locale ? t('home.hideDescriptions') : t('home.hideDescriptions')}
 					</button>
 				</div>
 			{/if}
@@ -525,7 +526,7 @@
 						<Import size={14} class="text-gray-600 dark:text-gray-300" />
 					</div>
 					<span class="text-xs font-medium text-primary flex-1 min-w-0 whitespace-nowrap">
-						Import
+						{$locale ? t('common.import') : t('common.import')}
 					</span>
 					<ChevronRight size={14} class="shrink-0 text-tertiary" />
 				</button>
@@ -553,11 +554,11 @@
 				{#if !showDoc}
 					<button
 						class="mt-1 px-2 py-1 text-left text-[10px] text-tertiary/70 hover:text-tertiary hover:underline transition-colors"
-						title="Show descriptions"
+						title={t('home.showDescriptions')}
 						tabindex={-1}
 						onclick={() => setShowDoc(true)}
 					>
-						Show descriptions
+						{$locale ? t('home.showDescriptions') : t('home.showDescriptions')}
 					</button>
 				{/if}
 			</div>
@@ -589,7 +590,9 @@
 			{/snippet}
 		</Tabs>
 		{#snippet actions()}
-			<Button size="sm" onClick={runImport}>Import</Button>
+			<Button size="sm" onClick={runImport}
+				>{$locale ? t('common.import') : t('common.import')}</Button
+			>
 		{/snippet}
 	</DrawerContent>
 </Drawer>

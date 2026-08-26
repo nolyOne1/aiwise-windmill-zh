@@ -36,6 +36,7 @@
 	import { getDeployUiSettings } from '$lib/components/home/deploy_ui'
 	import { buildForkEditUrl, editInForkAllowed, editInForkLabel } from '$lib/utils/editInFork'
 	import { isCloudHosted } from '$lib/cloud'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		app: ListableApp & { draft_only?: boolean; canWrite: boolean }
@@ -165,7 +166,7 @@
 							startIcon={{ icon: Pen }}
 							href="{base}/apps{app.raw_app ? '_raw' : ''}/edit/{app.path}"
 						>
-							Edit
+							{$locale ? t('common.edit') : t('common.edit')}
 						</Button>
 					</div>
 				{/if}

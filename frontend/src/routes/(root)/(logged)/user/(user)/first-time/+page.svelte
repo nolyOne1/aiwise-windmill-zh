@@ -16,7 +16,7 @@
 	}
 </script>
 
-<CenteredModal title={t('onboarding.welcomeTitle')}>
+<CenteredModal title={$locale ? t('onboarding.welcomeTitle') : t('onboarding.welcomeTitle')}>
 	<p class="text-center text-secondary mt-4 mb-4">
 		{$locale ? t('onboarding.welcomeBody') : t('onboarding.welcomeBody')}
 	</p>

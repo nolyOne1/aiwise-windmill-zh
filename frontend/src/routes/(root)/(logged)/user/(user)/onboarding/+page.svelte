@@ -123,7 +123,7 @@
 </script>
 
 {#if currentStep === STEP_SOURCE}
-	<CenteredModal title={t('onboarding.hearAboutTitle')}>
+	<CenteredModal title={$locale ? t('onboarding.hearAboutTitle') : t('onboarding.hearAboutTitle')}>
 		<div class="w-full max-w-lg mx-auto">
 			<div class="grid grid-cols-1 gap-2 mt-6 mb-6">
 				{#each sources as source (source.id)}
@@ -146,7 +146,7 @@
 										type="text"
 										bind:this={otherInputRef}
 										bind:value={otherSourceText}
-										placeholder={t('onboarding.typeAnswer')}
+										placeholder={$locale ? t('onboarding.typeAnswer') : t('onboarding.typeAnswer')}
 										class="input"
 									/>
 									<Button variant="accent" unifiedSize="md" on:click={validateOtherSource}>
@@ -185,12 +185,14 @@
 		</div>
 	</CenteredModal>
 {:else if currentStep === STEP_USE_CASE}
-	<CenteredModal title={t('onboarding.useCaseTitle')}>
+	<CenteredModal title={$locale ? t('onboarding.useCaseTitle') : t('onboarding.useCaseTitle')}>
 		<div class="w-full max-w-lg mx-auto">
 			<div class="mb-6">
 				<textarea
 					bind:value={useCaseText}
-					placeholder={t('onboarding.useCasePlaceholder')}
+					placeholder={$locale
+						? t('onboarding.useCasePlaceholder')
+						: t('onboarding.useCasePlaceholder')}
 					class="input mt-1"
 					rows="8"
 					maxlength="1000"
@@ -205,7 +207,7 @@
 					size="xs"
 					on:click={goToPreviousStep}
 				>
-					Previous
+					{$locale ? t('onboarding.previous') : t('onboarding.previous')}
 				</Button>
 				<Button
 					color="blue"
@@ -215,7 +217,7 @@
 					loading={isSubmitting}
 					on:click={continueToWorkspaces}
 				>
-					Continue
+					{$locale ? t('common.continue') : t('common.continue')}
 				</Button>
 			</div>
 

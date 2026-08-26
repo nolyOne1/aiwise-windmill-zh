@@ -38,6 +38,7 @@
 	import { getDeployUiSettings } from '$lib/components/home/deploy_ui'
 	import { buildForkEditUrl, editInForkAllowed, editInForkLabel } from '$lib/utils/editInFork'
 	import { isCloudHosted } from '$lib/cloud'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		flow: Flow & {
@@ -186,7 +187,7 @@
 							aiId={`edit-flow-button-${flow.summary?.length > 0 ? flow.summary : flow.path}`}
 							aiDescription={`Edits the flow ${flow.summary?.length > 0 ? flow.summary : flow.path}`}
 						>
-							Edit
+							{$locale ? t('common.edit') : t('common.edit')}
 						</Button>
 					</div>
 				{/if}
