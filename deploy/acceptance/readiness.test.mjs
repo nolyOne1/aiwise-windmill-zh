@@ -11,6 +11,10 @@ test("only the returned, locked, error-free script version is runnable", () => {
     false,
   );
   assert.equal(
+    isRunnableScriptVersion({ hash: 42, lock_error_logs: null }, "42"),
+    false,
+  );
+  assert.equal(
     isRunnableScriptVersion(
       { hash: 42, lock: "", lock_error_logs: null },
       "42",
