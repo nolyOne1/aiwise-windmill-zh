@@ -1,0 +1,45 @@
+name: Immutable candidate acceptance
+
+on:
+  push:
+    branches: [v1.775.1-zh-cn]
+    paths:
+      - deploy/acceptance/**
+      - .github/workflows/candidate-acceptance.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  accept:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install frontend test dependencies
+        working-directory: frontend
+        run: npm ci --ignore-scripts
+      - name: Authenticate only to pull the immutable candidate
+        run: echo "${{ github.token }}" | docker login ghcr.io --username "${{ github.actor }}" --password-stdin
+      - name: Prepare isolated test images
+        run: |
+          docker pull ghcr.io/nolyone1/aiwise-windmill-zh@sha256:938a97c890ad3e8f7f69ffaa60ce613c504721b0a5a30c8f7e75b9b82ea7334a
+          docker pull postgres:16
+          docker pull mcr.microsoft.com/playwright:v1.57.0-noble
+      - name: Run immutable acceptance
+        env:
+          CANDIDATE_ACCEPTANCE: "1"
+        run: bash deploy/acceptance/run.sh
+      - name: Log out of registry
+        if: always()
+        run: docker logout ghcr.io
+      - name: Upload bounded acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-acceptance-evidence
+          path: deploy/acceptance/results/
+          if-no-files-found: ignore
+          retention-days: 7

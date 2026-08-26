@@ -1,0 +1,88 @@
+services:
+  db:
+    image: postgres:16
+    pull_policy: never
+    environment:
+      POSTGRES_DB: windmill
+      POSTGRES_PASSWORD: ${CANDIDATE_ACCEPTANCE_DB_PASSWORD:?generated acceptance password required}
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d windmill"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  server:
+    image: ghcr.io/nolyone1/aiwise-windmill-zh@sha256:938a97c890ad3e8f7f69ffaa60ce613c504721b0a5a30c8f7e75b9b82ea7334a
+    pull_policy: never
+    environment:
+      DATABASE_URL: postgres://postgres:${CANDIDATE_ACCEPTANCE_DB_PASSWORD:?}@db:5432/windmill
+      MODE: server
+      BASE_URL: http://127.0.0.1:8000
+      NO_AUTH: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - worker_logs:/tmp/windmill/logs
+
+  worker:
+    image: ghcr.io/nolyone1/aiwise-windmill-zh@sha256:938a97c890ad3e8f7f69ffaa60ce613c504721b0a5a30c8f7e75b9b82ea7334a
+    pull_policy: never
+    environment:
+      DATABASE_URL: postgres://postgres:${CANDIDATE_ACCEPTANCE_DB_PASSWORD:?}@db:5432/windmill
+      MODE: worker
+      WORKER_GROUP: default
+      FAVOR_UNSHARE_PID: "true"
+      UV_PYTHON_INSTALL_DIR: /tmp/windmill/cache/py_runtime
+      UV_PYTHON_PREFERENCE: only-managed
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - worker_logs:/tmp/windmill/logs
+
+  jobs:
+    image: ghcr.io/nolyone1/aiwise-windmill-zh@sha256:938a97c890ad3e8f7f69ffaa60ce613c504721b0a5a30c8f7e75b9b82ea7334a
+    pull_policy: never
+    entrypoint: ["node"]
+    command: ["/workspace/deploy/acceptance/jobs.mjs"]
+    environment:
+      CANDIDATE_ACCEPTANCE: "1"
+      ACCEPTANCE_BASE_URL: http://server:8000
+    volumes:
+      - ../..:/workspace:ro
+    depends_on:
+      server:
+        condition: service_started
+    profiles: ["runner"]
+
+  browser:
+    image: mcr.microsoft.com/playwright:v1.57.0-noble
+    pull_policy: never
+    working_dir: /workspace
+    command:
+      [
+        "node",
+        "frontend/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "deploy/acceptance/playwright.config.ts",
+      ]
+    environment:
+      CANDIDATE_ACCEPTANCE: "1"
+      ACCEPTANCE_BASE_URL: http://server:8000
+    volumes:
+      - ../..:/workspace
+    depends_on:
+      server:
+        condition: service_started
+    profiles: ["runner"]
+
+networks:
+  default:
+    internal: true
+
+volumes:
+  worker_logs:
