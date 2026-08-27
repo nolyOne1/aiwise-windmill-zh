@@ -44,6 +44,7 @@
 	import ExpandableImage, {
 		isImageViewerOpen
 	} from '$lib/components/common/image/ExpandableImage.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	const aiChatManager = getAiChatManager()
 
@@ -105,27 +106,26 @@
 	// session lands on a different prompt; the choice stays stable for
 	// the lifetime of this input so the placeholder doesn't shuffle as
 	// the user is reading it.
-	const GLOBAL_PLACEHOLDER_SUGGESTIONS = [
-		'Write a hello-world flow',
-		'Create a script that lists files in an S3 bucket',
-		'Build a CRUD app for a customer table',
-		'Schedule a daily cleanup of old runs',
-		'Wrap an existing script into a flow with retries',
-		'Add an HTTP trigger to an existing script',
-		'Generate a report from a SQL query and email it',
-		'Create a Postgres resource and a script that queries it',
-		'Refactor a script to add error handling',
-		'List my workspace flows and scripts'
-	]
-	const globalSuggestion =
-		GLOBAL_PLACEHOLDER_SUGGESTIONS[
-			Math.floor(Math.random() * GLOBAL_PLACEHOLDER_SUGGESTIONS.length)
-		]
+	const globalPlaceholderSuggestions = $derived([
+		$locale ? t('ai.suggestionHelloFlow') : t('ai.suggestionHelloFlow'),
+		t('ai.suggestionS3Script'),
+		t('ai.suggestionCrudApp'),
+		t('ai.suggestionCleanupSchedule'),
+		t('ai.suggestionRetryFlow'),
+		t('ai.suggestionHttpTrigger'),
+		t('ai.suggestionEmailReport'),
+		t('ai.suggestionPostgresResource'),
+		t('ai.suggestionErrorHandling'),
+		t('ai.suggestionListWorkspace')
+	])
+	const globalSuggestion = $derived(
+		globalPlaceholderSuggestions[Math.floor(Math.random() * globalPlaceholderSuggestions.length)]
+	)
 
 	// Generate mode-specific placeholder
 	const modePlaceholder = $derived.by(() => {
 		if (!isFirstMessage) {
-			return 'Ask followup'
+			return $locale ? t('ai.askFollowup') : t('ai.askFollowup')
 		}
 
 		if (placeholder) {
@@ -134,21 +134,21 @@
 
 		switch (aiChatManager.mode) {
 			case AIMode.SCRIPT:
-				return 'Modify this script...'
+				return t('ai.modifyScriptPlaceholder')
 			case AIMode.FLOW:
-				return 'Modify this flow...'
+				return t('ai.modifyFlowPlaceholder')
 			case AIMode.APP:
-				return 'Modify this app...'
+				return t('ai.modifyAppPlaceholder')
 			case AIMode.NAVIGATOR:
-				return 'Navigate Windmill UI...'
+				return t('ai.navigatorPlaceholder')
 			case AIMode.API:
-				return 'Make API calls...'
+				return t('ai.apiPlaceholder')
 			case AIMode.GLOBAL:
 				return globalSuggestion
 			case AIMode.ASK:
-				return 'Ask questions about Windmill...'
+				return t('ai.askWindmillPlaceholder')
 			default:
-				return 'Ask anything'
+				return t('ai.askAnythingPlaceholder')
 		}
 	})
 

@@ -416,7 +416,7 @@
 
 	let triggerMenuLinks = $derived([
 		{
-			label: 'Schedules',
+			label: $locale ? t('app.schedules') : t('app.schedules'),
 			href: `${base}/schedules`,
 			icon: Calendar,
 			disabled: !SIDEBAR_SHOW_SCHEDULES || $userStore?.operator,
@@ -446,14 +446,14 @@
 		// 	disabled: !$userStore?.is_admin && !$userStore?.is_super_admin
 		// },
 		{
-			label: 'Settings',
+			label: $locale ? t('app.settings') : t('app.settings'),
 			icon: Settings,
 			aiId: 'sidebar-menu-link-settings',
 			aiDescription:
 				'Button to navigate to settings, including account, workspace, and instance settings',
 			subItems: [
 				{
-					label: 'Account',
+					label: $locale ? t('app.account') : t('app.account'),
 					href: '#user-settings',
 					icon: UserCog,
 					aiId: 'sidebar-menu-link-account',
@@ -463,7 +463,7 @@
 				...(canManageWorkspace
 					? [
 							{
-								label: 'Workspace',
+								label: $locale ? t('app.workspace') : t('app.workspace'),
 								href: `${base}/workspace_settings`,
 								icon: FolderCog,
 								aiId: 'sidebar-menu-link-workspace',
@@ -475,7 +475,7 @@
 				...($superadmin
 					? [
 							{
-								label: 'Instance',
+								label: $locale ? t('app.instance') : t('app.instance'),
 								href: '#superadmin-settings',
 								icon: ServerCog,
 								aiId: 'sidebar-menu-link-instance',
@@ -487,7 +487,7 @@
 				...(!$superadmin && !$userStore?.is_admin
 					? [
 							{
-								label: 'Leave workspace',
+								label: $locale ? t('account.leaveWorkspace') : t('account.leaveWorkspace'),
 								action: () => {
 									leaveWorkspaceModal = true
 								},
@@ -501,7 +501,7 @@
 			disabled: $userStore?.operator
 		},
 		{
-			label: 'Workers',
+			label: $locale ? t('app.workers') : t('app.workers'),
 			href: `${base}/workers`,
 			icon: ServerCog,
 			disabled: $userStore?.operator,
@@ -510,13 +510,13 @@
 		},
 		$devopsRole || $userStore?.is_admin
 			? {
-					label: 'Logs',
+					label: $locale ? t('app.logs') : t('app.logs'),
 					icon: Logs,
 					aiId: 'sidebar-menu-link-logs',
 					aiDescription: 'Button to navigate to logs',
 					subItems: [
 						{
-							label: 'Audit logs',
+							label: $locale ? t('app.auditLogs') : t('app.auditLogs'),
 							href: `${base}/audit_logs`,
 							icon: Eye,
 							aiId: 'sidebar-menu-link-audit-logs',
@@ -525,7 +525,7 @@
 						...($devopsRole
 							? [
 									{
-										label: 'Service logs',
+										label: $locale ? t('app.serviceLogs') : t('app.serviceLogs'),
 										href: `${base}/service_logs`,
 										icon: Logs,
 										aiId: 'sidebar-menu-link-service-logs',
@@ -550,7 +550,7 @@
 					]
 				}
 			: {
-					label: 'Audit logs',
+					label: $locale ? t('app.auditLogs') : t('app.auditLogs'),
 					href: `${base}/audit_logs`,
 					icon: Eye,
 					disabled: $userStore?.operator,
@@ -571,7 +571,7 @@
 			<div class="pt-4">
 				{#if isCollapsed}
 					<div class="text-secondary text-[0.5rem] uppercase transition-opacity opacity-0">
-						Triggers
+						{$locale ? t('app.triggers') : t('app.triggers')}
 					</div>
 				{:else}
 					<button
@@ -580,7 +580,7 @@
 						class="text-secondary text-[0.5rem] uppercase flex flex-row items-center gap-1 rounded px-1 -mx-1 py-0.5 hover:bg-surface-hover focus:outline-none"
 						aria-expanded={!triggersCollapsed.val}
 					>
-						Triggers
+						{$locale ? t('app.triggers') : t('app.triggers')}
 						{#if triggersCollapsed.val}
 							<ChevronRight size={10} />
 						{:else}

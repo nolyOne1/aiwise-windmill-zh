@@ -55,6 +55,7 @@
 		readDroppedEntries
 	} from './files/fsAccess'
 	import { sendUserToast } from '$lib/toast'
+	import { locale, t } from '$lib/i18n'
 
 	const MAX_YOLO_TOOLTIP_TOOLS = 8
 	const aiChatManager = getAiChatManager()
@@ -553,7 +554,7 @@ the panel, or the Escape-to-stop focus check would wrongly reject them. -->
 	ondragleave={onPanelDragLeave}
 	ondrop={onPanelDrop}
 	role="region"
-	aria-label="AI chat"
+	aria-label={$locale ? t('ai.chat') : t('ai.chat')}
 >
 	{#if isDraggingFiles}
 		<div
@@ -572,14 +573,14 @@ the panel, or the Escape-to-stop focus check would wrongly reject them. -->
 		>
 			<div class="flex flex-row items-center gap-2">
 				{@render headerLeft?.()}
-				<p class="text-sm font-semibold">Chat</p>
+				<p class="text-sm font-semibold">{$locale ? t('ai.chat') : t('ai.chat')}</p>
 			</div>
 			<div class="flex flex-row items-center gap-2">
 				<Popover>
 					{#snippet trigger()}
 						<Button
 							on:click={() => {}}
-							title="History"
+							title={$locale ? t('ai.history') : t('ai.history')}
 							size="md"
 							btnClasses="!p-1"
 							startIcon={{ icon: HistoryIcon }}
@@ -592,7 +593,9 @@ the panel, or the Escape-to-stop focus check would wrongly reject them. -->
 					{#snippet content({ close })}
 						<div class="p-1 overflow-y-auto max-h-[300px]">
 							{#if pastChats.length === 0}
-								<div class="text-center text-primary text-xs">No history</div>
+								<div class="text-center text-primary text-xs">
+									{$locale ? t('ai.noHistory') : t('ai.noHistory')}
+								</div>
 							{:else}
 								<div class="flex flex-col">
 									{#each pastChats as chat (chat.id)}
@@ -627,7 +630,7 @@ the panel, or the Escape-to-stop focus check would wrongly reject them. -->
 					{/snippet}
 				</Popover>
 				<Button
-					title="New chat"
+					title={$locale ? t('ai.newChat') : t('ai.newChat')}
 					on:click={() => {
 						saveAndClear()
 					}}
@@ -646,10 +649,11 @@ the panel, or the Escape-to-stop focus check would wrongly reject them. -->
 		{#if emptyHint}
 			{@render emptyHint()}
 		{:else}
-			<span class="text-2xs text-gray-500 dark:text-gray-400 text-center px-2 my-2"
-				>You can use {getModifierKey()}L to open or close this chat, and {getModifierKey()}K in the
-				script editor to modify selected lines.</span
-			>
+			<span class="text-2xs text-gray-500 dark:text-gray-400 text-center px-2 my-2">
+				{$locale
+					? t('ai.shortcutHint', { modifier: getModifierKey() })
+					: t('ai.shortcutHint', { modifier: getModifierKey() })}
+			</span>
 		{/if}
 	{/if}
 

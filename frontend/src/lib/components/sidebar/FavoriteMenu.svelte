@@ -81,6 +81,7 @@
 	import { globalDbManagerDrawer, workspaceStore } from '$lib/stores'
 	import { parseDbInputFromAssetSyntax } from '$lib/utils'
 	import DropdownV2 from '$lib/components/DropdownV2.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		lightMode?: boolean
@@ -102,7 +103,7 @@
 		<MenuButton
 			class="!text-xs"
 			icon={Star}
-			label={'Favorites'}
+			label={$locale ? t('app.favorites') : t('app.favorites')}
 			{isCollapsed}
 			{lightMode}
 			showChevron
@@ -115,7 +116,7 @@
 			{#if !favoriteLinks.length}
 				<div class="py-1" role="none">
 					<div class="text-secondary block px-4 py-2 text-xs" role="menuitem" tabindex="-1">
-						Star items first
+						{$locale ? t('app.favoriteEmpty') : t('app.favoriteEmpty')}
 					</div>
 				</div>
 			{:else}

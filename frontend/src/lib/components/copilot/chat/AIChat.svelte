@@ -11,6 +11,7 @@
 	import HideButton from '$lib/components/apps/editor/settingsPanel/HideButton.svelte'
 	import { SUPPORTED_CHAT_SCRIPT_LANGUAGES } from './script/core'
 	import { copilotInfo } from '$lib/aiStore'
+	import { locale, t } from '$lib/i18n'
 
 	let {
 		hideHeader = false,
@@ -52,27 +53,28 @@
 				!SUPPORTED_CHAT_SCRIPT_LANGUAGES.includes(aiChatManager.scriptEditorOptions.lang))
 	)
 	const disabledMessage = $derived(
+		$locale &&
 		forceDisabled
 			? forceDisabledMessage
 			: !hasCopilot
 				? $aiUserDisabled
-					? 'Windmill AI is disabled in your account settings'
+					? t('ai.disabledInAccount')
 					: isAdmin
-						? `Enable Windmill AI in your [workspace settings](${base}/workspace_settings?tab=ai) to use this chat`
-						: 'Ask an admin to enable Windmill AI in this workspace to use this chat'
+						? t('ai.enableInWorkspace', { base })
+						: t('ai.askAdminToEnable')
 				: aiChatManager.mode === AIMode.SCRIPT &&
 					  aiChatManager.scriptEditorOptions?.lang &&
 					  !SUPPORTED_CHAT_SCRIPT_LANGUAGES.includes(aiChatManager.scriptEditorOptions.lang)
-					? `Windmill AI does not support the ${aiChatManager.scriptEditorOptions.lang} language yet.`
+					? t('ai.unsupportedLanguage', { language: aiChatManager.scriptEditorOptions.lang })
 					: ''
 	)
 
-	const suggestions = [
-		'Where can I see my latest runs?',
-		'How do I trigger a script with a webhook endpoint?',
-		'How can I connect to a database?',
-		'How do I schedule a recurring job?'
-	]
+	const suggestions = $derived([
+		$locale ? t('ai.suggestionLatestRuns') : t('ai.suggestionLatestRuns'),
+		t('ai.suggestionWebhook'),
+		t('ai.suggestionDatabase'),
+		t('ai.suggestionRecurringJob')
+	])
 
 	export async function generateStep(moduleId: string, lang: ScriptLang, instructions: string) {
 		aiChatManager.generateStep(moduleId, lang, instructions)

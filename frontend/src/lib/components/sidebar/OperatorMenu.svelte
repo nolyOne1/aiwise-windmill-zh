@@ -38,6 +38,7 @@
 	import MenuButton, { sidebarClasses } from './MenuButton.svelte'
 	import MenuLink from './MenuLink.svelte'
 	import type { FavoriteKind } from './FavoriteMenu.svelte'
+	import { locale, t } from '$lib/i18n'
 	let darkMode: boolean = $state(false)
 	let showExtraTriggers = $state(false)
 	let menubarEl: HTMLElement | undefined = $state()
@@ -55,14 +56,14 @@
 
 	let mainMenuLinks = $derived(
 		[
-			{ label: 'Home', id: 'home', href: `${base}/`, icon: Home },
-			{ label: 'Runs', id: 'runs', href: `${base}/runs`, icon: Play },
-			{ label: 'Schedules', id: 'schedules', href: `${base}/schedules`, icon: Calendar },
+			{ label: $locale ? t('app.home') : t('app.home'), id: 'home', href: `${base}/`, icon: Home },
+			{ label: t('app.runs'), id: 'runs', href: `${base}/runs`, icon: Play },
+			{ label: t('app.schedules'), id: 'schedules', href: `${base}/schedules`, icon: Calendar },
 			// Add Tutorials to main menu only if not all completed and not skipped
 			...($tutorialsToDo.length > 0 && !$skippedAll
 				? [
 						{
-							label: 'Tutorials',
+							label: t('app.tutorials'),
 							id: 'tutorials',
 							href: `${base}/tutorials`,
 							icon: GraduationCap
@@ -89,37 +90,37 @@
 	let secondMenuLinks: SecondMenuLink[] = $derived(
 		[
 			{
-				label: 'Resources',
+				label: $locale ? t('app.resources') : t('app.resources'),
 				id: 'resources',
 				href: `${base}/resources`
 			},
 			{
-				label: 'Variables',
+				label: t('app.variables'),
 				id: 'variables',
 				href: `${base}/variables`
 			},
 			{
-				label: 'Assets',
+				label: t('app.assets'),
 				id: 'assets',
 				href: `${base}/assets`
 			},
 			{
-				label: 'Groups',
+				label: t('app.groups'),
 				id: 'groups',
 				href: `${base}/groups`
 			},
 			{
-				label: 'Folders',
+				label: t('app.folders'),
 				id: 'folders',
 				href: `${base}/folders`
 			},
 			{
-				label: 'Workers',
+				label: t('app.workers'),
 				id: 'workers',
 				href: `${base}/workers`
 			},
 			{
-				label: 'Audit logs',
+				label: t('app.auditLogs'),
 				id: 'audit_logs',
 				href: `${base}/audit_logs`
 			}
@@ -129,37 +130,37 @@
 	let allTriggerLinks: TriggerMenuLink[] = $derived(
 		(
 			[
-				{ label: 'Custom HTTP routes', id: 'triggers', href: `${base}/routes`, kind: 'http' },
+				{ label: $locale ? t('triggers.customHttpRoutes') : t('triggers.customHttpRoutes'), id: 'triggers', href: `${base}/routes`, kind: 'http' },
 				{
-					label: 'Websocket triggers',
+					label: t('triggers.pageTitle', { kind: 'WebSocket' }),
 					id: 'triggers',
 					href: `${base}/websocket_triggers`,
 					kind: 'ws'
 				},
 				{
-					label: 'Postgres triggers',
+					label: t('triggers.pageTitle', { kind: 'Postgres' }),
 					id: 'triggers',
 					href: `${base}/postgres_triggers`,
 					kind: 'postgres'
 				},
-				{ label: 'Kafka triggers', id: 'triggers', href: `${base}/kafka_triggers`, kind: 'kafka' },
-				{ label: 'NATS triggers', id: 'triggers', href: `${base}/nats_triggers`, kind: 'nats' },
-				{ label: 'SQS triggers', id: 'triggers', href: `${base}/sqs_triggers`, kind: 'sqs' },
+				{ label: t('triggers.pageTitle', { kind: 'Kafka' }), id: 'triggers', href: `${base}/kafka_triggers`, kind: 'kafka' },
+				{ label: t('triggers.pageTitle', { kind: 'NATS' }), id: 'triggers', href: `${base}/nats_triggers`, kind: 'nats' },
+				{ label: t('triggers.pageTitle', { kind: 'SQS' }), id: 'triggers', href: `${base}/sqs_triggers`, kind: 'sqs' },
 				{
-					label: 'GCP Pub/Sub triggers',
+					label: t('triggers.pageTitle', { kind: 'GCP Pub/Sub' }),
 					id: 'triggers',
 					href: `${base}/gcp_triggers`,
 					kind: 'gcp'
 				},
 				{
-					label: 'Azure Event Grid triggers',
+					label: t('triggers.pageTitle', { kind: 'Azure Event Grid' }),
 					id: 'triggers',
 					href: `${base}/azure_triggers`,
 					kind: 'azure'
 				},
-				{ label: 'MQTT triggers', id: 'triggers', href: `${base}/mqtt_triggers`, kind: 'mqtt' },
-				{ label: 'AMQP triggers', id: 'triggers', href: `${base}/amqp_triggers`, kind: 'amqp' },
-				{ label: 'Email triggers', id: 'triggers', href: `${base}/email_triggers`, kind: 'email' }
+				{ label: t('triggers.pageTitle', { kind: 'MQTT' }), id: 'triggers', href: `${base}/mqtt_triggers`, kind: 'mqtt' },
+				{ label: t('triggers.pageTitle', { kind: 'AMQP' }), id: 'triggers', href: `${base}/amqp_triggers`, kind: 'amqp' },
+				{ label: t('triggers.pageTitle', { kind: 'Email' }), id: 'triggers', href: `${base}/email_triggers`, kind: 'email' }
 			] as TriggerMenuLink[]
 		).filter(filterLink)
 	)
@@ -238,7 +239,7 @@
 								{item}
 							>
 								<Settings size={14} />
-								Account settings
+								{$locale ? t('account.accountSettings') : t('account.accountSettings')}
 							</MenuItem>
 						</div>
 
@@ -266,7 +267,7 @@
 								{:else}
 									<Moon size={14} />
 								{/if}
-								Switch theme
+								{$locale ? t('account.switchTheme') : t('account.switchTheme')}
 							</MenuItem>
 							<MenuItem
 								href="{base}/user/workspaces"
@@ -280,7 +281,7 @@
 								{item}
 							>
 								<Building size={14} />
-								All workspaces
+								{$locale ? t('account.allWorkspaces') : t('account.allWorkspaces')}
 							</MenuItem>
 
 							{#if $superadmin}
@@ -295,7 +296,7 @@
 									{item}
 								>
 									<ServerCog size={14} />
-									Instance settings
+									{$locale ? t('account.instanceSettings') : t('account.instanceSettings')}
 								</MenuItem>
 							{/if}
 
@@ -310,7 +311,7 @@
 								{item}
 							>
 								<LogOut size={14} />
-								Sign out
+								{$locale ? t('account.logout') : t('account.logout')}
 							</MenuItem>
 						</div>
 						<div role="none">
@@ -348,7 +349,7 @@
 												}}
 											>
 												<Plus size={12} />
-												<span class="text-2xs">More triggers</span>
+												<span class="text-2xs">{$locale ? t('triggers.moreTriggers') : t('triggers.moreTriggers')}</span>
 											</div>
 											{#if showExtraTriggers}
 												{#each extraTriggerLinks as menuLink (menuLink.href)}

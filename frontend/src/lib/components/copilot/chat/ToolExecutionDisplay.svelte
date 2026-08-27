@@ -13,6 +13,7 @@
 	import AskUserQuestionDisplay from './AskUserQuestionDisplay.svelte'
 	import WebSearchSourcesDisplay from './WebSearchSourcesDisplay.svelte'
 	import ExpandableImage from '$lib/components/common/image/ExpandableImage.svelte'
+	import { locale, t } from '$lib/i18n'
 
 	interface Props {
 		message: ToolDisplayMessage
@@ -171,14 +172,14 @@
 							}}
 							startIcon={{ icon: Play }}
 						>
-							Run
+							{$locale ? t('common.run') : t('common.run')}
 						</Button>
 					</div>
 
 					<!-- Logs and Result - hide while streaming -->
 				{:else if !message.isStreamingArguments}
 					<ToolContentDisplay
-						title="Logs"
+						title={$locale ? t('app.logs') : t('app.logs')}
 						content={message.logs}
 						loading={message.isLoading}
 						showWhileLoading={false}
@@ -191,7 +192,7 @@
 						<WebSearchSourcesDisplay sources={message.webSearchSources} />
 					{:else}
 						<ToolContentDisplay
-							title="Result"
+							title={$locale ? t('common.result') : t('common.result')}
 							content={message.result}
 							error={message.error}
 							loading={message.isLoading}

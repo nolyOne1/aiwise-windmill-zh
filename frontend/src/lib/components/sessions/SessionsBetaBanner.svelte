@@ -4,6 +4,7 @@
 	import { classes as alertClasses, icons as alertIcons } from '$lib/components/common/alert/model'
 	import { setSessionsBetaOptOut } from '$lib/components/copilot/chat/global/gate'
 	import { ExternalLink } from 'lucide-svelte'
+	import { locale, t } from '$lib/i18n'
 
 	// Prefilled title marks the issue as beta feedback for triage.
 	const FEEDBACK_ISSUE_URL =
@@ -30,7 +31,7 @@
 	>
 		<InfoIcon size={14} class="shrink-0 {alertClasses.info.iconClass}" />
 		{#if variant === 'session'}
-			<span class="font-medium">AI Sessions is in beta</span>
+			<span class="font-medium">{$locale ? t('ai.sessionsBetaActive') : t('ai.sessionsBetaActive')}</span>
 			<span>·</span>
 			<Button
 				variant="subtle"
@@ -40,7 +41,7 @@
 				target="_blank"
 				endIcon={{ icon: ExternalLink }}
 			>
-				Give feedback
+				{$locale ? t('ai.giveFeedback') : t('ai.giveFeedback')}
 			</Button>
 			<span>·</span>
 			<Button
@@ -49,10 +50,10 @@
 				btnClasses="!py-0.5"
 				onclick={() => setSessionsBetaOptOut(true, `${base}/`)}
 			>
-				Switch back to legacy chat
+				{$locale ? t('ai.switchLegacyChat') : t('ai.switchLegacyChat')}
 			</Button>
 		{:else}
-			<span class="font-medium">Try AI Sessions (beta)</span>
+			<span class="font-medium">{$locale ? t('ai.sessionsBeta') : t('ai.sessionsBeta')}</span>
 			<span>·</span>
 			<Button
 				variant="subtle"
@@ -60,7 +61,7 @@
 				btnClasses="!py-0.5"
 				onclick={() => setSessionsBetaOptOut(false, `${base}/sessions`)}
 			>
-				Activate
+				{$locale ? t('ai.activate') : t('ai.activate')}
 			</Button>
 		{/if}
 	</div>

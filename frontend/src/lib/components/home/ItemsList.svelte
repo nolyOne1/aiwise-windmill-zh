@@ -30,7 +30,7 @@
 	import DropdownV2 from '$lib/components/DropdownV2.svelte'
 	import type { Item as MenuItem } from '$lib/utils'
 
-	import { HOME_SEARCH_SHOW_FLOW, HOME_SEARCH_PLACEHOLDER } from '$lib/consts'
+	import { HOME_SEARCH_SHOW_FLOW } from '$lib/consts'
 
 	import SearchItems from '../SearchItems.svelte'
 	import ListFilters from './ListFilters.svelte'
@@ -1413,7 +1413,7 @@
 			<TextInput
 				inputProps={{
 					autofocus: true,
-					placeholder: HOME_SEARCH_PLACEHOLDER,
+					placeholder: $locale ? t('home.searchPlaceholder') : t('home.searchPlaceholder'),
 					id: 'home-search-input'
 				}}
 				size="md"
@@ -1525,12 +1525,20 @@
 					{/snippet}
 				</Popover>
 				{#if filterUserFoldersType === 'only f/*'}
-					<Toggle size="xs" bind:checked={filterUserFolders} options={{ right: 'Only f/*' }} />
+					<Toggle
+						size="xs"
+						bind:checked={filterUserFolders}
+						options={{ right: $locale ? t('home.onlyFolders') : t('home.onlyFolders') }}
+					/>
 				{:else if filterUserFoldersType === 'u/username and f/*'}
 					<Toggle
 						size="xs"
 						bind:checked={filterUserFolders}
-						options={{ right: `Only u/${$userStore?.username} and f/*` }}
+						options={{
+							right: $locale
+								? t('home.onlyUserAndFolders', { user: $userStore?.username ?? '' })
+								: t('home.onlyUserAndFolders', { user: $userStore?.username ?? '' })
+						}}
 					/>
 				{/if}
 				<Toggle size="xs" bind:checked={treeView} options={{ right: t('home.treeView') }} />
